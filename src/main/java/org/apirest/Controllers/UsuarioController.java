@@ -105,7 +105,7 @@ public class UsuarioController {
                     boolean eliminado = usuarioService.eliminarUsuario(id);
                     if (eliminado) {
                         res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Usuario eliminado correctamente", null));
+                        return objectMapper.writeValueAsString(new Mensaje("Usuario eliminado correctamente", eliminado));
                     } else {
                         res.status(404);
                         return "Usuario no encontrado";
