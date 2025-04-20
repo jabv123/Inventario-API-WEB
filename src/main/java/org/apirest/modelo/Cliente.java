@@ -10,7 +10,6 @@ public class Cliente extends Persona {
 
     public Cliente(String nombre, String email, String contraseña, int idCliente, String direccion) {
         super(nombre, email, contraseña);
-        this.idCliente = idCliente;
         this.direccion = direccion;
     }
 

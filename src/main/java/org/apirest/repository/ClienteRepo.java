@@ -42,8 +42,8 @@ public class ClienteRepo {
     }
 
     //Eliminar cliente
-    public Cliente eliminar(int idCliente){
-        return clientes.removeIf(cliente -> cliente.getIdCliente() == idCliente) ? getById(idCliente) : null;
+    public boolean eliminar(int idCliente){
+        return clientes.removeIf(cliente -> cliente.getIdCliente() == idCliente);
     }
     
 
