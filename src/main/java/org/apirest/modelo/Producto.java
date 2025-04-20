@@ -7,13 +7,15 @@ public class Producto {
     private int cantidad;
     private String categoria;
     private String descripcion;
-    
-    public Producto(String nombre, double precio, int cantidad, String categoria, String descripcion) {
+    private String marca;
+
+    public Producto(String nombre, double precio, int cantidad, String categoria, String descripcion, String marca) {
         this.nombre = nombre;
         this.precio = precio;
         this.cantidad = cantidad;
         this.categoria = categoria;
         this.descripcion = descripcion;
+        this.marca = marca;
     }
     
     public Producto() {}
@@ -65,4 +67,6 @@ public class Producto {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    public void setMarca(String marca) {this.marca = marca; }
 }
