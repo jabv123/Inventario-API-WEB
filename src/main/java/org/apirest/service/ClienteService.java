@@ -5,11 +5,11 @@ import java.util.List;
 import org.apirest.modelo.Cliente;
 import org.apirest.repository.ClienteRepo;
 
-public class ServiceCliente {
+public class ClienteService {
 
     private final ClienteRepo clienteRepo;
 
-    public ServiceCliente(ClienteRepo clienteRepo) {
+    public ClienteService(ClienteRepo clienteRepo) {
         this.clienteRepo = clienteRepo;
     }
 
