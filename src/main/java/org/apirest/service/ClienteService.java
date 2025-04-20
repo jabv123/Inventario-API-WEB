@@ -35,7 +35,7 @@ public class ClienteService {
     }
 
     //Elimina un cliente por id
-    public Cliente eliminarCliente(int id) {
+    public boolean eliminarCliente(int id) {
         return clienteRepo.eliminar(id);
     }
 

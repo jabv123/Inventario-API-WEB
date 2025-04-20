@@ -4,15 +4,15 @@ public class Persona {
 
     private String nombre;
     private String email;
-    private String contraseaña;
+    private String contraseña;
 
     public Persona(){}
 
 
-    public Persona(String nombre, String email, String contraseaña) {
+    public Persona(String nombre, String email, String contraseña) {
         this.nombre = nombre;
         this.email = email;
-        this.contraseaña = contraseaña;
+        this.contraseña = contraseña;
     }
 
 
@@ -33,12 +33,12 @@ public class Persona {
     }
 
 
-    public String getContraseaña() {
-        return contraseaña;
+    public String getContraseña() {
+        return contraseña;
     }
 
-    public void setContraseaña(String contraseaña) {
-        this.contraseaña = contraseaña;
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
     }
 
 }

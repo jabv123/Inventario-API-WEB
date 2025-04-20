@@ -37,12 +37,19 @@ public class ClienteController {
             });
 
             //Listar cliente por id
-            get("", (req, res) -> {
+            get("/:id", (req, res) -> {
                 res.type("application/json");
                 
                 try {
-                    // Listar cliente por id
+                    // Validar el ID del cliente
                     int id = Integer.parseInt(req.params(":id"));
+                    Cliente existeCliente = clienteService.listarClientePorId(id);
+                    if (existeCliente == null) {
+                        res.status(404);
+                        return "Cliente no encontrado";
+                    }
+                    res.status(200);
+                    // Listar cliente por id
                     return objectMapper.writeValueAsString(new Mensaje("Cliente listado correctamente",clienteService.listarClientePorId(id)));
                 } catch (Exception e) {
                     res.status(500);
@@ -81,6 +88,7 @@ public class ClienteController {
                     res.status(200);
                     // Actualizar cliente
                     Cliente cliente = objectMapper.readValue(req.body(), Cliente.class);
+                    cliente.setIdCliente(id); // Asegurarse de que el ID del cliente sea el correcto
                     return objectMapper.writeValueAsString(new Mensaje("Cliente actualizado correctamente", clienteService.actualizarCliente(cliente)));
                 } catch (Exception e) {
                     res.status(500);
