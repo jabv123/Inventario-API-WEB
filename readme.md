@@ -233,11 +233,102 @@ La API expone los siguientes endpoints:
 
 ### Productos (`/api/productos`)
 
-*(Nota: El controlador de productos parece estar incompleto en el código fuente actual. Los endpoints deberán ser implementados)*
+*(¿COMPLETAR?)*
+
+### Usuarios (`/api/usuarios`)
+
+*   **`GET /api/usuarios`**: Lista todos los usuarios.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Usuarios listados correctamente",
+          "objeto": [
+            {
+              "idUsuario": 1,
+              "nombreUsuario": "usuario1",
+              "rol": "admin" // Ejemplo, ajustar según modelo real
+              // ... otros campos del usuario
+            }
+            // ... más usuarios
+          ]
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `No hay usuarios registrados`
+*   **`GET /api/usuarios/{id}`**: Obtiene un usuario específico por su ID.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Usuario encontrado",
+          "objeto": {
+            "idUsuario": 1,
+            "nombreUsuario": "usuario1",
+            "rol": "admin" // Ejemplo
+            // ... otros campos del usuario
+          }
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `Usuario no encontrado`
+*   **`POST /api/usuarios`**: Crea un nuevo usuario.
+    *   **Request Body:**
+        ```json
+        {
+          "nombreUsuario": "nuevoUsuario",
+          "contrasena": "secreto", // Asegúrate de manejar esto de forma segura
+          "rol": "user" // Ejemplo
+          // ... otros campos necesarios
+        }
+        ```
+    *   **Respuesta Exitosa (201 Created):**
+        ```json
+        {
+          "mensaje": "Usuario creado correctamente",
+          "objeto": {
+            "idUsuario": 2, // ID asignado automáticamente
+            "nombreUsuario": "nuevoUsuario",
+            "rol": "user" // Ejemplo
+            // ... otros campos del usuario creado
+          }
+        }
+        ```
+*   **`PUT /api/usuarios/{id}`**: Actualiza un usuario existente por su ID.
+    *   **Request Body:**
+        ```json
+        {
+          "nombreUsuario": "usuarioActualizado",
+          "rol": "editor" // Ejemplo
+          // ... otros campos a actualizar
+        }
+        ```
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Usuario actualizado correctamente",
+          "objeto": {
+            "idUsuario": 1, // ID del usuario actualizado
+            "nombreUsuario": "usuarioActualizado",
+            "rol": "editor" // Ejemplo
+            // ... otros campos actualizados
+          }
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `Usuario no encontrado`
+*   **`DELETE /api/usuarios/{id}`**: Elimina un usuario por su ID.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Usuario eliminado correctamente",
+          "objeto": true
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `Usuario no encontrado`
 
 ## Pruebas con Postman
 
-Puedes usar Postman para probar los endpoints de la API:
+Puedes usar Postman para probar los endpoints de la API. También puedes unirte a nuestro workspace de Postman para tener acceso a una colección preconfigurada:
+
+*   **Únete al Workspace de Postman:** [Enlace de Invitación](https://app.getpostman.com/join-team?invite_code=27761a4d74998519608ce0a722f7bff5ee0936cdf51ab64921f9e215d47ba0c6&target_code=ded9bd18a3ed59b49d5d4e94c2d79eea)
+
+Si prefieres configurar las solicitudes manualmente:
 
 1.  **Inicia la aplicación** como se describe en la sección "Ejecución del Proyecto".
 2.  Abre Postman.
