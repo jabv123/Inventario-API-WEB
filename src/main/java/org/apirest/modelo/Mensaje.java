@@ -1,4 +1,4 @@
-package org.resources.modelo;
+package org.apirest.modelo;
 
 public class Mensaje {
     private String mensaje;

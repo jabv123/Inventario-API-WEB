@@ -1,4 +1,4 @@
-package org.resources.modelo;
+package org.apirest.modelo;
 
 public class Producto {
     private int id;

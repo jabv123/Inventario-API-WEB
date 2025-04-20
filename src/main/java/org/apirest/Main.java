@@ -1,9 +1,10 @@
-package org.resources;
+package org.apirest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static spark.Spark.*;
-import org.resources.Controllers.ProveedorController;
-import org.resources.Controllers.ProductoController;
+
+import org.apirest.Controllers.ProductoController;
+import org.apirest.Controllers.ProveedorController;
 
 public class Main {
     public static void main(String[] args) {
