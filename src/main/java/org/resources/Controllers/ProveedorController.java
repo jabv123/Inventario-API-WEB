@@ -111,8 +111,4 @@ public class ProveedorController {
             }
         });
     }
-
-    public static void main(String[] args) {
-        new ProveedorController();
-    }
 }
