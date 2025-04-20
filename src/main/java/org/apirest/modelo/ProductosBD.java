@@ -6,3 +6,5 @@ public class ProductosBD {
     public static ArrayList<Producto> productos = new ArrayList<Producto>();
     public static int autoId = 1;
 }
+
+errer
