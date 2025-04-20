@@ -1,5 +1,6 @@
 package org.apirest.modelo;
 
+//CLASE DE UTILIDAD PARA ENVIAR MENSAJES EN JSON
 public class Mensaje {
     private String mensaje;
     private Object data;
