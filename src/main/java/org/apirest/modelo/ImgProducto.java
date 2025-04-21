@@ -7,6 +7,8 @@ public class ImgProducto {
     private String url;
     private int orden;
 
+    public ImgProducto() {
+    }
 
     public ImgProducto(int id, int idProducto, String url, int orden) {
         this.id = id;

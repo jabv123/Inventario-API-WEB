@@ -39,8 +39,8 @@ public class ImgProductoService {
     }
 
     //Eliminar img por id
-    public void eliminarImg(int id){
-        imgProductoRepo.eliminarImg(id);
+    public boolean eliminarImg(int id){
+        return imgProductoRepo.eliminarImg(id);
     }
 
     //Eliminar img por idProducto
