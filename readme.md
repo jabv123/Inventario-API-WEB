@@ -35,106 +35,146 @@ Asegúrate de tener instalado lo siguiente:
 
 La API expone los siguientes endpoints:
 
-### Clientes (`/api/clientes`)
+### Área 1: Productos y Catálogo
 
-*   **`GET /api/clientes`**: Lista todos los clientes.
+#### Productos (`/productos`)
+
+*   **`POST /productos`**: Crea un nuevo producto.
+    *   **Request Body:**
+        ```json
+        {
+          "nombre": "Nombre Producto",
+          "descripcion": "Descripción del producto",
+          "precio": 19.99,
+          "stock": 100,
+          "idCategoria": 1 // ID de la categoría a la que pertenece
+        }
+        ```
+    *   **Respuesta Exitosa (201 Created):**
+        ```json
+        {
+          "mensaje": "Producto agregado",
+          "objeto": {
+            "id": 1, // ID asignado automáticamente
+            "nombre": "Nombre Producto",
+            "descripcion": "Descripción del producto",
+            "precio": 19.99,
+            "stock": 100,
+            "idCategoria": 1
+          }
+        }
+        ```
+    *   **Respuesta Error (400 Bad Request):**
+        ```json
+        {
+          "mensaje": "Error al crear producto",
+          "objeto": "Mensaje de error detallado"
+        }
+        ```
+*   **`GET /productos`**: Lista todos los productos.
     *   **Respuesta Exitosa (200 OK):**
         ```json
         {
-          "mensaje": "Clientes listados correctamente",
+          "mensaje": "Lista de productos",
           "objeto": [
             {
-              "idCliente": 1,
-              "nombre": "Nombre Cliente",
-              "apellido": "Apellido Cliente",
-              "direccion": "Dirección Cliente",
-              "telefono": "1234567890",
-              "email": "cliente@example.com"
+              "id": 1,
+              "nombre": "Nombre Producto",
+              "descripcion": "Descripción del producto",
+              "precio": 19.99,
+              "stock": 100,
+              "idCategoria": 1
             }
-            // ... más clientes
+            // ... más productos
           ]
         }
         ```
-*   **`GET /api/clientes/{id}`**: Obtiene un cliente específico por su ID.
+*   **`GET /productos/{id}`**: Obtiene un producto específico por su ID.
     *   **Respuesta Exitosa (200 OK):**
         ```json
         {
-          "mensaje": "Cliente listado correctamente",
+          "mensaje": "Producto encontrado",
           "objeto": {
-            "idCliente": 1,
-            "nombre": "Nombre Cliente",
-            "apellido": "Apellido Cliente",
-            "direccion": "Dirección Cliente",
-            "telefono": "1234567890",
-            "email": "cliente@example.com"
+            "id": 1,
+            "nombre": "Nombre Producto",
+            "descripcion": "Descripción del producto",
+            "precio": 19.99,
+            "stock": 100,
+            "idCategoria": 1
           }
         }
         ```
-    *   **Respuesta Error (404 Not Found):** `Cliente no encontrado`
-*   **`POST /api/clientes`**: Crea un nuevo cliente.
+    *   **Respuesta Error (404 Not Found):**
+        ```json
+        {
+          "mensaje": "Producto no encontrado",
+          "objeto": null
+        }
+        ```
+    *   **Respuesta Error (400 Bad Request):** (Si el ID es inválido)
+        ```json
+        {
+          "mensaje": "ID de producto inválido",
+          "objeto": "{id}"
+        }
+        ```
+*   **`PUT /productos/{id}`**: Actualiza un producto existente por su ID.
     *   **Request Body:**
         ```json
         {
-          "nombre": "Nuevo Cliente",
-          "apellido": "Apellido Nuevo",
-          "direccion": "Dirección Nueva",
-          "telefono": "0987654321",
-          "email": "nuevo@example.com"
+          "nombre": "Producto Actualizado",
+          "descripcion": "Descripción actualizada",
+          "precio": 25.50,
+          "stock": 90,
+          "idCategoria": 2
         }
         ```
     *   **Respuesta Exitosa (200 OK):**
         ```json
         {
-          "mensaje": "Cliente creado correctamente",
+          "mensaje": "Producto actualizado",
           "objeto": {
-            "idCliente": 2, // ID asignado automáticamente
-            "nombre": "Nuevo Cliente",
-            "apellido": "Apellido Nuevo",
-            "direccion": "Dirección Nueva",
-            "telefono": "0987654321",
-            "email": "nuevo@example.com"
+            "id": 1, // ID del producto actualizado
+            "nombre": "Producto Actualizado",
+            "descripcion": "Descripción actualizada",
+            "precio": 25.50,
+            "stock": 90,
+            "idCategoria": 2
           }
         }
         ```
-*   **`PUT /api/clientes/{idCliente}`**: Actualiza un cliente existente por su ID.
-    *   **Request Body:**
+    *   **Respuesta Error (404 Not Found):**
         ```json
         {
-          "nombre": "Cliente Actualizado",
-          "apellido": "Apellido Actualizado",
-          "direccion": "Dirección Actualizada",
-          "telefono": "1122334455",
-          "email": "actualizado@example.com"
+          "mensaje": "Producto no encontrado para actualizar",
+          "objeto": null
         }
         ```
-    *   **Respuesta Exitosa (200 OK):**
+    *   **Respuesta Error (400 Bad Request):** (Si el ID es inválido o hay error en el body)
         ```json
         {
-          "mensaje": "Cliente actualizado correctamente",
-          "objeto": {
-            "idCliente": 1, // ID del cliente actualizado
-            "nombre": "Cliente Actualizado",
-            "apellido": "Apellido Actualizado",
-            "direccion": "Dirección Actualizada",
-            "telefono": "1122334455",
-            "email": "actualizado@example.com"
-          }
+          "mensaje": "ID de producto inválido", // o "Error al actualizar producto"
+          "objeto": "{id}" // o mensaje de error
         }
         ```
-    *   **Respuesta Error (404 Not Found):** `Cliente no encontrado`
-*   **`DELETE /api/clientes/{idCliente}`**: Elimina un cliente por su ID.
-    *   **Respuesta Exitosa (200 OK):**
+*   **`DELETE /productos/{id}`**: Elimina un producto por su ID.
+    *   **Respuesta Exitosa (204 No Content):** (Sin cuerpo de respuesta)
+    *   **Respuesta Error (404 Not Found):**
         ```json
         {
-          "mensaje": "Cliente eliminado correctamente",
-          "objeto": {
-             // Detalles del cliente eliminado (o null/vacío dependiendo de la implementación)
-          }
+          "mensaje": "Producto no encontrado para eliminar",
+          "objeto": null
         }
         ```
-    *   **Respuesta Error (404 Not Found):** `Cliente no encontrado`
+    *   **Respuesta Error (400 Bad Request):** (Si el ID es inválido)
+        ```json
+        {
+          "mensaje": "ID de producto inválido",
+          "objeto": "{id}"
+        }
+        ```
 
-### Proveedores (`/proveedores`)
+#### Proveedores (`/proveedores`)
 
 *   **`GET /proveedores`**: Lista todos los proveedores.
     *   **Respuesta Exitosa (200 OK):**
@@ -231,11 +271,7 @@ La API expone los siguientes endpoints:
         }
         ```
 
-### Productos (`/api/productos`)
-
-*(¿COMPLETAR?)*
-
-### Imágenes de Productos (`/api/imgProductos`)
+#### Imágenes de Productos (`/api/imgProductos`)
 
 *   **`GET /api/imgProductos`**: Lista todas las imágenes de productos.
     *   **Respuesta Exitosa (200 OK):**
@@ -350,7 +386,108 @@ La API expone los siguientes endpoints:
         ```
     *   **Respuesta Error (404 Not Found):** `No hay imagenes de productos registradas para el producto con id: {idProducto}`
 
-### Usuarios (`/api/usuarios`)
+### Área 2: Clientes y Usuarios
+
+#### Clientes (`/api/clientes`)
+
+*   **`GET /api/clientes`**: Lista todos los clientes.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Clientes listados correctamente",
+          "objeto": [
+            {
+              "idCliente": 1,
+              "nombre": "Nombre Cliente",
+              "apellido": "Apellido Cliente",
+              "direccion": "Dirección Cliente",
+              "telefono": "1234567890",
+              "email": "cliente@example.com"
+            }
+            // ... más clientes
+          ]
+        }
+        ```
+*   **`GET /api/clientes/{id}`**: Obtiene un cliente específico por su ID.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Cliente listado correctamente",
+          "objeto": {
+            "idCliente": 1,
+            "nombre": "Nombre Cliente",
+            "apellido": "Apellido Cliente",
+            "direccion": "Dirección Cliente",
+            "telefono": "1234567890",
+            "email": "cliente@example.com"
+          }
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `Cliente no encontrado`
+*   **`POST /api/clientes`**: Crea un nuevo cliente.
+    *   **Request Body:**
+        ```json
+        {
+          "nombre": "Nuevo Cliente",
+          "apellido": "Apellido Nuevo",
+          "direccion": "Dirección Nueva",
+          "telefono": "0987654321",
+          "email": "nuevo@example.com"
+        }
+        ```
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Cliente creado correctamente",
+          "objeto": {
+            "idCliente": 2, // ID asignado automáticamente
+            "nombre": "Nuevo Cliente",
+            "apellido": "Apellido Nuevo",
+            "direccion": "Dirección Nueva",
+            "telefono": "0987654321",
+            "email": "nuevo@example.com"
+          }
+        }
+        ```
+*   **`PUT /api/clientes/{idCliente}`**: Actualiza un cliente existente por su ID.
+    *   **Request Body:**
+        ```json
+        {
+          "nombre": "Cliente Actualizado",
+          "apellido": "Apellido Actualizado",
+          "direccion": "Dirección Actualizada",
+          "telefono": "1122334455",
+          "email": "actualizado@example.com"
+        }
+        ```
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Cliente actualizado correctamente",
+          "objeto": {
+            "idCliente": 1, // ID del cliente actualizado
+            "nombre": "Cliente Actualizado",
+            "apellido": "Apellido Actualizado",
+            "direccion": "Dirección Actualizada",
+            "telefono": "1122334455",
+            "email": "actualizado@example.com"
+          }
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `Cliente no encontrado`
+*   **`DELETE /api/clientes/{idCliente}`**: Elimina un cliente por su ID.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Cliente eliminado correctamente",
+          "objeto": {
+             // Detalles del cliente eliminado (o null/vacío dependiendo de la implementación)
+          }
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `Cliente no encontrado`
+
+#### Usuarios (`/api/usuarios`)
 
 *   **`GET /api/usuarios`**: Lista todos los usuarios.
     *   **Respuesta Exitosa (200 OK):**
@@ -449,7 +586,7 @@ Si prefieres configurar las solicitudes manualmente:
 2.  Abre Postman.
 3.  Crea una nueva solicitud:
     *   **Método:** Selecciona el método HTTP correspondiente (GET, POST, PUT, DELETE).
-    *   **URL:** Ingresa la URL completa del endpoint, por ejemplo: `http://localhost:8080/api/clientes` o `http://localhost:8080/proveedores/1`.
+    *   **URL:** Ingresa la URL completa del endpoint, por ejemplo: `http://localhost:8080/productos` o `http://localhost:8080/proveedores/1`.
     *   **Headers (para POST y PUT):** Asegúrate de que el header `Content-Type` esté configurado como `application/json`.
     *   **Body (para POST y PUT):** Selecciona la pestaña `Body`, elige `raw` y selecciona `JSON` en el menú desplegable. Pega el cuerpo JSON de la solicitud como se muestra en los ejemplos de los endpoints.
 4.  Haz clic en **Send**.
