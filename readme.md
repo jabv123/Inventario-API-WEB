@@ -235,6 +235,121 @@ La API expone los siguientes endpoints:
 
 *(¿COMPLETAR?)*
 
+### Imágenes de Productos (`/api/imgProductos`)
+
+*   **`GET /api/imgProductos`**: Lista todas las imágenes de productos.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Imagenes de productos cargados",
+          "objeto": [
+            {
+              "id": 1,
+              "idProducto": 101,
+              "url": "http://example.com/imagen1.jpg"
+            },
+            {
+              "id": 2,
+              "idProducto": 102,
+              "url": "http://example.com/imagen2.png"
+            }
+            // ... más imágenes
+          ]
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `No hay imagenes de productos registrados`
+*   **`GET /api/imgProductos/{id}`**: Obtiene una imagen de producto específica por su ID.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Imagen cargada",
+          "objeto": {
+            "id": 1,
+            "idProducto": 101,
+            "url": "http://example.com/imagen1.jpg"
+          }
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `No hay imagenes con el id: {id}`
+*   **`GET /api/imgProductos/producto/{id}`**: Obtiene todas las imágenes asociadas a un producto por el ID del producto.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Imagenes de producto {idProducto} cargadas",
+          "objeto": [
+            {
+              "id": 1,
+              "idProducto": 101,
+              "url": "http://example.com/imagen1.jpg"
+            },
+            {
+              "id": 3,
+              "idProducto": 101,
+              "url": "http://example.com/imagen3.gif"
+            }
+            // ... más imágenes para el producto
+          ]
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `No hay imagenes para el producto con id: {idProducto}`
+*   **`POST /api/imgProductos`**: Crea una nueva imagen de producto.
+    *   **Request Body:**
+        ```json
+        {
+          "idProducto": 103,
+          "url": "http://example.com/nueva_imagen.jpeg"
+        }
+        ```
+    *   **Respuesta Exitosa (201 Created):**
+        ```json
+        {
+          "mensaje": "Imagen de producto creada",
+          "objeto": {
+            "id": 4, // ID asignado automáticamente
+            "idProducto": 103,
+            "url": "http://example.com/nueva_imagen.jpeg"
+          }
+        }
+        ```
+*   **`PUT /api/imgProductos/{id}`**: Actualiza una imagen de producto existente por su ID.
+    *   **Request Body:**
+        ```json
+        {
+          "idProducto": 101, // Puede o no ser necesario actualizar el idProducto
+          "url": "http://example.com/imagen_actualizada.jpg"
+        }
+        ```
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Imagen de producto actualizada",
+          "objeto": {
+            "id": 1, // ID de la imagen actualizada
+            "idProducto": 101,
+            "url": "http://example.com/imagen_actualizada.jpg"
+          }
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `No hay imagenes de productos registradas`
+*   **`DELETE /api/imgProductos/{id}`**: Elimina una imagen de producto por su ID.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Imagen de producto eliminada",
+          "objeto": true
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `No hay imagenes de productos registradas`
+*   **`DELETE /api/imgProductos/producto/{id}`**: Elimina todas las imágenes asociadas a un producto por el ID del producto.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Imagenes de producto eliminadas",
+          "objeto": true
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):** `No hay imagenes de productos registradas para el producto con id: {idProducto}`
+
 ### Usuarios (`/api/usuarios`)
 
 *   **`GET /api/usuarios`**: Lista todos los usuarios.
