@@ -29,7 +29,7 @@ public class ClienteController {
                 try {
                     res.status(200);
                     // Listar todos los clientes
-                    return objectMapper.writeValueAsString(new Mensaje("Clientes listados correctamente", clienteService.listarClientes()));
+                    return objectMapper.writeValueAsString(new Mensaje("Clientes listados correctamente"));
                 } catch (Exception e) {
                     res.status(500);
                     return "Error al listar clientes: " + e.getMessage();
@@ -50,7 +50,7 @@ public class ClienteController {
                     }
                     res.status(200);
                     // Listar cliente por id
-                    return objectMapper.writeValueAsString(new Mensaje("Cliente listado correctamente",clienteService.listarClientePorId(id)));
+                    return objectMapper.writeValueAsString(new Mensaje("Cliente listado correctamente"));
                 } catch (Exception e) {
                     res.status(500);
                     return "Error al listar cliente: " + e.getMessage();
@@ -64,7 +64,7 @@ public class ClienteController {
                 
                 try {
                     Cliente cliente = objectMapper.readValue(req.body(), Cliente.class);
-                    return objectMapper.writeValueAsString(new Mensaje("Cliente creado correctamente", clienteService.crearCliente(cliente)));
+                    return objectMapper.writeValueAsString(new Mensaje("Cliente creado correctamente"));
                 } catch (Exception e) {
                     res.status(500);
                     return "Error al crear cliente: " + e.getMessage();
@@ -89,7 +89,7 @@ public class ClienteController {
                     // Actualizar cliente
                     Cliente cliente = objectMapper.readValue(req.body(), Cliente.class);
                     cliente.setIdCliente(id); // Asegurarse de que el ID del cliente sea el correcto
-                    return objectMapper.writeValueAsString(new Mensaje("Cliente actualizado correctamente", clienteService.actualizarCliente(cliente)));
+                    return objectMapper.writeValueAsString(new Mensaje("Cliente actualizado correctamente"));
                 } catch (Exception e) {
                     res.status(500);
                     return "Error al actualizar cliente: " + e.getMessage();
@@ -113,7 +113,7 @@ public class ClienteController {
                     res.status(200);
                     // Eliminar cliente por id
                     
-                    return objectMapper.writeValueAsString(new Mensaje("Cliente eliminado correctamente", clienteService.eliminarCliente(id)));
+                    return objectMapper.writeValueAsString(new Mensaje("Cliente eliminado correctamente"));
                 } catch (Exception e) {
                     res.status(500);
                     return "Error al eliminar cliente: " + e.getMessage();

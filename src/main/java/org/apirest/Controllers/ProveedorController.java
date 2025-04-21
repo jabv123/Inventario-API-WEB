@@ -2,7 +2,6 @@ package org.apirest.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -33,17 +32,17 @@ public class ProveedorController {
                 proveedor.setId(id);
                 proveedores.put(id, proveedor);
                 response.status(201); // Código de estado para "Creado"
-                return mapper.writeValueAsString(new Mensaje("Proveedor agregado", proveedor));
+                return mapper.writeValueAsString(new Mensaje("Proveedor agregado"));
             } catch (Exception e) {
                 response.status(400); // Código de estado para "Solicitud Incorrecta"
-                return mapper.writeValueAsString(new Mensaje("Error al crear proveedor", e.getMessage()));
+                return mapper.writeValueAsString(new Mensaje("Error al crear proveedor"));
             }
         });
 
         // Endpoint para obtener todos los proveedores
         get("/proveedores", (request, response) -> {
             response.type("application/json");
-            return mapper.writeValueAsString(new Mensaje("Lista de proveedores", new ArrayList<>(proveedores.values())));
+            return mapper.writeValueAsString(new Mensaje("Lista de proveedores"));
         });
 
         // Endpoint para obtener un proveedor por ID
@@ -54,14 +53,14 @@ public class ProveedorController {
                 long id = Long.parseLong(idStr);
                 Proveedor proveedor = proveedores.get(id);
                 if (proveedor != null) {
-                    return mapper.writeValueAsString(new Mensaje("Proveedor encontrado", proveedor));
+                    return mapper.writeValueAsString(new Mensaje("Proveedor encontrado"));
                 } else {
                     response.status(404); // Código de estado para "No Encontrado"
-                    return mapper.writeValueAsString(new Mensaje("Proveedor no encontrado", null));
+                    return mapper.writeValueAsString(new Mensaje("Proveedor no encontrado"));
                 }
             } catch (NumberFormatException e) {
                 response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de proveedor inválido", idStr));
+                return mapper.writeValueAsString(new Mensaje("ID de proveedor inválido"));
             }
         });
 
@@ -77,17 +76,17 @@ public class ProveedorController {
                     Proveedor proveedorActualizado = mapper.readValue(body, Proveedor.class);
                     proveedorActualizado.setId(id); // Aseguramos que el ID sea el correcto
                     proveedores.put(id, proveedorActualizado);
-                    return mapper.writeValueAsString(new Mensaje("Proveedor actualizado", proveedorActualizado));
+                    return mapper.writeValueAsString(new Mensaje("Proveedor actualizado"));
                 } else {
                     response.status(404);
-                    return mapper.writeValueAsString(new Mensaje("Proveedor no encontrado para actualizar", null));
+                    return mapper.writeValueAsString(new Mensaje("Proveedor no encontrado para actualizar"));
                 }
             } catch (NumberFormatException e) {
                 response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de proveedor inválido", idStr));
+                return mapper.writeValueAsString(new Mensaje("ID de proveedor inválido"));
             } catch (Exception e) {
                 response.status(400);
-                return mapper.writeValueAsString(new Mensaje("Error al actualizar proveedor", e.getMessage()));
+                return mapper.writeValueAsString(new Mensaje("Error al actualizar proveedor"));
             }
         });
 
@@ -103,11 +102,11 @@ public class ProveedorController {
                     return ""; // No se devuelve cuerpo en una eliminación exitosa con 204
                 } else {
                     response.status(404);
-                    return mapper.writeValueAsString(new Mensaje("Proveedor no encontrado para eliminar", null));
+                    return mapper.writeValueAsString(new Mensaje("Proveedor no encontrado para eliminar"));
                 }
             } catch (NumberFormatException e) {
                 response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de proveedor inválido", idStr));
+                return mapper.writeValueAsString(new Mensaje("ID de proveedor inválido"));
             }
         });
     }

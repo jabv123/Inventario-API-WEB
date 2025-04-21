@@ -1,5 +1,6 @@
 package org.apirest;
 
+import org.apirest.Controllers.CategoriaController;
 import org.apirest.Controllers.ClienteController;
 import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
@@ -21,7 +22,6 @@ public class Main {
         // Inicializar los controladores
         new ProveedorController();
         new ProductoController();
-
         new ClienteController(clienteService);
         
 

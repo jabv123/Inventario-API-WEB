@@ -5,7 +5,7 @@ public class Mensaje {
     private String mensaje;
     private Object data;
 
-    public Mensaje(String mensaje, Object data) {
+    public Mensaje(String mensaje) {
         this.mensaje = mensaje;
         this.data = data;
     }

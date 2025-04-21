@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apirest.modelo.Producto;
 import org.apirest.modelo.Mensaje;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -32,17 +31,17 @@ public class ProductoController {
                 producto.setId((int) id);
                 productos.put(id, producto);
                 response.status(201); // Código de estado para "Creado"
-                return mapper.writeValueAsString(new Mensaje("Producto agregado", producto));
+                return mapper.writeValueAsString(new Mensaje("Producto agregado"));
             } catch (Exception e) {
                 response.status(400); // Código de estado para "Solicitud Incorrecta"
-                return mapper.writeValueAsString(new Mensaje("Error al crear producto", e.getMessage()));
+                return mapper.writeValueAsString(new Mensaje("Error al crear producto"));
             }
         });
 
         // Endpoint para obtener todos los productos
         get("/productos", (request, response) -> {
             response.type("application/json");
-            return mapper.writeValueAsString(new Mensaje("Lista de productos", new ArrayList<>(productos.values())));
+            return mapper.writeValueAsString(new Mensaje("Lista de productos"));
         });
 
         // Endpoint para obtener un producto por ID
@@ -53,14 +52,14 @@ public class ProductoController {
                 long id = Long.parseLong(idStr);
                 Producto producto = productos.get(id);
                 if (producto != null) {
-                    return mapper.writeValueAsString(new Mensaje("Producto encontrado", producto));
+                    return mapper.writeValueAsString(new Mensaje("Producto encontrado"));
                 } else {
                     response.status(404); // Código de estado para "No Encontrado"
-                    return mapper.writeValueAsString(new Mensaje("Producto no encontrado", null));
+                    return mapper.writeValueAsString(new Mensaje("Producto no encontrado"));
                 }
             } catch (NumberFormatException e) {
                 response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de producto inválido", idStr));
+                return mapper.writeValueAsString(new Mensaje("ID de producto inválido"));
             }
         });
 
@@ -76,17 +75,17 @@ public class ProductoController {
                     Producto productoActualizado = mapper.readValue(body, Producto.class);
                     productoActualizado.setId((int) id); // Aseguramos que el ID sea el correcto
                     productos.put(id, productoActualizado);
-                    return mapper.writeValueAsString(new Mensaje("Producto actualizado", productoActualizado));
+                    return mapper.writeValueAsString(new Mensaje("Producto actualizado"));
                 } else {
                     response.status(404);
-                    return mapper.writeValueAsString(new Mensaje("Producto no encontrado para actualizar", null));
+                    return mapper.writeValueAsString(new Mensaje("Producto no encontrado para actualizar"));
                 }
             } catch (NumberFormatException e) {
                 response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de producto inválido", idStr));
+                return mapper.writeValueAsString(new Mensaje("ID de producto inválido"));
             } catch (Exception e) {
                 response.status(400);
-                return mapper.writeValueAsString(new Mensaje("Error al actualizar producto", e.getMessage()));
+                return mapper.writeValueAsString(new Mensaje("Error al actualizar producto"));
             }
         });
 
@@ -102,11 +101,11 @@ public class ProductoController {
                     return ""; // No se devuelve cuerpo en una eliminación exitosa con 204
                 } else {
                     response.status(404);
-                    return mapper.writeValueAsString(new Mensaje("Producto no encontrado para eliminar", null));
+                    return mapper.writeValueAsString(new Mensaje("Producto no encontrado para eliminar"));
                 }
             } catch (NumberFormatException e) {
                 response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de producto inválido", idStr));
+                return mapper.writeValueAsString(new Mensaje("ID de producto inválido"));
             }
         });
     }
