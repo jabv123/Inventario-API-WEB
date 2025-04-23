@@ -7,6 +7,10 @@ public class Mensaje {
 
     public Mensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    public Mensaje(String mensaje, Object data) {
+        this.mensaje = mensaje;
         this.data = data;
     }
 

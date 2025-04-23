@@ -174,6 +174,129 @@ La API expone los siguientes endpoints:
         }
         ```
 
+#### Categorías (`/categorias`)
+
+*   **`GET /categorias`**: Lista todas las categorías.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Lista de categorías", // Assuming consistency, though controller might return array directly
+          "objeto": [
+            {
+              "id": 1,
+              "nombre": "Electrónicos",
+              "descripcion": "Dispositivos y gadgets"
+            }
+            // ... más categorías
+          ]
+        }
+        ```
+     *   **Respuesta Error (500 Internal Server Error):**
+        ```json
+        {
+          "mensaje": "Error al obtener categorías"
+        }
+        ```
+*   **`GET /categorias/{id}`**: Obtiene una categoría específica por su ID.
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Categoría encontrada", // Assuming consistency
+          "objeto": {
+            "id": 1,
+            "nombre": "Electrónicos",
+            "descripcion": "Dispositivos y gadgets"
+          }
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):**
+        ```json
+        {
+          "mensaje": "Categoría no encontrada"
+        }
+        ```
+    *   **Respuesta Error (400 Bad Request):** (Si el ID es inválido)
+        ```json
+        {
+          "mensaje": "ID inválido"
+        }
+        ```
+*   **`POST /categorias`**: Crea una nueva categoría.
+    *   **Request Body:**
+        ```json
+        {
+          "nombre": "Ropa",
+          "descripcion": "Prendas de vestir"
+        }
+        ```
+    *   **Respuesta Exitosa (201 Created):**
+        ```json
+        {
+          "mensaje": "Categoría creada exitosamente",
+          "objeto": {
+             "id": 2 // ID asignado automáticamente
+          }
+        }
+        ```
+    *   **Respuesta Error (400 Bad Request):** (Si falta el nombre o hay error en el body)
+        ```json
+        {
+          "mensaje": "El nombre de la categoría es obligatorio" // o "Solicitud inválida: <detalle>"
+        }
+        ```
+*   **`PUT /categorias/{id}`**: Actualiza una categoría existente por su ID.
+    *   **Request Body:**
+        ```json
+        {
+          "nombre": "Ropa y Accesorios",
+          "descripcion": "Prendas de vestir y complementos"
+        }
+        ```
+    *   **Respuesta Exitosa (200 OK):**
+        ```json
+        {
+          "mensaje": "Categoría actualizada exitosamente"
+          // Objeto no se devuelve en la implementación actual
+        }
+        ```
+    *   **Respuesta Error (404 Not Found):**
+        ```json
+        {
+          "mensaje": "Categoría no encontrada"
+        }
+        ```
+    *   **Respuesta Error (400 Bad Request):** (Si el ID es inválido o hay error en el body)
+        ```json
+        {
+          "mensaje": "ID inválido" // o "Solicitud inválida: <detalle>"
+        }
+        ```
+*   **`DELETE /categorias/{id}`**: Elimina una categoría por su ID.
+    *   **Respuesta Exitosa (200 OK):**
+         ```json
+         {
+           "mensaje": "Categoría eliminada exitosamente"
+         }
+         ```
+    *   **Respuesta Error (404 Not Found):**
+        ```json
+        {
+          "mensaje": "Categoría no encontrada"
+        }
+        ```
+    *   **Respuesta Error (400 Bad Request):** (Si el ID es inválido)
+        ```json
+        {
+          "mensaje": "ID inválido"
+        }
+        ```
+    *   **Respuesta Error (500 Internal Server Error):**
+        ```json
+        {
+          "mensaje": "Error al eliminar categoría"
+        }
+        ```
+
 #### Proveedores (`/proveedores`)
 
 *   **`GET /proveedores`**: Lista todos los proveedores.

@@ -109,8 +109,4 @@ public class ProductoController {
             }
         });
     }
-
-    public static void main(String[] args) {
-        new ProductoController();
-    }
 }

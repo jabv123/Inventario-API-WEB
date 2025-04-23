@@ -1,5 +1,6 @@
 package org.apirest;
 
+import org.apirest.Controllers.CategoriaController;
 import org.apirest.Controllers.ClienteController;
 import org.apirest.Controllers.ImgProductoController;
 import org.apirest.Controllers.ProductoController;
@@ -34,7 +35,7 @@ public class Main {
         new ProveedorController();
 
         new ProductoController();
-      
+
         new CategoriaController();
 
         new ClienteController(clienteService);
