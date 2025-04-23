@@ -1,114 +1,139 @@
 package org.apirest.Controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.apirest.modelo.Mensaje;
 import org.apirest.modelo.Proveedor;
-
 import static spark.Spark.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
+
 public class ProveedorController {
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final Map<Long, Proveedor> proveedores = new ConcurrentHashMap<>();
-    private final AtomicLong nextId = new AtomicLong(1);
+
+    private static List<Proveedor> proveedores = new ArrayList<>();
+    private static int nextId = 1;
 
     public ProveedorController() {
-        definirRutas();
+        path("/proveedores", () -> {
+            get("", (req, res) -> obtenerTodosLosProveedores(req, res));
+            get("/:id", (req, res) -> obtenerProveedorPorId(req, res));
+            post("", (req, res) -> crearProveedor(req, res));
+            put("/:id", (req, res) -> actualizarProveedor(req, res));
+            delete("/:id", (req, res) -> eliminarProveedor(req, res));
+        });
     }
 
-    private void definirRutas() {
-        // Endpoint para crear un nuevo proveedor
-        // http:localhost:4567/proveedores
-        post("/proveedores", (request, response) -> {
-            response.type("application/json");
-            String body = request.body();
-            try {
-                Proveedor proveedor = mapper.readValue(body, Proveedor.class);
-                long id = nextId.getAndIncrement();
-                proveedor.setId(id);
-                proveedores.put(id, proveedor);
-                response.status(201); // Código de estado para "Creado"
-                return mapper.writeValueAsString(new Mensaje("Proveedor agregado", proveedor));
-            } catch (Exception e) {
-                response.status(400); // Código de estado para "Solicitud Incorrecta"
-                return mapper.writeValueAsString(new Mensaje("Error al crear proveedor", e.getMessage()));
+    private String obtenerTodosLosProveedores(spark.Request req, spark.Response res) {
+        res.type("application/json");
+        List<Map<String, Object>> proveedoresJson = new ArrayList<>();
+        for (Proveedor proveedor : proveedores) {
+            Map<String, Object> proveedorMap = new HashMap<>();
+            proveedorMap.put("id", proveedor.getId());
+            proveedorMap.put("nombre", proveedor.getNombre());
+            proveedorMap.put("contacto", proveedor.getContacto());
+            proveedorMap.put("telefono", proveedor.getTelefono());
+            proveedorMap.put("email", proveedor.getEmail());
+            proveedorMap.put("direccion", proveedor.getDireccion());
+            proveedoresJson.add(proveedorMap);
+        }
+        return new JSONArray(proveedoresJson).toString();
+    }
+
+    private String obtenerProveedorPorId(spark.Request req, spark.Response res) {
+        res.type("application/json");
+        int id = Integer.parseInt(req.params(":id"));
+        for (Proveedor proveedor : proveedores) {
+            if (proveedor.getId() == id) {
+                Map<String, Object> proveedorMap = new HashMap<>();
+                proveedorMap.put("id", proveedor.getId());
+                proveedorMap.put("nombre", proveedor.getNombre());
+                proveedorMap.put("contacto", proveedor.getContacto());
+                proveedorMap.put("telefono", proveedor.getTelefono());
+                proveedorMap.put("email", proveedor.getEmail());
+                proveedorMap.put("direccion", proveedor.getDireccion());
+                return new JSONObject(proveedorMap).toString();
             }
-        });
+        }
+        res.status(404);
+        return new JSONObject(Map.of("mensaje", "Proveedor no encontrado")).toString();
+    }
 
-        // Endpoint para obtener todos los proveedores
-        get("/proveedores", (request, response) -> {
-            response.type("application/json");
-            return mapper.writeValueAsString(new Mensaje("Lista de proveedores", new ArrayList<>(proveedores.values())));
-        });
+    private String crearProveedor(spark.Request req, spark.Response res) {
+        res.type("application/json");
+        try {
+            JSONObject jsonObject = new JSONObject(req.body());
+            String nombre = jsonObject.getString("nombre");
+            String contacto = jsonObject.getString("contacto");
+            String telefono = jsonObject.getString("telefono");
+            String email = jsonObject.getString("email");
+            String direccion = jsonObject.getString("direccion");
 
-        // Endpoint para obtener un proveedor por ID
-        get("/proveedores/:id", (request, response) -> {
-            response.type("application/json");
-            String idStr = request.params(":id");
-            try {
-                long id = Long.parseLong(idStr);
-                Proveedor proveedor = proveedores.get(id);
-                if (proveedor != null) {
-                    return mapper.writeValueAsString(new Mensaje("Proveedor encontrado", proveedor));
-                } else {
-                    response.status(404); // Código de estado para "No Encontrado"
-                    return mapper.writeValueAsString(new Mensaje("Proveedor no encontrado", null));
+            Proveedor nuevoProveedor = new Proveedor(nombre, contacto, telefono, email, direccion);
+            nuevoProveedor.setId((long) nextId++);
+            proveedores.add(nuevoProveedor);
+            res.status(201);
+            Map<String, Object> respuesta = new HashMap<>();
+            respuesta.put("mensaje", "Proveedor creado exitosamente");
+            respuesta.put("id", nuevoProveedor.getId());
+            return new JSONObject(respuesta).toString();
+
+        } catch (Exception e) {
+            res.status(400);
+            return new JSONObject(Map.of("mensaje", "Solicitud inválida")).toString();
+        }
+    }
+
+    private String actualizarProveedor(spark.Request req, spark.Response res) {
+        res.type("application/json");
+        int id = Integer.parseInt(req.params(":id"));
+        try {
+            JSONObject jsonObject = new JSONObject(req.body());
+            String nombre = jsonObject.optString("nombre");
+            String contacto = jsonObject.optString("contacto");
+            String telefono = jsonObject.optString("telefono");
+            String email = jsonObject.optString("email");
+            String direccion = jsonObject.optString("direccion");
+
+            for (Proveedor proveedor : proveedores) {
+                if (proveedor.getId() == id) {
+                    if (nombre != null && !nombre.isEmpty()) {
+                        proveedor.setNombre(nombre);
+                    }
+                    if (contacto != null && !contacto.isEmpty()) {
+                        proveedor.setContacto(contacto);
+                    }
+                    if (telefono != null && !telefono.isEmpty()) {
+                        proveedor.setTelefono(telefono);
+                    }
+                    if (email != null && !email.isEmpty()) {
+                        proveedor.setEmail(email);
+                    }
+                    if (direccion != null && !direccion.isEmpty()) {
+                        proveedor.setDireccion(direccion);
+                    }
+                    return new JSONObject(Map.of("mensaje", "Proveedor actualizado exitosamente")).toString();
                 }
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de proveedor inválido", idStr));
             }
-        });
+            res.status(404);
+            return new JSONObject(Map.of("mensaje", "Proveedor no encontrado")).toString();
 
-        // Endpoint para actualizar un proveedor
-        put("/proveedores/:id", (request, response) -> {
-            response.type("application/json");
-            String idStr = request.params(":id");
-            String body = request.body();
-            try {
-                long id = Long.parseLong(idStr);
-                Proveedor proveedorExistente = proveedores.get(id);
-                if (proveedorExistente != null) {
-                    Proveedor proveedorActualizado = mapper.readValue(body, Proveedor.class);
-                    proveedorActualizado.setId(id); // Aseguramos que el ID sea el correcto
-                    proveedores.put(id, proveedorActualizado);
-                    return mapper.writeValueAsString(new Mensaje("Proveedor actualizado", proveedorActualizado));
-                } else {
-                    response.status(404);
-                    return mapper.writeValueAsString(new Mensaje("Proveedor no encontrado para actualizar", null));
-                }
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de proveedor inválido", idStr));
-            } catch (Exception e) {
-                response.status(400);
-                return mapper.writeValueAsString(new Mensaje("Error al actualizar proveedor", e.getMessage()));
-            }
-        });
+        } catch (Exception e) {
+            res.status(400);
+            return new JSONObject(Map.of("mensaje", "Solicitud inválida")).toString();
+        }
+    }
 
-        // Endpoint para eliminar un proveedor
-        delete("/proveedores/:id", (request, response) -> {
-            response.type("application/json");
-            String idStr = request.params(":id");
-            try {
-                long id = Long.parseLong(idStr);
-                if (proveedores.containsKey(id)) {
-                    proveedores.remove(id);
-                    response.status(204); // Código de estado para "Sin Contenido" (eliminación exitosa)
-                    return ""; // No se devuelve cuerpo en una eliminación exitosa con 204
-                } else {
-                    response.status(404);
-                    return mapper.writeValueAsString(new Mensaje("Proveedor no encontrado para eliminar", null));
-                }
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de proveedor inválido", idStr));
-            }
-        });
+    private String eliminarProveedor(spark.Request req, spark.Response res) {
+        res.type("application/json");
+        int id = Integer.parseInt(req.params(":id"));
+        proveedores.removeIf(proveedor -> proveedor.getId() == id);
+        return new JSONObject(Map.of("mensaje", "Proveedor eliminado exitosamente")).toString();
+    }
+
+    public static void main(String[] args) {
+        new ProveedorController();
     }
 }

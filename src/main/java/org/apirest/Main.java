@@ -16,7 +16,6 @@ import static spark.Spark.*;
 
 public class Main {
     public static void main(String[] args) {
-
         //Dependencias
         ClienteRepo clienteRepository = new ClienteRepo();
         ClienteService clienteService = new ClienteService(clienteRepository);
@@ -27,13 +26,16 @@ public class Main {
         ImgProductoRepo imgProductoRepository = new ImgProductoRepo();
         ImgProductoService imgProductoService = new ImgProductoService(imgProductoRepository);
 
+
         // Configuración del servidor Spark
         port(8080);
 
-        // Inicializar los controladores
+        // Inicializar los controladores y definir las rutas
         new ProveedorController();
 
         new ProductoController();
+      
+        new CategoriaController();
 
         new ClienteController(clienteService);
 

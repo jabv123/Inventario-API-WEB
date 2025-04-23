@@ -112,7 +112,6 @@ public class ClienteController {
 
                     res.status(200);
                     // Eliminar cliente por id
-                    
                     return objectMapper.writeValueAsString(new Mensaje("Cliente eliminado correctamente", clienteService.eliminarCliente(id)));
                 } catch (Exception e) {
                     res.status(500);
