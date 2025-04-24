@@ -11,25 +11,98 @@ Asegúrate de tener instalado lo siguiente:
 
 ## Instalación
 
-1.  Clona este repositorio o descarga el código fuente:
+1.  **Clona el repositorio:** Abre tu terminal o Git Bash y ejecuta:
     ```bash
     git clone <URL_DEL_REPOSITORIO>
+    ```
+    (Reemplaza `<URL_DEL_REPOSITORIO>` con la URL real del repositorio Git).
+2.  **Navega al directorio del proyecto:**
+    ```bash
     cd Inventario-API-WEB
     ```
+3.  **Compila el proyecto con Maven:** Esto descargará las dependencias necesarias y construirá el proyecto.
+    ```bash
+    mvn clean install
+    ```
+    Este comando compila el código y empaqueta la aplicación en un archivo JAR dentro del directorio `target/`.
 
 ## Ejecución del Proyecto
 
-1.  Abre una terminal en el directorio raíz del proyecto (`Inventario-API-WEB`).
-2.  Compila el proyecto usando Maven:
+Hay varias formas de ejecutar la aplicación:
+
+**Opción 1: Ejecutar el JAR "Fat" con dependencias (Recomendado)**
+
+1.  Asegúrate de haber compilado y empaquetado el proyecto con el perfil que incluye dependencias. Ejecuta:
     ```bash
     mvn clean package
     ```
-    Esto generará un archivo JAR ejecutable en el directorio `target/`.
-3.  Ejecuta la aplicación:
+    Esto creará un archivo JAR en el directorio `target/` con un nombre similar a `Inventario-API-WEB-1.0-SNAPSHOT-jar-with-dependencies.jar`.
+2.  Ejecuta el archivo JAR generado (asegúrate de usar el nombre exacto):
     ```bash
-    java -jar target/Inventario-API-WEB-1.0-SNAPSHOT.jar
+    java -jar target/Inventario-API-WEB-1.0-SNAPSHOT-jar-with-dependencies.jar
     ```
-    El servidor se iniciará y escuchará en el puerto `8080`. Verás un mensaje en la consola indicando que el servidor está listo: `Servidor Spark iniciado y escuchando en el puerto 8080`.
+    Este método es el más fiable ya que el JAR contiene todo lo necesario para ejecutar la aplicación.
+
+**Opción 2: Ejecutar directamente con Maven (Útil para desarrollo, puede dar problemas)**
+
+1.  Desde el directorio raíz del proyecto (`Inventario-API-WEB`), ejecuta:
+    ```bash
+    mvn exec:java -Dexec.mainClass="org.apirest.Main"
+    ```
+    Este comando intenta compilar (si es necesario) y ejecutar la clase principal directamente usando Maven.
+    *Nota: Se han reportado problemas con este comando en algunos entornos (como PowerShell), resultando en errores como `Unknown lifecycle phase`. Si encuentras este problema, utiliza la Opción 1.*
+
+**Opción 3: Ejecutar desde un IDE (Visual Studio Code, IntelliJ IDEA, etc.)(Recomendado)**
+
+La mayoría de los Entornos de Desarrollo Integrado (IDEs) modernos para Java tienen integración con Maven y permiten ejecutar la aplicación fácilmente y de muchas formas. Aquí hay un ejemplo de cómo hacerlo en IntelliJ IDEA y Visual Studio Code:
+
+1.  Asegúrate de que el proyecto Maven se haya importado correctamente en tu IDE.
+2.  Navega hasta la clase principal: `src/main/java/org/apirest/Main.java`.
+3.  Busca la clase `Main`.
+4.  Haz clic derecho sobre el método `Main` o busca un icono de "play" (▶️) junto a la declaración del método o la clase. En Visual Studio Code y sus variantes aparece un icono de "play" en la parte superior izquierda del editor.
+    *   En IntelliJ IDEA, puedes hacer clic derecho en el archivo `Main.java` y seleccionar "Run 'Main.main()'".
+    *   En Visual Studio Code, puedes hacer clic derecho en el archivo `Main.java` y seleccionar "Run Java".
+5.  Selecciona la opción "Run 'Main.main()'" o similar.
+
+El IDE se encargará de compilar el código (si es necesario) y ejecutar la aplicación, utilizando las dependencias definidas en el `pom.xml`.
+
+Independientemente de la opción que elijas y funcione, el servidor Spark se iniciará y comenzará a escuchar en el puerto `8080` (o el puerto configurado). Verás un mensaje en la consola similar a: `Servidor Spark iniciado y escuchando en el puerto 8080`.
+
+## Pruebas con Postman
+
+Puedes usar Postman para probar los endpoints de la API. También puedes unirte a nuestro workspace de Postman para tener acceso a una colección preconfigurada:
+
+*   **Únete al Workspace de Postman:** [Enlace de Invitación](https://app.getpostman.com/join-team?invite_code=27761a4d74998519608ce0a722f7bff5ee0936cdf51ab64921f9e215d47ba0c6&target_code=ded9bd18a3ed59b49d5d4e94c2d79eea)
+
+Si prefieres configurar las solicitudes manualmente:
+
+1.  **Inicia la aplicación** como se describe en la sección "Ejecución del Proyecto".
+2.  Abre Postman.
+3.  Crea una nueva solicitud:
+    *   **Método:** Selecciona el método HTTP correspondiente (GET, POST, PUT, DELETE).
+    *   **URL:** Ingresa la URL completa del endpoint, por ejemplo: `http://localhost:8080/productos` o `http://localhost:8080/proveedores/1`.
+    *   **Headers (para POST y PUT):** Asegúrate de que el header `Content-Type` esté configurado como `application/json`.
+    *   **Body (para POST y PUT):** Selecciona la pestaña `Body`, elige `raw` y selecciona `JSON` en el menú desplegable. Pega el cuerpo JSON de la solicitud como se muestra en los ejemplos de los endpoints.
+4.  Haz clic en **Send**.
+5.  Observa la respuesta recibida en la parte inferior (Status Code, Body, Headers).
+
+**Ejemplo de solicitud POST para crear un cliente en Postman:**
+
+*   **Método:** `POST`
+*   **URL:** `http://localhost:8080/api/clientes`
+*   **Headers:** `Content-Type: application/json`
+*   **Body (raw, JSON):**
+    ```json
+    {
+      "nombre": "Cliente Postman",
+      "apellido": "Prueba",
+      "direccion": "Calle Postman 1",
+      "telefono": "9876543210",
+      "email": "postman@example.com"
+    }
+    ```
+
+Repite estos pasos para probar los diferentes métodos y endpoints de la API.
 
 ## API Endpoints
 
@@ -696,39 +769,3 @@ La API expone los siguientes endpoints:
         }
         ```
     *   **Respuesta Error (404 Not Found):** `Usuario no encontrado`
-
-## Pruebas con Postman
-
-Puedes usar Postman para probar los endpoints de la API. También puedes unirte a nuestro workspace de Postman para tener acceso a una colección preconfigurada:
-
-*   **Únete al Workspace de Postman:** [Enlace de Invitación](https://app.getpostman.com/join-team?invite_code=27761a4d74998519608ce0a722f7bff5ee0936cdf51ab64921f9e215d47ba0c6&target_code=ded9bd18a3ed59b49d5d4e94c2d79eea)
-
-Si prefieres configurar las solicitudes manualmente:
-
-1.  **Inicia la aplicación** como se describe en la sección "Ejecución del Proyecto".
-2.  Abre Postman.
-3.  Crea una nueva solicitud:
-    *   **Método:** Selecciona el método HTTP correspondiente (GET, POST, PUT, DELETE).
-    *   **URL:** Ingresa la URL completa del endpoint, por ejemplo: `http://localhost:8080/productos` o `http://localhost:8080/proveedores/1`.
-    *   **Headers (para POST y PUT):** Asegúrate de que el header `Content-Type` esté configurado como `application/json`.
-    *   **Body (para POST y PUT):** Selecciona la pestaña `Body`, elige `raw` y selecciona `JSON` en el menú desplegable. Pega el cuerpo JSON de la solicitud como se muestra en los ejemplos de los endpoints.
-4.  Haz clic en **Send**.
-5.  Observa la respuesta recibida en la parte inferior (Status Code, Body, Headers).
-
-**Ejemplo de solicitud POST para crear un cliente en Postman:**
-
-*   **Método:** `POST`
-*   **URL:** `http://localhost:8080/api/clientes`
-*   **Headers:** `Content-Type: application/json`
-*   **Body (raw, JSON):**
-    ```json
-    {
-      "nombre": "Cliente Postman",
-      "apellido": "Prueba",
-      "direccion": "Calle Postman 1",
-      "telefono": "9876543210",
-      "email": "postman@example.com"
-    }
-    ```
-
-Repite estos pasos para probar los diferentes métodos y endpoints de la API.
