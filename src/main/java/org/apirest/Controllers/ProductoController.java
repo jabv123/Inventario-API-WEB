@@ -31,7 +31,7 @@ public class ProductoController {
                 producto.setId((int) id);
                 productos.put(id, producto);
                 response.status(201); // Código de estado para "Creado"
-                return mapper.writeValueAsString(new Mensaje("Producto agregado"));
+                return mapper.writeValueAsString(new Mensaje("Producto agregado", producto));   
             } catch (Exception e) {
                 response.status(400); // Código de estado para "Solicitud Incorrecta"
                 return mapper.writeValueAsString(new Mensaje("Error al crear producto"));
@@ -41,7 +41,7 @@ public class ProductoController {
         // Endpoint para obtener todos los productos
         get("/productos", (request, response) -> {
             response.type("application/json");
-            return mapper.writeValueAsString(new Mensaje("Lista de productos"));
+            return mapper.writeValueAsString(new Mensaje("Lista de productos", productos.values()));
         });
 
         // Endpoint para obtener un producto por ID
@@ -52,7 +52,7 @@ public class ProductoController {
                 long id = Long.parseLong(idStr);
                 Producto producto = productos.get(id);
                 if (producto != null) {
-                    return mapper.writeValueAsString(new Mensaje("Producto encontrado"));
+                    return mapper.writeValueAsString(new Mensaje("Producto encontrado", producto));
                 } else {
                     response.status(404); // Código de estado para "No Encontrado"
                     return mapper.writeValueAsString(new Mensaje("Producto no encontrado"));
@@ -75,7 +75,7 @@ public class ProductoController {
                     Producto productoActualizado = mapper.readValue(body, Producto.class);
                     productoActualizado.setId((int) id); // Aseguramos que el ID sea el correcto
                     productos.put(id, productoActualizado);
-                    return mapper.writeValueAsString(new Mensaje("Producto actualizado"));
+                    return mapper.writeValueAsString(new Mensaje("Producto actualizado", productoActualizado));
                 } else {
                     response.status(404);
                     return mapper.writeValueAsString(new Mensaje("Producto no encontrado para actualizar"));
