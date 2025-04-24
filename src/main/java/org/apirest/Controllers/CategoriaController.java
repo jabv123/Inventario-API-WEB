@@ -6,7 +6,8 @@ import static spark.Spark.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map; // Importar Map
+import java.util.Map;
+import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper; // Importar ObjectMapper
 
@@ -30,12 +31,22 @@ public class CategoriaController {
     private String obtenerTodasLasCategorias(spark.Request req, spark.Response res) {
         res.type("application/json");
         try {
-            // Serializar directamente la lista de categorías
-            return objectMapper.writeValueAsString(categorias);
+            List<Map<String, Object>> categoriasJson = new ArrayList<>();
+            for (Categoria categoria : categorias) {
+                Map<String, Object> categoriaMap = new HashMap<>();
+                categoriaMap.put("id", categoria.getId());
+                categoriaMap.put("nombre", categoria.getNombre());
+                categoriaMap.put("descripcion", categoria.getDescripcion());
+                categoriasJson.add(categoriaMap);
+            }
+            return objectMapper.writeValueAsString(new Mensaje("Categorías obtenidas exitosamente", categoriasJson));
         } catch (Exception e) {
             res.status(500);
-            // Usar Mensaje para el error
-            return writeValueAsString(new Mensaje("Error al obtener categorías"));
+            try {
+                return objectMapper.writeValueAsString(new Mensaje("Error interno del servidor"));
+            } catch (Exception ex) {
+                return "Error interno del servidor";
+            }
         }
     }
 
@@ -45,44 +56,51 @@ public class CategoriaController {
             int id = Integer.parseInt(req.params(":id"));
             for (Categoria categoria : categorias) {
                 if (categoria.getId() == id) {
-                    // Serializar el objeto Categoria encontrado
-                    return objectMapper.writeValueAsString(categoria);
+                    Map<String, Object> categoriaMap = new HashMap<>();
+                    categoriaMap.put("id", categoria.getId());
+                    categoriaMap.put("nombre", categoria.getNombre());
+                    categoriaMap.put("descripcion", categoria.getDescripcion());
+                    return objectMapper.writeValueAsString(new Mensaje("Categoría obtenida exitosamente", categoriaMap));
                 }
             }
             res.status(404);
-            // Usar Mensaje para categoría no encontrada
-            return writeValueAsString(new Mensaje("Categoría no encontrada"));
-        } catch (NumberFormatException e) {
-            res.status(400);
-            return writeValueAsString(new Mensaje("ID inválido"));
+            return objectMapper.writeValueAsString(new Mensaje("Categoría no encontrada"));
         } catch (Exception e) {
-            res.status(500);
-            return writeValueAsString(new Mensaje("Error al obtener categoría"));
+            res.status(400);
+            try {
+                return objectMapper.writeValueAsString(new Mensaje("Solicitud inválida"));
+            } catch (Exception ex) {
+                return "Solicitud inválida";
+            }
         }
     }
 
     private String crearCategoria(spark.Request req, spark.Response res) {
         res.type("application/json");
         try {
-            // Deserializar el cuerpo de la solicitud a un objeto Categoria
-            Categoria nuevaCategoria = objectMapper.readValue(req.body(), Categoria.class);
+            Map<String, Object> requestMap = objectMapper.readValue(req.body(), Map.class);
+            String nombre = (String) requestMap.get("nombre");
+            String descripcion = (String) requestMap.get("descripcion");
 
-            // Validar si los campos necesarios están presentes (opcional, depende de la lógica de negocio)
-            if (nuevaCategoria.getNombre() == null || nuevaCategoria.getNombre().isEmpty()) {
-                 res.status(400);
-                 return writeValueAsString(new Mensaje("El nombre de la categoría es obligatorio"));
-            }
-
+            Categoria nuevaCategoria = new Categoria(nombre, descripcion);
             nuevaCategoria.setId(nextId++);
             categorias.add(nuevaCategoria);
             res.status(201);
-            // Usar Mensaje para la respuesta de éxito, incluyendo el ID
-            return writeValueAsString(new Mensaje("Categoría creada exitosamente", Map.of("id", nuevaCategoria.getId())));
+            
+            Map<String, Object> categoriaMap = new HashMap<>();
+            categoriaMap.put("id", nuevaCategoria.getId());
+            categoriaMap.put("nombre", nuevaCategoria.getNombre());
+            categoriaMap.put("descripcion", nuevaCategoria.getDescripcion());
+            
+            return objectMapper.writeValueAsString(new Mensaje("Categoría creada exitosamente", categoriaMap));
 
         } catch (Exception e) {
             res.status(400);
-            // Usar Mensaje para solicitud inválida
-            return writeValueAsString(new Mensaje("Solicitud inválida: " + e.getMessage()));
+            try {
+                return objectMapper.writeValueAsString(new Mensaje("Solicitud inválida"));
+            } catch (Exception ex) {
+                return "Solicitud inválida";
+            }
         }
     }
 
@@ -90,33 +108,36 @@ public class CategoriaController {
         res.type("application/json");
         try {
             int id = Integer.parseInt(req.params(":id"));
-            // Deserializar el cuerpo de la solicitud a un objeto Categoria temporal
-            Categoria datosActualizacion = objectMapper.readValue(req.body(), Categoria.class);
+            Map<String, Object> requestMap = objectMapper.readValue(req.body(), Map.class);
+            String nombre = (String) requestMap.get("nombre");
+            String descripcion = (String) requestMap.get("descripcion");
 
             for (Categoria categoria : categorias) {
                 if (categoria.getId() == id) {
-                    // Actualizar campos si se proporcionan en la solicitud
-                    if (datosActualizacion.getNombre() != null && !datosActualizacion.getNombre().isEmpty()) {
-                        categoria.setNombre(datosActualizacion.getNombre());
+                    if (nombre != null && !nombre.isEmpty()) {
+                        categoria.setNombre(nombre);
                     }
-                    if (datosActualizacion.getDescripcion() != null) { // Permitir descripción vacía si se desea
-                        categoria.setDescripcion(datosActualizacion.getDescripcion());
+                    if (descripcion != null && !descripcion.isEmpty()) {
+                        categoria.setDescripcion(descripcion);
                     }
-                    // Usar Mensaje para la respuesta de éxito
-                    return writeValueAsString(new Mensaje("Categoría actualizada exitosamente"));
+                    Map<String, Object> categoriaMap = new HashMap<>();
+                    categoriaMap.put("id", categoria.getId());
+                    categoriaMap.put("nombre", categoria.getNombre());
+                    categoriaMap.put("descripcion", categoria.getDescripcion());
+                    
+                    return objectMapper.writeValueAsString(new Mensaje("Categoría actualizada exitosamente", categoriaMap));
                 }
             }
             res.status(404);
-            // Usar Mensaje para categoría no encontrada
-            return writeValueAsString(new Mensaje("Categoría no encontrada"));
+            return objectMapper.writeValueAsString(new Mensaje("Categoría no encontrada"));
 
-        } catch (NumberFormatException e) {
-            res.status(400);
-            return writeValueAsString(new Mensaje("ID inválido"));
         } catch (Exception e) {
             res.status(400);
-            // Usar Mensaje para solicitud inválida
-            return writeValueAsString(new Mensaje("Solicitud inválida: " + e.getMessage()));
+            try {
+                return objectMapper.writeValueAsString(new Mensaje("Solicitud inválida"));
+            } catch (Exception ex) {
+                return "Solicitud inválida";
+            }
         }
     }
 
@@ -124,35 +145,19 @@ public class CategoriaController {
         res.type("application/json");
         try {
             int id = Integer.parseInt(req.params(":id"));
-            boolean removed = categorias.removeIf(categoria -> categoria.getId() == id);
-            if (removed) {
-                // Usar Mensaje para la respuesta de éxito
-                return writeValueAsString(new Mensaje("Categoría eliminada exitosamente"));
+            boolean eliminado = categorias.removeIf(categoria -> categoria.getId() == id);
+            if (eliminado) {
+                return objectMapper.writeValueAsString(new Mensaje("Categoría eliminada exitosamente"));
             } else {
                 res.status(404);
-                return writeValueAsString(new Mensaje("Categoría no encontrada"));
+                return objectMapper.writeValueAsString(new Mensaje("Categoría no encontrada"));
             }
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             res.status(400);
-            return writeValueAsString(new Mensaje("ID inválido"));
-        } catch (Exception e) {
-             res.status(500);
-             return writeValueAsString(new Mensaje("Error al eliminar categoría"));
-        }
-    }
-
-    // Método auxiliar para manejar la serialización y excepciones
-    private String writeValueAsString(Object value) {
-        try {
-            return objectMapper.writeValueAsString(value);
-        } catch (Exception e) {
-            // Loggear el error sería una buena práctica aquí
-            // Crear un objeto Mensaje para el error y serializarlo
             try {
-                return objectMapper.writeValueAsString(new Mensaje("Error interno al serializar la respuesta"));
-            } catch (Exception innerEx) {
-                // Fallback muy básico si incluso la serialización del mensaje de error falla
-                return "{\"error\":\"Error interno grave\"}";
+                return objectMapper.writeValueAsString(new Mensaje("Solicitud inválida"));
+            } catch (Exception ex) {
+                return "Solicitud inválida";
             }
         }
     }
