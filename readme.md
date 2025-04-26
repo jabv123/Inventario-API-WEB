@@ -2,6 +2,10 @@
 
 API REST simple para gestionar un inventario básico, incluyendo Clientes, Productos y Proveedores. Construido con Java y el framework Spark.
 
+## Autores
+*   [Neider Guindigua](https://github.com/Neid-09) 
+*   [Andres Botina](https://github.com/jabv123) 
+
 ## Prerrequisitos
 
 Asegúrate de tener instalado lo siguiente:
@@ -25,6 +29,8 @@ Asegúrate de tener instalado lo siguiente:
     mvn clean install
     ```
     Este comando compila el código y empaqueta la aplicación en un archivo JAR dentro del directorio `target/`.
+
+O simplemente puedes clonar/ abrir el proyecto en tu IDE favorito (como IntelliJ IDEA o Visual Studio Code) y dejar que el IDE maneje la descarga de dependencias y la construcción del proyecto.    
 
 ## Ejecución del Proyecto
 
