@@ -1,5 +1,6 @@
 package org.apirest.repository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -8,7 +9,7 @@ import org.apirest.modelo.Cliente;
 
 public class ClienteRepo {
 
-    private final List<Cliente> clientes = Collections.synchronizedList(new java.util.ArrayList<>());
+    private final List<Cliente> clientes = Collections.synchronizedList(new ArrayList<>());
     private final AtomicInteger id = new AtomicInteger(1);
 
     //Listar todos los clientes
