@@ -1,6 +1,7 @@
 package org.apirest.Controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.javalin.http.Context;
+import io.javalin.http.BadRequestResponse;
 import org.apirest.modelo.Producto;
 import org.apirest.modelo.Mensaje;
 
@@ -8,105 +9,100 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static spark.Spark.*;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class ProductoController {
-    private final ObjectMapper mapper = new ObjectMapper();
     private final Map<Long, Producto> productos = new ConcurrentHashMap<>();
     private final AtomicLong nextId = new AtomicLong(1);
 
     public ProductoController() {
-        definirRutas();
     }
 
-    private void definirRutas() {
-        // Endpoint para crear un nuevo producto
-        // http:localhost:4567/productos
-        post("/productos", (request, response) -> {
-            response.type("application/json");
-            String body = request.body();
-            try {
-                Producto producto = mapper.readValue(body, Producto.class);
-                long id = nextId.getAndIncrement();
-                producto.setId((int) id);
-                productos.put(id, producto);
-                response.status(201); // Código de estado para "Creado"
-                return mapper.writeValueAsString(new Mensaje("Producto agregado", producto));   
-            } catch (Exception e) {
-                response.status(400); // Código de estado para "Solicitud Incorrecta"
-                return mapper.writeValueAsString(new Mensaje("Error al crear producto"));
-            }
+    public void rutasProductos() {
+        path("/productos", () -> {
+            post(this::crearProducto);
+            get(this::obtenerTodosLosProductos);
+            path("{id}", () -> {
+                get(this::obtenerProductoPorId);
+                put(this::actualizarProducto);
+                delete(this::eliminarProducto);
+            });
         });
+    }
 
-        // Endpoint para obtener todos los productos
-        get("/productos", (request, response) -> {
-            response.type("application/json");
-            return mapper.writeValueAsString(new Mensaje("Lista de productos", productos.values()));
-        });
+    private void crearProducto(Context ctx) {
+        try {
+            Producto producto = ctx.bodyAsClass(Producto.class);
+            long id = nextId.getAndIncrement();
+            producto.setId((int) id);
+            productos.put(id, producto);
+            ctx.status(201).json(new Mensaje("Producto agregado", producto));
+        } catch (BadRequestResponse e) {
+            ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
+        } catch (Exception e) {
+            ctx.status(400).json(new Mensaje("Error al crear producto: " + e.getMessage(), null));
+        }
+    }
 
-        // Endpoint para obtener un producto por ID
-        get("/productos/:id", (request, response) -> {
-            response.type("application/json");
-            String idStr = request.params(":id");
-            try {
-                long id = Long.parseLong(idStr);
-                Producto producto = productos.get(id);
-                if (producto != null) {
-                    return mapper.writeValueAsString(new Mensaje("Producto encontrado", producto));
-                } else {
-                    response.status(404); // Código de estado para "No Encontrado"
-                    return mapper.writeValueAsString(new Mensaje("Producto no encontrado"));
-                }
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de producto inválido"));
-            }
-        });
+    private void obtenerTodosLosProductos(Context ctx) {
+        if (productos.isEmpty()){
+            ctx.status(404).json(new Mensaje("No hay productos registrados", null));
+        } else {
+            ctx.status(200).json(new Mensaje("Lista de productos", productos.values()));
+        }
+    }
 
-        // Endpoint para actualizar un producto
-        put("/productos/:id", (request, response) -> {
-            response.type("application/json");
-            String idStr = request.params(":id");
-            String body = request.body();
-            try {
-                long id = Long.parseLong(idStr);
-                Producto productoExistente = productos.get(id);
-                if (productoExistente != null) {
-                    Producto productoActualizado = mapper.readValue(body, Producto.class);
-                    productoActualizado.setId((int) id); // Aseguramos que el ID sea el correcto
-                    productos.put(id, productoActualizado);
-                    return mapper.writeValueAsString(new Mensaje("Producto actualizado", productoActualizado));
-                } else {
-                    response.status(404);
-                    return mapper.writeValueAsString(new Mensaje("Producto no encontrado para actualizar"));
-                }
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de producto inválido"));
-            } catch (Exception e) {
-                response.status(400);
-                return mapper.writeValueAsString(new Mensaje("Error al actualizar producto"));
+    private void obtenerProductoPorId(Context ctx) {
+        try {
+            long id = Long.parseLong(ctx.pathParam("id"));
+            Producto producto = productos.get(id);
+            if (producto != null) {
+                ctx.status(200).json(new Mensaje("Producto encontrado", producto));
+            } else {
+                ctx.status(404).json(new Mensaje("Producto no encontrado con ID: " + id, null));
             }
-        });
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID de producto inválido: " + ctx.pathParam("id"), null));
+        } catch (Exception e) {
+            ctx.status(500).json(new Mensaje("Error al obtener producto: " + e.getMessage(), null));
+        }
+    }
 
-        // Endpoint para eliminar un producto
-        delete("/productos/:id", (request, response) -> {
-            response.type("application/json");
-            String idStr = request.params(":id");
-            try {
-                long id = Long.parseLong(idStr);
-                if (productos.containsKey(id)) {
-                    productos.remove(id);
-                    response.status(204); // Código de estado para "Sin Contenido" (eliminación exitosa)
-                    return ""; // No se devuelve cuerpo en una eliminación exitosa con 204
-                } else {
-                    response.status(404);
-                    return mapper.writeValueAsString(new Mensaje("Producto no encontrado para eliminar"));
-                }
-            } catch (NumberFormatException e) {
-                response.status(400);
-                return mapper.writeValueAsString(new Mensaje("ID de producto inválido"));
+    private void actualizarProducto(Context ctx) {
+        try {
+            long id = Long.parseLong(ctx.pathParam("id"));
+            Producto productoActualizado = ctx.bodyAsClass(Producto.class);
+            Producto productoExistente = productos.get(id);
+
+            if (productoExistente != null) {
+                productoActualizado.setId((int) id);
+                productos.put(id, productoActualizado);
+                ctx.status(200).json(new Mensaje("Producto actualizado", productoActualizado));
+            } else {
+                ctx.status(404).json(new Mensaje("Producto no encontrado con ID: " + id + " para actualizar", null));
             }
-        });
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID de producto inválido: " + ctx.pathParam("id"), null));
+        } catch (BadRequestResponse e) {
+            ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
+        } catch (Exception e) {
+            ctx.status(500).json(new Mensaje("Error al actualizar producto: " + e.getMessage(), null));
+        }
+    }
+
+    private void eliminarProducto(Context ctx) {
+        try {
+            long id = Long.parseLong(ctx.pathParam("id"));
+            if (productos.containsKey(id)) {
+                productos.remove(id);
+                ctx.status(204);
+            } else {
+                ctx.status(404).json(new Mensaje("Producto no encontrado con ID: " + id + " para eliminar", null));
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID de producto inválido: " + ctx.pathParam("id"), null));
+        } catch (Exception e) {
+            ctx.status(500).json(new Mensaje("Error al eliminar producto: " + e.getMessage(), null));
+        }
     }
 }
