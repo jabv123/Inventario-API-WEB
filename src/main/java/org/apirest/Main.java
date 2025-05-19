@@ -6,10 +6,12 @@ import org.apirest.Controllers.ImgProductoController;
 import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
+import org.apirest.repository.CategoriaRepo;
 import org.apirest.repository.ClienteRepo;
 import org.apirest.repository.ImgProductoRepo;
 import org.apirest.repository.ProductoRepo;
 import org.apirest.repository.UsuarioRepo;
+import org.apirest.service.CategoriaService;
 import org.apirest.service.ClienteService;
 import org.apirest.service.ImgProductoService;
 import org.apirest.service.ProductoService;
@@ -23,6 +25,9 @@ public class Main {
         ProductoRepo productoRepository = new ProductoRepo();
         ProductoService productoService = new ProductoService(productoRepository);
 
+        CategoriaRepo categoriaRepository = new CategoriaRepo();
+        CategoriaService categoriaService = new CategoriaService(categoriaRepository);
+
         ClienteRepo clienteRepository = new ClienteRepo();
         ClienteService clienteService = new ClienteService(clienteRepository);
 
@@ -34,7 +39,7 @@ public class Main {
 
         // Controladores
         ProductoController productoController = new ProductoController(productoService);
-        CategoriaController categoriaController = new CategoriaController();
+        CategoriaController categoriaController = new CategoriaController(categoriaService);
         ProveedorController proveedorController = new ProveedorController(); 
         ImgProductoController imgProductoController = new ImgProductoController(imgProductoService);
         UsuarioController usuarioController = new UsuarioController(usuarioService);

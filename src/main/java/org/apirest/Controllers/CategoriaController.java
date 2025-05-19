@@ -5,20 +5,17 @@ import io.javalin.http.BadRequestResponse;
 
 import org.apirest.Util.Mensaje;
 import org.apirest.modelo.Categoria;
+import org.apirest.service.CategoriaService;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class CategoriaController {
 
-    private List<Categoria> categorias = new ArrayList<>();
-    private int nextId = 1;
+    private final CategoriaService categoriaService;
 
-    public CategoriaController() {
-        // La inicialización de rutas se hará a través de un método público
+    public CategoriaController(CategoriaService categoriaService) {
+        this.categoriaService = categoriaService;
     }
 
     public void rutasCategorias() {
@@ -34,6 +31,7 @@ public class CategoriaController {
     }
 
     private void obtenerTodasLasCategorias(Context ctx) {
+        List<Categoria> categorias = categoriaService.getCategorias();
         if (categorias.isEmpty()) {
             ctx.status(404).json(new Mensaje("No hay categorías registradas", null));
         } else {
@@ -44,9 +42,9 @@ public class CategoriaController {
     private void obtenerCategoriaPorId(Context ctx) {
         try {
             int id = Integer.parseInt(ctx.pathParam("id"));
-            Optional<Categoria> categoriaOpt = categorias.stream().filter(c -> c.getId() == id).findFirst();
-            if (categoriaOpt.isPresent()) {
-                ctx.status(200).json(new Mensaje("Categoría obtenida exitosamente", categoriaOpt.get()));
+            Categoria categoria = categoriaService.getCategoria(id);
+            if (categoria != null) {
+                ctx.status(200).json(new Mensaje("Categoría obtenida exitosamente", categoria));
             } else {
                 ctx.status(404).json(new Mensaje("Categoría no encontrada con ID: " + id, null));
             }
@@ -65,8 +63,7 @@ public class CategoriaController {
                 ctx.status(400).json(new Mensaje("El nombre de la categoría es obligatorio", null));
                 return;
             }
-            nuevaCategoria.setId(nextId++);
-            categorias.add(nuevaCategoria);
+            nuevaCategoria = categoriaService.crear(nuevaCategoria);
             ctx.status(201).json(new Mensaje("Categoría creada exitosamente", nuevaCategoria));
 
         } catch (BadRequestResponse e) {
@@ -80,20 +77,19 @@ public class CategoriaController {
         try {
             int id = Integer.parseInt(ctx.pathParam("id"));
             Categoria datosActualizacion = ctx.bodyAsClass(Categoria.class);
-            Optional<Categoria> categoriaOpt = categorias.stream().filter(c -> c.getId() == id).findFirst();
-
-            if (categoriaOpt.isPresent()) {
-                Categoria categoria = categoriaOpt.get();
-                if (datosActualizacion.getNombre() != null && !datosActualizacion.getNombre().isEmpty()) {
-                    categoria.setNombre(datosActualizacion.getNombre());
-                }
-                if (datosActualizacion.getDescripcion() != null) {
-                    categoria.setDescripcion(datosActualizacion.getDescripcion());
-                }
-                ctx.status(200).json(new Mensaje("Categoría actualizada exitosamente", categoria));
-            } else {
-                ctx.status(404).json(new Mensaje("Categoría no encontrada con ID: " + id + " para actualizar", null));
+            Categoria categoria = categoriaService.getCategoria(id);
+            if (categoria == null) {
+                ctx.status(404).json(new Mensaje("Categoría no encontrada con ID: " + id, null));
+                return;
             }
+
+            if (datosActualizacion.getNombre() != null && !datosActualizacion.getNombre().isEmpty()) {
+                categoria.setNombre(datosActualizacion.getNombre());
+            }
+            if (datosActualizacion.getDescripcion() != null) {
+                categoria.setDescripcion(datosActualizacion.getDescripcion());
+            }
+            ctx.status(200).json(new Mensaje("Categoría actualizada exitosamente", categoria));
         } catch (NumberFormatException e) {
             ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
         } catch (BadRequestResponse e) {
@@ -106,7 +102,7 @@ public class CategoriaController {
     private void eliminarCategoria(Context ctx) {
         try {
             int id = Integer.parseInt(ctx.pathParam("id"));
-            boolean eliminado = categorias.removeIf(categoria -> categoria.getId() == id);
+            boolean eliminado = categoriaService.eliminar(id);
             if (eliminado) {
                 ctx.status(200).json(new Mensaje("Categoría eliminada exitosamente", true));
             } else {
