@@ -1,9 +1,9 @@
-package org.apirest.repository;
+package org.apirest.service;
 
 import java.util.List;
 
 import org.apirest.modelo.Proveedor;
-import org.apirest.service.ProveedorRepo;
+import org.apirest.repository.ProveedorRepo;
 
 public class ProveedorService {
 

@@ -5,7 +5,8 @@ import io.javalin.http.BadRequestResponse;
 
 import org.apirest.Util.Mensaje;
 import org.apirest.modelo.Proveedor;
-import org.apirest.repository.ProveedorService;
+import org.apirest.service.ProveedorService;
+
 import java.util.List;
 
 import static io.javalin.apibuilder.ApiBuilder.*;

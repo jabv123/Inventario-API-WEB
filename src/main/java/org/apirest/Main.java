@@ -7,7 +7,6 @@ import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
 import org.apirest.config.AppDependencies;
-import org.apirest.repository.ProveedorService;
 import org.apirest.service.*; // Importa todos los servicios necesarios
 
 import io.javalin.Javalin;

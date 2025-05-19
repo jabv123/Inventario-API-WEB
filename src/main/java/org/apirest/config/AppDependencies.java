@@ -1,9 +1,9 @@
 package org.apirest.config;
 
 import org.apirest.repository.ProductoRepo;
+import org.apirest.repository.ProveedorRepo;
 import org.apirest.service.ProductoService;
-import org.apirest.service.ProveedorRepo;
-import org.apirest.repository.ProveedorService;
+import org.apirest.service.ProveedorService;
 import org.apirest.repository.CategoriaRepo;
 import org.apirest.service.CategoriaService;
 import org.apirest.repository.ClienteRepo;

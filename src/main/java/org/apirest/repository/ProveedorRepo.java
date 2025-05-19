@@ -1,4 +1,4 @@
-package org.apirest.service;
+package org.apirest.repository;
 
 import java.util.ArrayList;
 import java.util.Collections;
