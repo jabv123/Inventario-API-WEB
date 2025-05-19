@@ -1,4 +1,4 @@
-package org.apirest.modelo;
+package org.apirest.Util;
 
 //CLASE DE UTILIDAD PARA ENVIAR MENSAJES EN JSON
 public class Mensaje {

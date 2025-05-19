@@ -2,8 +2,10 @@ package org.apirest.Controllers;
 
 import io.javalin.http.Context;
 import io.javalin.http.BadRequestResponse;
+
+import org.apirest.Util.Mensaje;
 import org.apirest.modelo.Categoria;
-import org.apirest.modelo.Mensaje;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 import java.util.ArrayList;

@@ -2,8 +2,9 @@ package org.apirest.Controllers;
 
 import io.javalin.http.Context;
 import io.javalin.http.BadRequestResponse;
+
+import org.apirest.Util.Mensaje;
 import org.apirest.modelo.Cliente;
-import org.apirest.modelo.Mensaje;
 import org.apirest.service.ClienteService;
 
 import static io.javalin.apibuilder.ApiBuilder.*;

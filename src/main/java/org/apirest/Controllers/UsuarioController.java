@@ -2,7 +2,8 @@ package org.apirest.Controllers;
 
 import io.javalin.http.Context;
 import io.javalin.http.BadRequestResponse;
-import org.apirest.modelo.Mensaje;
+
+import org.apirest.Util.Mensaje;
 import org.apirest.modelo.Usuario;
 import org.apirest.service.UsuarioService;
 

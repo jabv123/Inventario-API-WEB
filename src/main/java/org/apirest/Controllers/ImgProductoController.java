@@ -3,8 +3,8 @@ package org.apirest.Controllers;
 import io.javalin.http.Context;
 import io.javalin.http.BadRequestResponse; // Añadida importación
 
+import org.apirest.Util.Mensaje;
 import org.apirest.modelo.ImgProducto;
-import org.apirest.modelo.Mensaje;
 import org.apirest.service.ImgProductoService;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
