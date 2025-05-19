@@ -5,18 +5,18 @@ import io.javalin.http.BadRequestResponse;
 
 import org.apirest.Util.Mensaje;
 import org.apirest.modelo.Proveedor;
+import org.apirest.repository.ProveedorService;
+import java.util.List;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public class ProveedorController {
 
-    private List<Proveedor> proveedores = new ArrayList<>();
-    private int nextId = 1;
+    private final ProveedorService proveedorService;
 
-    public ProveedorController() {
+    public ProveedorController(ProveedorService proveedorService) {
+        this.proveedorService = proveedorService;
     }
 
     public void rutasProveedores() {
@@ -32,6 +32,7 @@ public class ProveedorController {
     }
 
     private void obtenerTodosLosProveedores(Context ctx) {
+        List<Proveedor> proveedores = proveedorService.listarProveedores();
         if (proveedores.isEmpty()) {
             ctx.status(404).json(new Mensaje("No hay proveedores registrados", null));
         } else {
@@ -41,10 +42,10 @@ public class ProveedorController {
 
     private void obtenerProveedorPorId(Context ctx) {
         try {
-            long id = Long.parseLong(ctx.pathParam("id"));
-            Optional<Proveedor> proveedorOpt = proveedores.stream().filter(p -> p.getId() == id).findFirst();
-            if (proveedorOpt.isPresent()) {
-                ctx.status(200).json(new Mensaje("Proveedor encontrado", proveedorOpt.get()));
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            Proveedor proveedor = proveedorService.listarProveedorPorId(id);
+            if (proveedor != null) {
+                ctx.status(200).json(new Mensaje("Proveedor encontrado", proveedor));
             } else {
                 ctx.status(404).json(new Mensaje("Proveedor no encontrado con ID: " + id, null));
             }
@@ -64,9 +65,8 @@ public class ProveedorController {
                 return;
             }
 
-            nuevoProveedor.setId((long) nextId++);
-            proveedores.add(nuevoProveedor);
-            ctx.status(201).json(new Mensaje("Proveedor creado exitosamente", nuevoProveedor));
+            Proveedor proveedorCreado = proveedorService.crearProveedor(nuevoProveedor);
+            ctx.status(201).json(new Mensaje("Proveedor creado exitosamente", proveedorCreado));
 
         } catch (BadRequestResponse e) {
             ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
@@ -77,12 +77,11 @@ public class ProveedorController {
 
     private void actualizarProveedor(Context ctx) {
         try {
-            long id = Long.parseLong(ctx.pathParam("id"));
+            int id = Integer.parseInt(ctx.pathParam("id"));
             Proveedor datosActualizacion = ctx.bodyAsClass(Proveedor.class);
-            Optional<Proveedor> proveedorOpt = proveedores.stream().filter(p -> p.getId() == id).findFirst();
+            Proveedor proveedor = proveedorService.listarProveedorPorId(id);
 
-            if (proveedorOpt.isPresent()) {
-                Proveedor proveedor = proveedorOpt.get();
+            if (proveedor != null) {
                 if (datosActualizacion.getNombre() != null && !datosActualizacion.getNombre().isEmpty()) {
                     proveedor.setNombre(datosActualizacion.getNombre());
                 }
@@ -113,8 +112,8 @@ public class ProveedorController {
 
     private void eliminarProveedor(Context ctx) {
         try {
-            long id = Long.parseLong(ctx.pathParam("id"));
-            boolean removed = proveedores.removeIf(proveedor -> proveedor.getId() == id);
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            boolean removed = proveedorService.eliminarProveedor(id);
             if (removed) {
                 ctx.status(200).json(new Mensaje("Proveedor eliminado exitosamente", true));
             } else {
