@@ -1,5 +1,6 @@
 package org.apirest;
 
+import org.apirest.Controllers.CarritoController;
 import org.apirest.Controllers.CategoriaController;
 import org.apirest.Controllers.ClienteController;
 import org.apirest.Controllers.ImgProductoController;
@@ -23,6 +24,7 @@ public class Main {
         ClienteService clienteService = appConfig.getClienteService();
         UsuarioService usuarioService = appConfig.getUsuarioService();
         ImgProductoService imgProductoService = appConfig.getImgProductoService();
+        CarritoService carritoService = appConfig.getCarritoService();
 
         // Controladores
         ProductoController productoController = new ProductoController(productoService);
@@ -31,6 +33,7 @@ public class Main {
         ImgProductoController imgProductoController = new ImgProductoController(imgProductoService);
         UsuarioController usuarioController = new UsuarioController(usuarioService);
         ClienteController clienteController = new ClienteController(clienteService);
+        CarritoController carritoController = new CarritoController(carritoService);
 
         // Configuración del servidor Javalin
         Javalin.create(config -> {
@@ -41,6 +44,7 @@ public class Main {
                 imgProductoController.addImgProductoRoutes();
                 usuarioController.addUsuarioRoutes();
                 clienteController.addClienteRoutes();
+                carritoController.rutasCarrito();
                 // Aquí añadir los controladores necesarios
                 // ejemplo: OtroControladorJavalin().addSusRutas();
             });

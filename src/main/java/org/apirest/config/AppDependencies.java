@@ -4,7 +4,9 @@ import org.apirest.repository.ProductoRepo;
 import org.apirest.repository.ProveedorRepo;
 import org.apirest.service.ProductoService;
 import org.apirest.service.ProveedorService;
+import org.apirest.repository.CarritoRepo;
 import org.apirest.repository.CategoriaRepo;
+import org.apirest.service.CarritoService;
 import org.apirest.service.CategoriaService;
 import org.apirest.repository.ClienteRepo;
 import org.apirest.service.ClienteService;
@@ -33,6 +35,9 @@ public class AppDependencies {
     private final ImgProductoRepo imgProductoRepository;
     private final ImgProductoService imgProductoService;
 
+    private final CarritoRepo carritoRepository;
+    private final CarritoService carritoService;
+
     public AppDependencies() {
         // Productos
         productoRepository = new ProductoRepo();
@@ -57,6 +62,10 @@ public class AppDependencies {
         // Imágenes de Productos
         imgProductoRepository = new ImgProductoRepo();
         imgProductoService = new ImgProductoService(imgProductoRepository);
+
+        // Carritos
+        carritoRepository = new CarritoRepo();
+        carritoService = new CarritoService(carritoRepository);
     }
 
     // Getters para los servicios
@@ -82,5 +91,9 @@ public class AppDependencies {
 
     public ImgProductoService getImgProductoService() {
         return imgProductoService;
+    }
+
+    public CarritoService getCarritoService() {
+        return carritoService;
     }
 }
