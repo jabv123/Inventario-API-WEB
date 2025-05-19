@@ -6,41 +6,24 @@ import org.apirest.Controllers.ImgProductoController;
 import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
-import org.apirest.repository.CategoriaRepo;
-import org.apirest.repository.ClienteRepo;
-import org.apirest.repository.ImgProductoRepo;
-import org.apirest.repository.ProductoRepo;
+import org.apirest.config.AppDependencies;
 import org.apirest.repository.ProveedorService;
-import org.apirest.repository.UsuarioRepo;
-import org.apirest.service.CategoriaService;
-import org.apirest.service.ClienteService;
-import org.apirest.service.ImgProductoService;
-import org.apirest.service.ProductoService;
-import org.apirest.service.ProveedorRepo;
-import org.apirest.service.UsuarioService;
+import org.apirest.service.*; // Importa todos los servicios necesarios
 
 import io.javalin.Javalin;
 
 public class Main {
     public static void main(String[] args) {
-        //Dependencias
-        ProductoRepo productoRepository = new ProductoRepo();
-        ProductoService productoService = new ProductoService(productoRepository);
+        // Configuración centralizada de dependencias
+        AppDependencies appConfig = new AppDependencies();
 
-        CategoriaRepo categoriaRepository = new CategoriaRepo();
-        CategoriaService categoriaService = new CategoriaService(categoriaRepository);
-
-        ProveedorRepo proveedorRepository = new ProveedorRepo();
-        ProveedorService proveedorService = new ProveedorService(proveedorRepository);
-
-        ClienteRepo clienteRepository = new ClienteRepo();
-        ClienteService clienteService = new ClienteService(clienteRepository);
-
-        UsuarioRepo usuarioRepository = new UsuarioRepo();
-        UsuarioService usuarioService = new UsuarioService(usuarioRepository);
-
-        ImgProductoRepo imgProductoRepository = new ImgProductoRepo();
-        ImgProductoService imgProductoService = new ImgProductoService(imgProductoRepository);
+        // Obtener servicios desde AppConfig
+        ProductoService productoService = appConfig.getProductoService();
+        CategoriaService categoriaService = appConfig.getCategoriaService();
+        ProveedorService proveedorService = appConfig.getProveedorService();
+        ClienteService clienteService = appConfig.getClienteService();
+        UsuarioService usuarioService = appConfig.getUsuarioService();
+        ImgProductoService imgProductoService = appConfig.getImgProductoService();
 
         // Controladores
         ProductoController productoController = new ProductoController(productoService);
