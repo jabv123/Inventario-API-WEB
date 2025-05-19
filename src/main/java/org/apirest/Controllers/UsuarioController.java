@@ -1,120 +1,114 @@
 package org.apirest.Controllers;
 
+import io.javalin.http.Context;
+import io.javalin.http.BadRequestResponse;
 import org.apirest.modelo.Mensaje;
 import org.apirest.modelo.Usuario;
 import org.apirest.service.UsuarioService;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static spark.Spark.*;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 import java.util.List;
 
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
-        rutasUsuario();
     }
 
-    private void rutasUsuario(){
-
+    public void addUsuarioRoutes() {
         path("/api/usuarios", () -> {
-
-            //Listar todos los usuarios
-            get("", (req, res) -> {
-                res.type("application/json");
-                try{
-
-                    List<Usuario> usuarios = usuarioService.getUsuarios();
-                    if (usuarios.isEmpty()) {
-                        res.status(404);
-                        return "No hay usuarios registrados";
-                    } else {
-                        res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Usuarios listados correctamente", usuarios));
-                    }
-                } catch (Exception e) {
-                    res.status(500);
-                    return "Error al listar usuarios: " + e.getMessage();
-                }
-            });
-
-            //Listar usuario por id
-            get("/:id", (req, res) -> {
-                res.type("application/json");
-                try{
-                    int id = Integer.parseInt(req.params(":id"));
-                    Usuario usuario = usuarioService.getUsuario(id);
-                    if (usuario == null) {
-                        res.status(404);
-                        return "Usuario no encontrado";
-                    } else {
-                        res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Usuario encontrado", usuario));
-                    }
-                } catch (Exception e) {
-                    res.status(500);
-                    return "Error al listar usuario: " + e.getMessage();
-                }
-            });
-
-            //Crear usuario
-            post("", (req, res) -> {
-                res.type("application/json");
-                try{
-                    Usuario usuario = objectMapper.readValue(req.body(), Usuario.class);
-                    Usuario nuevoUsuario = usuarioService.createUsuario(usuario);
-                    res.status(201);
-                    return objectMapper.writeValueAsString(new Mensaje("Usuario creado correctamente", nuevoUsuario));
-                } catch (Exception e) {
-                    res.status(500);
-                    return "Error al crear usuario: " + e.getMessage();
-                }
-            });
-
-            //Actualizar usuario
-            put("/:id", (req, res) -> {
-                res.type("application/json");
-                try{
-                    int id = Integer.parseInt(req.params(":id"));
-                    Usuario usuarioActualizar = objectMapper.readValue(req.body(), Usuario.class);
-                    usuarioActualizar.setIdUsuario(id);
-                    Usuario usuarioActualizado = usuarioService.actualizarUsuario(usuarioActualizar);
-                    if (usuarioActualizado == null) {
-                        res.status(404);
-                        return "Usuario no encontrado";
-                    } else {
-                        res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Usuario actualizado correctamente", usuarioActualizado));
-                    }
-                } catch (Exception e) {
-                    res.status(500);
-                    return "Error al actualizar usuario: " + e.getMessage();
-                }
-            });
-
-            //Eliminar usuario
-            delete("/:id", (req, res) -> {
-                res.type("application/json");
-                try{
-                    int id = Integer.parseInt(req.params(":id"));
-                    boolean eliminado = usuarioService.eliminarUsuario(id);
-                    if (eliminado) {
-                        res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Usuario eliminado correctamente", eliminado));
-                    } else {
-                        res.status(404);
-                        return "Usuario no encontrado";
-                    }
-                } catch (Exception e) {
-                    res.status(500);
-                    return "Error al eliminar usuario: " + e.getMessage();
-                }
+            get(this::getAll);
+            post(this::create);
+            path("{id}", () -> {
+                get(this::getById);
+                put(this::update);
+                delete(this::deleteById);
             });
         });
+    }
+
+    private void getAll(Context ctx) {
+        try {
+            List<Usuario> usuarios = usuarioService.getUsuarios();
+            if (usuarios.isEmpty()) {
+                ctx.status(404).json(new Mensaje("No hay usuarios registrados", null));
+            } else {
+                ctx.status(200).json(new Mensaje("Usuarios listados correctamente", usuarios));
+            }
+        } catch (Exception e) {
+            ctx.status(500).json(new Mensaje("Error al listar usuarios: " + e.getMessage(), null));
+        }
+    }
+
+    private void getById(Context ctx) {
+        try {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            Usuario usuario = usuarioService.getUsuario(id);
+            if (usuario == null) {
+                ctx.status(404).json(new Mensaje("Usuario no encontrado", null));
+            } else {
+                ctx.status(200).json(new Mensaje("Usuario encontrado", usuario));
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
+        } catch (Exception e) {
+            ctx.status(500).json(new Mensaje("Error al listar usuario: " + e.getMessage(), null));
+        }
+    }
+
+    private void create(Context ctx) {
+        try {
+            Usuario usuario = ctx.bodyAsClass(Usuario.class);
+            Usuario nuevoUsuario = usuarioService.createUsuario(usuario);
+            ctx.status(201).json(new Mensaje("Usuario creado correctamente", nuevoUsuario));
+        } catch (BadRequestResponse e) {
+            ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
+        } catch (Exception e) {
+            ctx.status(500).json(new Mensaje("Error al crear usuario: " + e.getMessage(), null));
+        }
+    }
+
+    private void update(Context ctx) {
+        try {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            Usuario usuarioActualizar = ctx.bodyAsClass(Usuario.class);
+            
+            if (usuarioService.getUsuario(id) == null) {
+                ctx.status(404).json(new Mensaje("Usuario no encontrado con ID: " + id + " para actualizar", null));
+                return;
+            }
+            usuarioActualizar.setIdUsuario(id);
+            Usuario usuarioActualizado = usuarioService.actualizarUsuario(usuarioActualizar);
+            ctx.status(200).json(new Mensaje("Usuario actualizado correctamente", usuarioActualizado));
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
+        } catch (BadRequestResponse e) {
+            ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
+        } catch (Exception e) {
+            ctx.status(500).json(new Mensaje("Error al actualizar usuario: " + e.getMessage(), null));
+        }
+    }
+
+    private void deleteById(Context ctx) {
+        try {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            if (usuarioService.getUsuario(id) == null) {
+                ctx.status(404).json(new Mensaje("Usuario no encontrado con ID: " + id + " para eliminar", null));
+                return;
+            }
+            boolean eliminado = usuarioService.eliminarUsuario(id);
+            if (eliminado) {
+                ctx.status(200).json(new Mensaje("Usuario eliminado correctamente", true));
+            } else {
+                ctx.status(500).json(new Mensaje("Error al eliminar el usuario con ID: " + id, false));
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
+        } catch (Exception e) {
+            ctx.status(500).json(new Mensaje("Error al eliminar usuario: " + e.getMessage(), null));
+        }
     }
 }

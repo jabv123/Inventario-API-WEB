@@ -1,153 +1,160 @@
 package org.apirest.Controllers;
 
+import io.javalin.http.Context;
+import io.javalin.http.BadRequestResponse; // Añadida importación
+
 import org.apirest.modelo.ImgProducto;
 import org.apirest.modelo.Mensaje;
 import org.apirest.service.ImgProductoService;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static spark.Spark.*;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class ImgProductoController {
 
     private final ImgProductoService imgProductoService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ImgProductoController(ImgProductoService imgProductoService){
+    public ImgProductoController(ImgProductoService imgProductoService) {
         this.imgProductoService = imgProductoService;
-        rutasImgProducto();
     }
 
-    private void rutasImgProducto(){
-
+    public void addImgProductoRoutes() {
         path("/api/imgProductos", () -> {
+            get(this::getAll);
+            post(this::create);
 
-            //Listar todas las img de productos
-            get("", (req, res) -> {
-                res.type("application/json");
-                try{
-                    //Validar si hay img de productos
-                    if (imgProductoService.getImgsProductos().isEmpty()) {
-                        res.status(404);
-                        return "No hay imagenes de productos registrados";
-                    } else {
-                        res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Imagenes de productos cargados", imgProductoService.getImgsProductos()));
-                    }
-                } catch (Exception e) {
-                    return "error al obtener las imagenes de los productos: " + e.getMessage();
-                }
+            path("producto/{id}", () -> {
+                get(this::getByProducto);
+                delete(this::deleteByProducto);
             });
 
-            //Listar img de productos por id de img
-            get("/:id", (req, res) -> {
-                res.type("application/json");
-                try{
-                    int id = Integer.parseInt(req.params(":id"));
-                    //Validar si hay img de productos por id
-                    if (imgProductoService.getImgById(id) == null) {
-                        res.status(404);
-                        return "No hay imagenes con el id: " + id;
-                    } else {
-                        res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Imagen cargada", imgProductoService.getImgById(id)));
-                    }
-                } catch (Exception e) {
-                    return "error al obtener la imagen de los productos: " + e.getMessage();
-                }
+            path("{id}", () -> {
+                get(this::getById);
+                put(this::update);
+                delete(this::deleteById);
             });
-
-            //Listar img de productos por Producto
-            get("/producto/:id", (req, res) -> {
-                res.type("application/json");
-                
-                try{
-                    int idProducto = Integer.parseInt(req.params(":id"));
-                    //Validar si hay img de productos por idProducto
-                    if (imgProductoService.getImgByProducto(idProducto).isEmpty()) {
-                        res.status(404);
-                        return "No hay imagenes para el producto con id: " + idProducto;
-                    } else {
-                        res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Imagenes de producto" + idProducto + " cargadas", imgProductoService.getImgByProducto(idProducto)));
-                    }
-                } catch (Exception e) {
-                    return "error al obtener las imagenes de los productos: " + e.getMessage();
-                }
-            });
-
-            //Crear img de productos
-            post("", (req, res) -> {
-                res.type("application/json");
-                try{
-                    ImgProducto imgProducto = objectMapper.readValue(req.body(), ImgProducto.class);
-                    res.status(201);
-                    return objectMapper.writeValueAsString(new Mensaje("Imagen de producto creada", imgProductoService.agregarImgProducto(imgProducto)));
-                } catch (Exception e) {
-                    return "error al crear la imagen de los productos: " + e.getMessage();
-                }
-            });
-
-            //Actualizar img de productos
-            put("/:id", (req, res) -> {
-                res.type("application/json");
-                try{
-                    int id = Integer.parseInt(req.params(":id"));
-                    //Validar si hay img de productos por id
-                    if (imgProductoService.getImgById(id) == null) {
-                        res.status(404);
-                        return "No hay imagenes de productos registradas";
-                    }
-                    res.status(200);
-                    ImgProducto imgProducto = objectMapper.readValue(req.body(), ImgProducto.class);
-                    imgProducto.setId(id);
-                    return objectMapper.writeValueAsString(new Mensaje("Imagen de producto actualizada", imgProductoService.actualizarImgProducto(imgProducto)));
-                } catch (Exception e) {
-                    return "error al actualizar la imagen de los productos: " + e.getMessage();
-                }
-            });
-
-            //Eliminar img de productos por id
-            delete("/:id", (req, res) -> {
-                res.type("application/json");
-                try{
-                    int id = Integer.parseInt(req.params(":id"));
-                    //Validar si hay img de productos por id
-                    if (imgProductoService.getImgById(id) == null) {
-                        res.status(404);
-                        return "No hay imagenes de productos registradas";
-                    } else {
-                        boolean eliminado = imgProductoService.eliminarImg(id);
-                        res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Imagen de producto eliminada", eliminado));
-                    }
-                } catch (Exception e) {
-                    return "error al eliminar la imagen de los productos: " + e.getMessage();
-                }
-            
-            });
-
-
-            //Eliminar imgs de productos por idProducto
-            delete("/producto/:id", (req, res) -> {
-                res.type("application/json");
-                try{
-                    int idProducto = Integer.parseInt(req.params(":id"));
-                    //Validar si hay img de productos por idProducto
-                    if (imgProductoService.getImgByProducto(idProducto).isEmpty()) {
-                        res.status(404);
-                        return "No hay imagenes de productos registradas para el producto con id: " + idProducto;
-                    } else {
-                        boolean eliminadas = imgProductoService.eliminarImgByProducto(idProducto);
-                        res.status(200);
-                        return objectMapper.writeValueAsString(new Mensaje("Imagenes de producto eliminadas", eliminadas));
-                    }
-                } catch (Exception e) {
-                    return "error al eliminar las imagenes de los productos: " + e.getMessage();
-                }
-            });
-
         });
+    }
 
+    private void getAll(Context ctx) {
+        var list = imgProductoService.getImgsProductos();
+        if (list.isEmpty()) {
+            ctx.status(404).json(new Mensaje("No hay imágenes de productos registradas", null));
+        } else {
+            ctx.status(200).json(new Mensaje("Imágenes de productos cargadas", list));
+        }
+    }
+
+    private void getById(Context ctx) {
+        try {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            var img = imgProductoService.getImgById(id);
+            if (img == null) {
+                ctx.status(404).json(new Mensaje("No hay imagen con el id: " + id, null));
+            } else {
+                ctx.status(200).json(new Mensaje("Imagen cargada", img));
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
+        } catch (Exception e) {
+            // Considerar loggear la excepción e.g., LOGGER.error("Error al obtener la imagen", e);
+            ctx.status(500).json(new Mensaje("Error al obtener la imagen: " + e.getMessage(), null));
+        }
+    }
+
+    private void getByProducto(Context ctx) {
+        try {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            var imgs = imgProductoService.getImgByProducto(id);
+            if (imgs.isEmpty()) {
+                ctx.status(404).json(new Mensaje("No hay imágenes para el producto con id: " + id, null));
+            } else {
+                ctx.status(200).json(new Mensaje("Imágenes de producto " + id + " cargadas", imgs));
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID de producto inválido: " + ctx.pathParam("id"), null));
+        } catch (Exception e) {
+            // Considerar loggear la excepción
+            ctx.status(500).json(new Mensaje("Error al obtener las imágenes por producto: " + e.getMessage(), null));
+        }
+    }
+
+    private void create(Context ctx) {
+        try {
+            ImgProducto imgProducto = ctx.bodyAsClass(ImgProducto.class); // Cambiado
+            // Aquí se podría añadir validación para imgProducto si es necesario
+            var creado = imgProductoService.agregarImgProducto(imgProducto);
+            ctx.status(201).json(new Mensaje("Imagen de producto creada", creado));
+        } catch (BadRequestResponse e) { // Cambiado para atrapar BadRequestResponse
+            ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
+        } catch (Exception e) {
+            // Considerar loggear la excepción
+            ctx.status(500).json(new Mensaje("Error al crear la imagen: " + e.getMessage(), null));
+        }
+    }
+
+    private void update(Context ctx) {
+        try {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            ImgProducto imgProducto = ctx.bodyAsClass(ImgProducto.class); // Cambiado
+            
+            if (imgProductoService.getImgById(id) == null) {
+                ctx.status(404).json(new Mensaje("No hay imagen con el ID: " + id + " para actualizar", null));
+                return;
+            }
+            imgProducto.setId(id); // Asegurar que el ID en el cuerpo coincida o se use el de la URL
+            var actualizado = imgProductoService.actualizarImgProducto(imgProducto);
+            ctx.status(200).json(new Mensaje("Imagen de producto actualizada", actualizado));
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
+        } catch (BadRequestResponse e) { // Cambiado para atrapar BadRequestResponse
+            ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
+        } catch (Exception e) {
+            // Considerar loggear la excepción
+            ctx.status(500).json(new Mensaje("Error al actualizar la imagen: " + e.getMessage(), null));
+        }
+    }
+
+    private void deleteById(Context ctx) {
+        try {
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            if (imgProductoService.getImgById(id) == null) {
+                ctx.status(404).json(new Mensaje("No hay imagen con el ID: " + id + " para eliminar", null));
+                return;
+            }
+            boolean eliminado = imgProductoService.eliminarImg(id);
+            if (eliminado) {
+                ctx.status(200).json(new Mensaje("Imagen eliminada correctamente", true));
+            } else {
+                // Esto podría indicar un error lógico si getImgById no fue null pero no se pudo eliminar
+                ctx.status(500).json(new Mensaje("Error al eliminar la imagen con ID: " + id, false));
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
+        } catch (Exception e) {
+            // Considerar loggear la excepción
+            ctx.status(500).json(new Mensaje("Error al eliminar la imagen: " + e.getMessage(), null));
+        }
+    }
+
+    private void deleteByProducto(Context ctx) {
+        try {
+            int idProducto = Integer.parseInt(ctx.pathParam("id"));
+            if (imgProductoService.getImgByProducto(idProducto).isEmpty()) {
+                ctx.status(404).json(new Mensaje("No hay imágenes para el producto con id: " + idProducto + " para eliminar", null));
+                return;
+            }
+            boolean eliminadas = imgProductoService.eliminarImgByProducto(idProducto);
+            if (eliminadas) {
+                ctx.status(200).json(new Mensaje("Imágenes del producto " + idProducto + " eliminadas", true));
+            } else {
+                 // Esto podría indicar un error lógico si getImgByProducto no fue empty pero no se pudo eliminar
+                ctx.status(500).json(new Mensaje("Error al eliminar las imágenes del producto " + idProducto, false));
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID de producto inválido: " + ctx.pathParam("id"), null));
+        } catch (Exception e) {
+            // Considerar loggear la excepción
+            ctx.status(500).json(new Mensaje("Error al eliminar las imágenes por producto: " + e.getMessage(), null));
+        }
     }
 }

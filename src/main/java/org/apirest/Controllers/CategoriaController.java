@@ -1,164 +1,119 @@
 package org.apirest.Controllers;
 
+import io.javalin.http.Context;
+import io.javalin.http.BadRequestResponse;
 import org.apirest.modelo.Categoria;
-import org.apirest.modelo.Mensaje; // Importar Mensaje
-import static spark.Spark.*;
+import org.apirest.modelo.Mensaje;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-
-import com.fasterxml.jackson.databind.ObjectMapper; // Importar ObjectMapper
+import java.util.Optional;
 
 public class CategoriaController {
 
-    private static List<Categoria> categorias = new ArrayList<>();
-    private static int nextId = 1;
-    private static ObjectMapper objectMapper = new ObjectMapper(); // Instanciar ObjectMapper
+    private List<Categoria> categorias = new ArrayList<>();
+    private int nextId = 1;
 
     public CategoriaController() {
-        // Definición de las rutas
+        // La inicialización de rutas se hará a través de un método público
+    }
+
+    public void rutasCategorias() {
         path("/categorias", () -> {
-            get("", (req, res) -> obtenerTodasLasCategorias(req, res));
-            get("/:id", (req, res) -> obtenerCategoriaPorId(req, res));
-            post("", (req, res) -> crearCategoria(req, res));
-            put("/:id", (req, res) -> actualizarCategoria(req, res));
-            delete("/:id", (req, res) -> eliminarCategoria(req, res));
+            get(this::obtenerTodasLasCategorias);
+            post(this::crearCategoria);
+            path("{id}", () -> {
+                get(this::obtenerCategoriaPorId);
+                put(this::actualizarCategoria);
+                delete(this::eliminarCategoria);
+            });
         });
     }
 
-    private String obtenerTodasLasCategorias(spark.Request req, spark.Response res) {
-        res.type("application/json");
-        try {
-            List<Map<String, Object>> categoriasJson = new ArrayList<>();
-            for (Categoria categoria : categorias) {
-                Map<String, Object> categoriaMap = new HashMap<>();
-                categoriaMap.put("id", categoria.getId());
-                categoriaMap.put("nombre", categoria.getNombre());
-                categoriaMap.put("descripcion", categoria.getDescripcion());
-                categoriasJson.add(categoriaMap);
-            }
-            return objectMapper.writeValueAsString(new Mensaje("Categorías obtenidas exitosamente", categoriasJson));
-        } catch (Exception e) {
-            res.status(500);
-            try {
-                return objectMapper.writeValueAsString(new Mensaje("Error interno del servidor"));
-            } catch (Exception ex) {
-                return "Error interno del servidor";
-            }
+    private void obtenerTodasLasCategorias(Context ctx) {
+        if (categorias.isEmpty()) {
+            ctx.status(404).json(new Mensaje("No hay categorías registradas", null));
+        } else {
+            ctx.status(200).json(new Mensaje("Categorías obtenidas exitosamente", categorias));
         }
     }
 
-    private String obtenerCategoriaPorId(spark.Request req, spark.Response res) {
-        res.type("application/json");
+    private void obtenerCategoriaPorId(Context ctx) {
         try {
-            int id = Integer.parseInt(req.params(":id"));
-            for (Categoria categoria : categorias) {
-                if (categoria.getId() == id) {
-                    Map<String, Object> categoriaMap = new HashMap<>();
-                    categoriaMap.put("id", categoria.getId());
-                    categoriaMap.put("nombre", categoria.getNombre());
-                    categoriaMap.put("descripcion", categoria.getDescripcion());
-                    return objectMapper.writeValueAsString(new Mensaje("Categoría obtenida exitosamente", categoriaMap));
-                }
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            Optional<Categoria> categoriaOpt = categorias.stream().filter(c -> c.getId() == id).findFirst();
+            if (categoriaOpt.isPresent()) {
+                ctx.status(200).json(new Mensaje("Categoría obtenida exitosamente", categoriaOpt.get()));
+            } else {
+                ctx.status(404).json(new Mensaje("Categoría no encontrada con ID: " + id, null));
             }
-            res.status(404);
-            return objectMapper.writeValueAsString(new Mensaje("Categoría no encontrada"));
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
         } catch (Exception e) {
-            res.status(400);
-            try {
-                return objectMapper.writeValueAsString(new Mensaje("Solicitud inválida"));
-            } catch (Exception ex) {
-                return "Solicitud inválida";
-            }
+            ctx.status(500).json(new Mensaje("Error al obtener categoría: " + e.getMessage(), null));
         }
     }
 
-    private String crearCategoria(spark.Request req, spark.Response res) {
-        res.type("application/json");
+    private void crearCategoria(Context ctx) {
         try {
-            Map<String, Object> requestMap = objectMapper.readValue(req.body(), Map.class);
-            String nombre = (String) requestMap.get("nombre");
-            String descripcion = (String) requestMap.get("descripcion");
+            Categoria nuevaCategoria = ctx.bodyAsClass(Categoria.class);
 
-            Categoria nuevaCategoria = new Categoria(nombre, descripcion);
+            if (nuevaCategoria.getNombre() == null || nuevaCategoria.getNombre().isEmpty()) {
+                ctx.status(400).json(new Mensaje("El nombre de la categoría es obligatorio", null));
+                return;
+            }
             nuevaCategoria.setId(nextId++);
             categorias.add(nuevaCategoria);
-            res.status(201);
-            
-            Map<String, Object> categoriaMap = new HashMap<>();
-            categoriaMap.put("id", nuevaCategoria.getId());
-            categoriaMap.put("nombre", nuevaCategoria.getNombre());
-            categoriaMap.put("descripcion", nuevaCategoria.getDescripcion());
-            
-            return objectMapper.writeValueAsString(new Mensaje("Categoría creada exitosamente", categoriaMap));
+            ctx.status(201).json(new Mensaje("Categoría creada exitosamente", nuevaCategoria));
 
+        } catch (BadRequestResponse e) {
+            ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
         } catch (Exception e) {
-            res.status(400);
-            try {
-                return objectMapper.writeValueAsString(new Mensaje("Solicitud inválida"));
-            } catch (Exception ex) {
-                return "Solicitud inválida";
-            }
+            ctx.status(500).json(new Mensaje("Error al crear categoría: " + e.getMessage(), null));
         }
     }
 
-    private String actualizarCategoria(spark.Request req, spark.Response res) {
-        res.type("application/json");
+    private void actualizarCategoria(Context ctx) {
         try {
-            int id = Integer.parseInt(req.params(":id"));
-            Map<String, Object> requestMap = objectMapper.readValue(req.body(), Map.class);
-            String nombre = (String) requestMap.get("nombre");
-            String descripcion = (String) requestMap.get("descripcion");
+            int id = Integer.parseInt(ctx.pathParam("id"));
+            Categoria datosActualizacion = ctx.bodyAsClass(Categoria.class);
+            Optional<Categoria> categoriaOpt = categorias.stream().filter(c -> c.getId() == id).findFirst();
 
-            for (Categoria categoria : categorias) {
-                if (categoria.getId() == id) {
-                    if (nombre != null && !nombre.isEmpty()) {
-                        categoria.setNombre(nombre);
-                    }
-                    if (descripcion != null && !descripcion.isEmpty()) {
-                        categoria.setDescripcion(descripcion);
-                    }
-                    Map<String, Object> categoriaMap = new HashMap<>();
-                    categoriaMap.put("id", categoria.getId());
-                    categoriaMap.put("nombre", categoria.getNombre());
-                    categoriaMap.put("descripcion", categoria.getDescripcion());
-                    
-                    return objectMapper.writeValueAsString(new Mensaje("Categoría actualizada exitosamente", categoriaMap));
+            if (categoriaOpt.isPresent()) {
+                Categoria categoria = categoriaOpt.get();
+                if (datosActualizacion.getNombre() != null && !datosActualizacion.getNombre().isEmpty()) {
+                    categoria.setNombre(datosActualizacion.getNombre());
                 }
+                if (datosActualizacion.getDescripcion() != null) {
+                    categoria.setDescripcion(datosActualizacion.getDescripcion());
+                }
+                ctx.status(200).json(new Mensaje("Categoría actualizada exitosamente", categoria));
+            } else {
+                ctx.status(404).json(new Mensaje("Categoría no encontrada con ID: " + id + " para actualizar", null));
             }
-            res.status(404);
-            return objectMapper.writeValueAsString(new Mensaje("Categoría no encontrada"));
-
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
+        } catch (BadRequestResponse e) {
+            ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
         } catch (Exception e) {
-            res.status(400);
-            try {
-                return objectMapper.writeValueAsString(new Mensaje("Solicitud inválida"));
-            } catch (Exception ex) {
-                return "Solicitud inválida";
-            }
+            ctx.status(500).json(new Mensaje("Error al actualizar categoría: " + e.getMessage(), null));
         }
     }
 
-    private String eliminarCategoria(spark.Request req, spark.Response res) {
-        res.type("application/json");
+    private void eliminarCategoria(Context ctx) {
         try {
-            int id = Integer.parseInt(req.params(":id"));
+            int id = Integer.parseInt(ctx.pathParam("id"));
             boolean eliminado = categorias.removeIf(categoria -> categoria.getId() == id);
             if (eliminado) {
-                return objectMapper.writeValueAsString(new Mensaje("Categoría eliminada exitosamente"));
+                ctx.status(200).json(new Mensaje("Categoría eliminada exitosamente", true));
             } else {
-                res.status(404);
-                return objectMapper.writeValueAsString(new Mensaje("Categoría no encontrada"));
+                ctx.status(404).json(new Mensaje("Categoría no encontrada con ID: " + id + " para eliminar", null));
             }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json(new Mensaje("ID inválido: " + ctx.pathParam("id"), null));
         } catch (Exception e) {
-            res.status(400);
-            try {
-                return objectMapper.writeValueAsString(new Mensaje("Solicitud inválida"));
-            } catch (Exception ex) {
-                return "Solicitud inválida";
-            }
+            ctx.status(500).json(new Mensaje("Error al eliminar categoría: " + e.getMessage(), null));
         }
     }
 }
