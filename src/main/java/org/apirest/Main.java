@@ -8,9 +8,11 @@ import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
 import org.apirest.repository.ClienteRepo;
 import org.apirest.repository.ImgProductoRepo;
+import org.apirest.repository.ProductoRepo;
 import org.apirest.repository.UsuarioRepo;
 import org.apirest.service.ClienteService;
 import org.apirest.service.ImgProductoService;
+import org.apirest.service.ProductoService;
 import org.apirest.service.UsuarioService;
 
 import io.javalin.Javalin;
@@ -18,6 +20,9 @@ import io.javalin.Javalin;
 public class Main {
     public static void main(String[] args) {
         //Dependencias
+        ProductoRepo productoRepository = new ProductoRepo();
+        ProductoService productoService = new ProductoService(productoRepository);
+
         ClienteRepo clienteRepository = new ClienteRepo();
         ClienteService clienteService = new ClienteService(clienteRepository);
 
@@ -28,7 +33,7 @@ public class Main {
         ImgProductoService imgProductoService = new ImgProductoService(imgProductoRepository);
 
         // Controladores
-        ProductoController productoController = new ProductoController();
+        ProductoController productoController = new ProductoController(productoService);
         CategoriaController categoriaController = new CategoriaController();
         ProveedorController proveedorController = new ProveedorController(); 
         ImgProductoController imgProductoController = new ImgProductoController(imgProductoService);

@@ -5,18 +5,18 @@ import io.javalin.http.BadRequestResponse;
 
 import org.apirest.Util.Mensaje;
 import org.apirest.modelo.Producto;
+import org.apirest.service.ProductoService;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.List;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class ProductoController {
-    private final Map<Long, Producto> productos = new ConcurrentHashMap<>();
-    private final AtomicLong nextId = new AtomicLong(1);
 
-    public ProductoController() {
+    private final ProductoService productoService;
+
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
     }
 
     public void rutasProductos() {
@@ -34,9 +34,7 @@ public class ProductoController {
     private void crearProducto(Context ctx) {
         try {
             Producto producto = ctx.bodyAsClass(Producto.class);
-            long id = nextId.getAndIncrement();
-            producto.setId((int) id);
-            productos.put(id, producto);
+            producto = productoService.crearProducto(producto);
             ctx.status(201).json(new Mensaje("Producto agregado", producto));
         } catch (BadRequestResponse e) {
             ctx.status(400).json(new Mensaje("Solicitud incorrecta: el formato de los datos es inválido.", null));
@@ -46,17 +44,18 @@ public class ProductoController {
     }
 
     private void obtenerTodosLosProductos(Context ctx) {
-        if (productos.isEmpty()){
+        List<Producto> productos = productoService.listarProductos();
+        if (productos.isEmpty()) {
             ctx.status(404).json(new Mensaje("No hay productos registrados", null));
         } else {
-            ctx.status(200).json(new Mensaje("Lista de productos", productos.values()));
+            ctx.status(200).json(new Mensaje("Lista de productos", productos));
         }
     }
 
     private void obtenerProductoPorId(Context ctx) {
         try {
             long id = Long.parseLong(ctx.pathParam("id"));
-            Producto producto = productos.get(id);
+            Producto producto = productoService.listarProductoPorId((int) id);
             if (producto != null) {
                 ctx.status(200).json(new Mensaje("Producto encontrado", producto));
             } else {
@@ -73,12 +72,11 @@ public class ProductoController {
         try {
             long id = Long.parseLong(ctx.pathParam("id"));
             Producto productoActualizado = ctx.bodyAsClass(Producto.class);
-            Producto productoExistente = productos.get(id);
+            productoActualizado.setId((int) id);
+            Producto producto = productoService.actualizarProducto(productoActualizado);
 
-            if (productoExistente != null) {
-                productoActualizado.setId((int) id);
-                productos.put(id, productoActualizado);
-                ctx.status(200).json(new Mensaje("Producto actualizado", productoActualizado));
+            if (producto != null) {
+                ctx.status(200).json(new Mensaje("Producto actualizado", producto));
             } else {
                 ctx.status(404).json(new Mensaje("Producto no encontrado con ID: " + id + " para actualizar", null));
             }
@@ -93,9 +91,10 @@ public class ProductoController {
 
     private void eliminarProducto(Context ctx) {
         try {
-            long id = Long.parseLong(ctx.pathParam("id"));
-            if (productos.containsKey(id)) {
-                productos.remove(id);
+            int id = Integer.parseInt(ctx.pathParam("id"));
+
+            if (productoService.listarProductoPorId(id) != null) {
+                productoService.eliminarProducto(id);
                 ctx.status(204);
             } else {
                 ctx.status(404).json(new Mensaje("Producto no encontrado con ID: " + id + " para eliminar", null));
