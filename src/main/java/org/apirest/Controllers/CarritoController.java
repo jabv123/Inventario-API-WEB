@@ -8,6 +8,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 import java.util.List;
 
 import io.javalin.http.Context;
+import io.javalin.http.NotFoundResponse;
 
 public class CarritoController {
 
@@ -20,39 +21,38 @@ public class CarritoController {
         path("/api/carrito", () -> {
             get(this::obtenerTodos);
             post(this::crearCarrito);
-            //path("{id}", () -> {
-                //get(this::getById);
+            path("{id}", () -> {
+                get(this::obtenerPorId);
                 //put(this::update);
                 //delete(this::deleteById);
-            //});
+            });
         });
 
     }
 
     private void obtenerTodos(Context ctx) {
-        try {
-            List<Carrito> carritos = carritoService.getAllCarritos();
-            if (carritos.isEmpty()) {
-                ctx.status(404).json(new Mensaje("No hay carritos registrados", carritos));
-            } else {
-                ctx.status(200).json(carritos);
-            }
-        } catch (Exception e) {
-            ctx.status(500).json(new Mensaje("Error al listar carritos: " + e.getMessage(), null));
+        List<Carrito> carritos = carritoService.getAllCarritos();
+        if(carritos.isEmpty()){
+            throw new NotFoundResponse("No hay carritos disponibles");
         }
+        ctx.status(200).json(new Mensaje("Lista de carritos", carritos));
+
     }
 
     private void crearCarrito(Context ctx) {
-        try {
             Carrito carrito = ctx.bodyAsClass(Carrito.class);
             Carrito nuevoCarrito = carritoService.crearCarrito(carrito);
             ctx.status(201).json(new Mensaje("Carrito creado correctamente", nuevoCarrito));
-        } catch (IllegalArgumentException e) {
-            ctx.status(400).json(new Mensaje("Error en los datos de entrada: " + e.getMessage(), null));
-        } catch (Exception e) {
-            ctx.status(500).json(new Mensaje("Error al crear carrito: " + e.getMessage(), null));
-        }
     }
 
-
+    private void obtenerPorId(Context ctx){
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        //Obtener carrito por id
+        Carrito carrito = carritoService.getCarritoById(id);
+        //Comprobar si existe
+        if (carrito == null) {
+            throw new NotFoundResponse("Carrito no encontrado");
+        }
+        ctx.status(200).json(new Mensaje("Carrito encontrado", carrito));
+    }
 }
