@@ -1,9 +1,13 @@
 package org.apirest.service;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.apirest.modelo.Venta;
+import org.apirest.modelo.Carrito;
 import org.apirest.modelo.DetalleVenta;
+import org.apirest.modelo.ItemCarrito;
+import org.apirest.modelo.Producto;
 import org.apirest.repository.DetalleVentaRepo;
 import org.apirest.repository.VentaRepo;
 
@@ -11,38 +15,59 @@ public class VentaService {
 
     private final VentaRepo ventaRepository;
     private final DetalleVentaRepo detalleVentaRepository;
+    private final CarritoService carritoService;
+    private final ProductoService productoService;
 
-    public VentaService(VentaRepo ventaRepository, DetalleVentaRepo detalleVentaRepository) {
+    public VentaService(VentaRepo ventaRepository, DetalleVentaRepo detalleVentaRepository, CarritoService carritoService, ProductoService productoService) {
         this.detalleVentaRepository = detalleVentaRepository;
         this.ventaRepository = ventaRepository;
+        this.carritoService = carritoService;
+        this.productoService = productoService;
     }
 
     public Venta realizarVenta(Venta venta) {
-        // Validar que la venta tenga detalles
-        if (venta.getDetalles() == null || venta.getDetalles().isEmpty()) {
-            throw new IllegalArgumentException("La venta debe tener al menos un detalle.");
+        /* *
+         * Desde el controlador se obtiene el cliente.
+         * Para obtener los detalles hacemos uso de servicio de carrito para obtenerlo 
+         * Con esto completamos los detalles de la venta
+         */
+
+        // Obtener el carrito asociado al cliente
+        int idCliente = venta.getIdCliente();
+        // Obtener carrito del cliente
+        Carrito carrito = carritoService.getCarritoByIdCliente(idCliente);
+
+        if (carrito == null || carrito.getItems() == null || carrito.getItems().isEmpty()) {
+            throw new IllegalArgumentException("El carrito está vacío o no existe.");
         }
 
-        // Calcular el total de la venta y asignar idVenta a cada detalle
+        List<DetalleVenta> detallesVenta = new ArrayList<>();
         double totalVenta = 0;
-        for (DetalleVenta detalle : venta.getDetalles()) {
-            // Añadir lógica para verificar stock de producto si es necesario
-            // y calcular el subtotal del detalle si no viene calculado
-            if (detalle.getSubtotal() == 0 && detalle.getCantidad() > 0 && detalle.getPrecioUnitario() > 0) {
-                detalle.setSubtotal(detalle.getCantidad() * detalle.getPrecioUnitario());
+
+        for (ItemCarrito itemCarrito : carrito.getItems()) {
+            Producto producto = productoService.listarProductoPorId(itemCarrito.getIdProducto());
+            if (producto == null) {
+                throw new IllegalArgumentException("Producto con ID " + itemCarrito.getIdProducto() + " no encontrado.");
             }
+
+            DetalleVenta detalle = new DetalleVenta();
+            detalle.setIdProducto(itemCarrito.getIdProducto());
+            detalle.setCantidad(itemCarrito.getCantidad());
+            detalle.setPrecioUnitario(producto.getPrecio());
+            detalle.setSubtotal(itemCarrito.getCantidad() * producto.getPrecio());
+
+            detallesVenta.add(detalle);
             totalVenta += detalle.getSubtotal();
-            // Asignar el id de la venta al detalle (se hará después de guardar la venta)
         }
+
+        venta.setDetalles(detallesVenta);
         venta.setTotal(totalVenta);
 
-        // Guardar la venta para obtener su ID
         Venta ventaGuardada = ventaRepository.add(venta);
 
-        // Asignar el ID de la venta guardada a cada detalle y guardarlos
         for (DetalleVenta detalle : ventaGuardada.getDetalles()) {
             detalle.setIdVenta(ventaGuardada.getId());
-            detalleVentaRepository.add(detalle); // Guardar cada detalle
+            detalleVentaRepository.add(detalle);
         }
 
         return ventaGuardada;

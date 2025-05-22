@@ -7,6 +7,7 @@ import org.apirest.Controllers.ImgProductoController;
 import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
+import org.apirest.Controllers.VentaController;
 import org.apirest.config.AppDependencies;
 import org.apirest.service.*;
 import org.apirest.Util.Mensaje;
@@ -29,6 +30,7 @@ public class Main {
         UsuarioService usuarioService = appConfig.getUsuarioService();
         ImgProductoService imgProductoService = appConfig.getImgProductoService();
         CarritoService carritoService = appConfig.getCarritoService();
+        VentaService ventaService = appConfig.getVentaService();
 
         // Controladores
         ProductoController productoController = new ProductoController(productoService);
@@ -38,6 +40,7 @@ public class Main {
         UsuarioController usuarioController = new UsuarioController(usuarioService);
         ClienteController clienteController = new ClienteController(clienteService);
         CarritoController carritoController = new CarritoController(carritoService);
+        VentaController ventaController = new VentaController(ventaService);
 
         // Configuración del servidor Javalin
         Javalin app = Javalin.create(config -> {
@@ -50,6 +53,7 @@ public class Main {
                 usuarioController.addUsuarioRoutes();
                 clienteController.addClienteRoutes();
                 carritoController.rutasCarrito();
+                ventaController.rutasVentas();
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
             // config.showJavalinBanner = false;

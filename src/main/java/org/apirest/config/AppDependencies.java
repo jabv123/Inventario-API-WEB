@@ -88,7 +88,7 @@ public class AppDependencies {
         // Ventas
         ventaRepository = new VentaRepo();
         detalleVentaRepository = new DetalleVentaRepo();
-        ventaService = new VentaService(ventaRepository, detalleVentaRepository);
+        ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService);
     }
 
     // Getters para los servicios
