@@ -64,7 +64,10 @@ public class VentaRepo {
                 if (venta.getTotal() != 0) {
                     v.setTotal(venta.getTotal());
                 }
-                v.setDetalles(venta.getDetalles());
+                // Actualizar detalles solo si se proporcionan en la venta entrante
+                if (venta.getDetalles() != null) {
+                    v.setDetalles(venta.getDetalles());
+                }
                 return v;
             }
         }

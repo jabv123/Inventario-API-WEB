@@ -32,6 +32,7 @@ public class VentaService {
          * Con esto completamos los detalles de la venta
          */
 
+         //TODO: Implementar la reducción de stock de productos
         // Obtener el cliente desde la venta
         int idCliente = venta.getIdCliente();
         // Obtener carrito del cliente
