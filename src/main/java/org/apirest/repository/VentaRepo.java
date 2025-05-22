@@ -26,11 +26,25 @@ public class VentaRepo {
                 .orElse(null);
     }
 
+    // Obtener ventas por id de cliente
+    public List<Venta> getByClientId(int idCliente) {
+        return ventas.stream()
+                .filter(venta -> venta.getIdCliente() == idCliente)
+                .toList();
+    }
+
+    // Obtener ventas por estado
+    public List<Venta> getByEstado(String estado) {
+        return ventas.stream()
+                .filter(venta -> venta.getEstado().equalsIgnoreCase(estado))
+                .toList();
+    }
+
     // Crear venta
     public Venta add(Venta venta) {
         venta.setId(id.getAndIncrement());
         venta.setFechaVenta(LocalDate.now());
-        venta.setDetalles(new ArrayList<>());
+        // venta.setDetalles(new ArrayList<>()); // Comentado para no sobrescribir detalles existentes si ya vienen informados
         ventas.add(venta);
         return venta;
     }
