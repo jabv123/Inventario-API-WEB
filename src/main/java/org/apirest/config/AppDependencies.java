@@ -83,7 +83,7 @@ public class AppDependencies {
         // Carritos
         carritoRepository = new CarritoRepo();
         itemCarritoRepository = new ItemCarritoRepo();
-        carritoService = new CarritoService(carritoRepository, itemCarritoRepository);
+        carritoService = new CarritoService(carritoRepository, itemCarritoRepository, productoService);
 
         // Ventas
         ventaRepository = new VentaRepo();

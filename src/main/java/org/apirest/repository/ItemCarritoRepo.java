@@ -18,4 +18,9 @@ public class ItemCarritoRepo {
         itemsCarrito.add(item);
         return item;
     }
+
+    //Eliminar item
+    public boolean eliminarItem(int id) {
+        return itemsCarrito.removeIf(item -> item.getId() == id);
+    }
 }
