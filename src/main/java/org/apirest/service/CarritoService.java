@@ -86,10 +86,6 @@ public class CarritoService {
             throw new IllegalArgumentException("El producto con id " + item.getIdProducto() + " no existe.");
         }
 
-        // Asignar precio unitario del producto al item del carrito
-        item.setPrecioUnitario(producto.getPrecio());
-        item.setIdCarrito(idCarrito);
-
         Carrito carrito = carritoOpt.get();
         List<ItemCarrito> items = carrito.getItems();
 
@@ -97,47 +93,36 @@ public class CarritoService {
                 .filter(i -> i.getIdProducto() == item.getIdProducto())
                 .findFirst();
 
-        int cantidadOriginalSolicitada = item.getCantidad();
-        int cantidadAAgregar = (cantidadOriginalSolicitada <= 0) ? 1 : cantidadOriginalSolicitada;
-
         if (itemExistenteOpt.isPresent()) {
-            // El item ya existe en el carrito, actualizar cantidad
-            ItemCarrito itemExistente = itemExistenteOpt.get();
-            int cantidadYaEnCarrito = itemExistente.getCantidad();
-            int stockDisponibleReal = producto.getCantidad() - cantidadYaEnCarrito;
+            // El item ya existe en el carrito, indicar al usuario que use el método de actualización
+            throw new IllegalStateException("El producto '" + producto.getNombre() + "' ya existe en el carrito. Utilice el método de actualizar cantidad para modificarlo.");
+        }
 
-            if (cantidadAAgregar > stockDisponibleReal) {
-                if (stockDisponibleReal > 0) {
-                    // Se puede agregar algo, pero menos de lo solicitado
-                    cantidadAAgregar = stockDisponibleReal;
-                } else {
-                    // No hay stock disponible para agregar más de este item
-                    throw new IllegalArgumentException("No hay más stock disponible para el producto '" + producto.getNombre() +
-                                                       "'. Ya tiene " + cantidadYaEnCarrito + " en el carrito y el stock total es " + producto.getCantidad() + ".");
-                }
-            }
-            itemExistente.setCantidad(cantidadYaEnCarrito + cantidadAAgregar);
+        // Asignar precio unitario del producto al item del carrito
+        item.setPrecioUnitario(producto.getPrecio());
+        item.setIdCarrito(idCarrito);
 
-        } else {
-            // El item es nuevo en el carrito
-            if (cantidadAAgregar > producto.getCantidad()) {
-                if (producto.getCantidad() > 0) {
-                    // Se puede agregar, pero menos de lo solicitado
-                    cantidadAAgregar = producto.getCantidad();
-                } else {
-                    // No hay stock del producto para agregarlo por primera vez
-                    throw new IllegalArgumentException("No hay stock disponible para el producto '" + producto.getNombre() + "'.");
-                }
-            }
-            // Solo crear y agregar si la cantidad final a agregar es positiva
-            if (cantidadAAgregar > 0) {
-                item.setCantidad(cantidadAAgregar);
-                ItemCarrito nuevoItem = itemCarritoRepo.crearItem(item);
-                items.add(nuevoItem);
+        // Si se solicita cantidad <= 0 para un nuevo item, se interpreta como agregar 1.
+        int cantidadParaNuevoItem = (item.getCantidad() <= 0) ? 1 : item.getCantidad();
+
+        if (cantidadParaNuevoItem > producto.getCantidad()) {
+            if (producto.getCantidad() > 0) {
+                // Se puede agregar, pero menos de lo solicitado porque no hay suficiente stock.
+                 cantidadParaNuevoItem = producto.getCantidad(); // Ajustar a lo disponible
             } else {
-                 // Esto podría ocurrir si producto.getCantidad() era 0 y se intentó agregar.
-                 throw new IllegalArgumentException("No se pudo agregar el producto '" + producto.getNombre() + "' debido a falta de stock.");
+                // No hay stock del producto para agregarlo por primera vez
+                throw new IllegalArgumentException("No hay stock disponible para el producto '" + producto.getNombre() + "'.");
             }
+        }
+        
+        // Solo crear y agregar si la cantidad final a agregar es positiva
+        if (cantidadParaNuevoItem > 0) {
+            item.setCantidad(cantidadParaNuevoItem);
+            ItemCarrito nuevoItem = itemCarritoRepo.crearItem(item);
+            items.add(nuevoItem);
+        } else {
+             // Esto podría ocurrir si producto.getCantidad() era 0 y se intentó agregar.
+             throw new IllegalArgumentException("No se pudo agregar el producto '" + producto.getNombre() + "' debido a falta de stock o cantidad inválida.");
         }
 
         carrito.setItems(items);
@@ -145,7 +130,7 @@ public class CarritoService {
     }
 
     //Actualizar cantidad de un item del carrito
-    public Optional<ItemCarrito> actualizarCantidadItem(int idCarrito, int idItem, int nuevaCantidadDeseada) {
+    public Optional<ItemCarrito> actualizarCantidadItem(int idCarrito, int idItem, int cantidadAModificar) {
         Optional<Carrito> carritoOpt = carritoRepo.getById(idCarrito);
         if (!carritoOpt.isPresent()) {
             return Optional.empty(); // Carrito no encontrado
@@ -165,29 +150,37 @@ public class CarritoService {
         Producto producto = productoService.listarProductoPorId(itemExistente.getIdProducto());
 
         if (producto == null) {
-            // Esto no debería ocurrir si el item ya está en el carrito y fue validado al agregarse,
             throw new IllegalStateException("El producto asociado al item del carrito no fue encontrado, idProducto: " + itemExistente.getIdProducto());
         }
 
-        if (nuevaCantidadDeseada <= 0) {
-            // Si la nueva cantidad es 0 o negativa, eliminar el item del carrito
+        if (cantidadAModificar == 0) {
+            // Si la cantidad a modificar es 0, no se hace nada y se devuelve el item tal cual.
+            return Optional.of(itemExistente);
+        }
+
+        int cantidadActual = itemExistente.getCantidad();
+        int nuevaCantidadCalculada = cantidadActual + cantidadAModificar;
+
+        if (nuevaCantidadCalculada <= 0) {
+            // Si la nueva cantidad calculada es 0 o negativa, eliminar el item del carrito
             items.remove(itemExistente);
-            itemCarritoRepo.eliminarItem(itemExistente.getId()); // Asumiendo que tienes un método para eliminar el item de la persistencia
+            itemCarritoRepo.eliminarItem(itemExistente.getId()); 
             carrito.setItems(items);
             carritoRepo.update(carrito);
             return Optional.empty(); // Retornar empty ya que el item fue eliminado
         }
 
+        // Si se está aumentando la cantidad (cantidadAModificar > 0)
         // Validar que la nueva cantidad no exceda el stock del producto
-        if (nuevaCantidadDeseada > producto.getCantidad()) {
-            throw new IllegalArgumentException("La cantidad deseada (" + nuevaCantidadDeseada +
+        if (cantidadAModificar > 0 && nuevaCantidadCalculada > producto.getCantidad()) {
+            throw new IllegalArgumentException("La cantidad resultante (" + nuevaCantidadCalculada +
                                                ") excede el stock disponible (" + producto.getCantidad() +
                                                ") para el producto '" + producto.getNombre() + "'.");
         }
 
         // Actualizar la cantidad del item
-        itemExistente.setCantidad(nuevaCantidadDeseada);
-        // itemCarritoRepo.actualizarItem(itemExistente); // Asumiendo que tienes un método para actualizar el item en la persistencia
+        itemExistente.setCantidad(nuevaCantidadCalculada);
+        // itemCarritoRepo.actualizarItem(itemExistente); // Si necesitas persistir el cambio a nivel de ItemCarrito individualmente
         
         carrito.setItems(items); // La lista 'items' ya contiene la referencia actualizada a 'itemExistente'
         carritoRepo.update(carrito);
@@ -209,10 +202,7 @@ public class CarritoService {
                 carrito.setItems(items);
                 return Optional.of(carritoRepo.update(carrito));
             } else {
-                // El item proporcionado no está en la lista actual del carrito, aunque el carrito exista.
-                // Podría ser un error o una condición de carrera. Devolver el carrito sin cambios o un error.
-                // Por ahora, devolvemos el carrito tal cual o podríamos lanzar una excepción.
-                return carritoOpt; // Opcionalmente: throw new IllegalArgumentException("Item con id " + item.getId() + " no encontrado en el carrito " + idCarrito);
+                return carritoOpt;
             }
         }
         return Optional.empty();
