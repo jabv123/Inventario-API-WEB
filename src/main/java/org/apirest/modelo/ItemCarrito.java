@@ -11,8 +11,7 @@ public class ItemCarrito {
     public ItemCarrito() {
     }
 
-    public ItemCarrito(int id, int idCarrito, int idProducto, int cantidad, double precioUnitario) {
-        this.id = id;
+    public ItemCarrito(int idCarrito, int idProducto, int cantidad, double precioUnitario) {
         this.idCarrito = idCarrito;
         this.idProducto = idProducto;
         this.cantidad = cantidad;

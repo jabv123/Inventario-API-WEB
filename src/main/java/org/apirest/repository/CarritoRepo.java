@@ -1,5 +1,6 @@
 package org.apirest.repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,16 +36,26 @@ public class CarritoRepo {
     //Agregar carrito
     public Carrito add(Carrito carrito) {
         carrito.setId(id.getAndIncrement());
+        carrito.setFechaCreacion(LocalDate.now());
         carritos.add(carrito);
         return carrito;
     }
 
     //Actualizar carrito
-    public Carrito update(int id, Carrito carrito) {
-        Optional<Carrito> carritoExistente = getById(id);
-        if (carritoExistente.isPresent()) {
-            carritos.set(id, carrito);
-            return carrito;
+    public Carrito update(Carrito carrito) {
+        for (int i = 0; i < carritos.size();i ++){
+            Carrito c = carritos.get(i);
+            if (c.getId() == carrito.getId()) {
+                // Actualizar solo los campos que no son nulos en el carrito entrante
+                if (carrito.getIdCliente() != 0) {
+                    c.setIdCliente(carrito.getIdCliente());
+                }
+                if (carrito.getItems() != null) {
+                    c.setItems(carrito.getItems());
+                }
+                c.setFechaModificacion(LocalDate.now());
+                return c; // Devolver el carrito actualizado
+            }
         }
         return null;
     }
