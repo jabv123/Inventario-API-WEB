@@ -32,14 +32,15 @@ public class CarritoController {
                 get(this::obtenerPorId);
                 put(this::actualizarCarrito);
                 delete(this::eliminarCarrito);
-                //Agregar item al carrito
-                path("/item", () -> {
-                    post(this::agregarItem);
-                    //Actualizar item del carrito
-                    path("/{itemId}", () -> {
-                        put(this::actualizarCantidadItem);
-                        delete(this::eliminarItem);
-                    });
+            });
+            path("/total/{id}", () -> {
+                get(this::obtenerTotalDelCarrito);
+            });
+            path("/{id}/item", () -> {
+                post(this::agregarItem);
+                path("/{itemId}", () -> {
+                    put(this::actualizarCantidadItem);
+                    delete(this::eliminarItem);
                 });
             });
         });
@@ -91,6 +92,17 @@ public class CarritoController {
             throw new NotFoundResponse("Carrito no encontrado");
         }
         ctx.status(200).json(new Mensaje("Carrito encontrado", carrito));
+    }
+
+    private void obtenerTotalDelCarrito(Context ctx) {
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        Carrito carrito = carritoService.getCarritoById(id);
+        //Comprobar si existe
+        if (carrito == null) {
+            throw new NotFoundResponse("Carrito no encontrado");
+        }
+        double total = carritoService.obtenerTotalDelCarrito(carrito.getId());
+        ctx.status(200).json(new Mensaje("Total del carrito", total));
     }
 
     private void actualizarCarrito(Context ctx) {

@@ -142,15 +142,15 @@ public class CarritoService {
     }
 
     // Obtener total del carrito
-    public Optional<Double> obtenerTotalDelCarrito(int idCarrito) {
+    public double obtenerTotalDelCarrito(int idCarrito) {
         Optional<Carrito> carrito = carritoRepo.getById(idCarrito);
         if (carrito.isPresent()) {
             double total = carrito.get().getItems().stream()
                     .mapToDouble(item -> item.getPrecioUnitario() * item.getCantidad())
                     .sum();
-            return Optional.of(total);
+            return total;
         }
-        return Optional.empty();
+        return 0.0;
     }
 
 }
