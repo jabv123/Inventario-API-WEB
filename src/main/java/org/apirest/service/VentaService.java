@@ -32,7 +32,7 @@ public class VentaService {
          * Con esto completamos los detalles de la venta
          */
 
-        // Obtener el carrito asociado al cliente
+        // Obtener el cliente desde la venta
         int idCliente = venta.getIdCliente();
         // Obtener carrito del cliente
         Carrito carrito = carritoService.getCarritoByIdCliente(idCliente);
@@ -69,6 +69,8 @@ public class VentaService {
             detalle.setIdVenta(ventaGuardada.getId());
             detalleVentaRepository.add(detalle);
         }
+
+        carritoService.eliminarCarritoPorIdCliente(idCliente);
 
         return ventaGuardada;
     }
