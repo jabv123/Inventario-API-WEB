@@ -38,4 +38,18 @@ public class ProductoService {
         return productoRepo.eliminar(id);
     }
 
+    //Reduce el stock de un producto
+    public Producto reducirStock(int idProducto, int cantidadAReducir) {
+        Producto producto = productoRepo.getById(idProducto);
+        if (producto == null) {
+            throw new IllegalArgumentException("Producto con ID " + idProducto + " no encontrado.");
+        }
+        int nuevoStock = producto.getCantidad() - cantidadAReducir;
+        if (nuevoStock < 0) {
+            throw new IllegalArgumentException("No hay suficiente stock para el producto con ID " + idProducto);
+        }
+        producto.setCantidad(nuevoStock);
+        return productoRepo.actualizar(producto);
+    }
+
 }

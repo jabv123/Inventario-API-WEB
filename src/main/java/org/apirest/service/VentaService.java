@@ -72,6 +72,10 @@ public class VentaService {
         }
 
         carritoService.eliminarCarritoPorIdCliente(idCliente);
+        // Actualizar el stock de los productos vendidos
+        for (ItemCarrito itemCarrito : carrito.getItems()) {
+            productoService.reducirStock(itemCarrito.getIdProducto(), itemCarrito.getCantidad());
+        }
 
         return ventaGuardada;
     }
