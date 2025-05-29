@@ -17,12 +17,14 @@ public class VentaService {
     private final DetalleVentaRepo detalleVentaRepository;
     private final CarritoService carritoService;
     private final ProductoService productoService;
+    private final CuponDescuentoService cuponDescuentoService;
 
-    public VentaService(VentaRepo ventaRepository, DetalleVentaRepo detalleVentaRepository, CarritoService carritoService, ProductoService productoService) {
+    public VentaService(VentaRepo ventaRepository, DetalleVentaRepo detalleVentaRepository, CarritoService carritoService, ProductoService productoService, CuponDescuentoService cuponDescuentoService) {
         this.detalleVentaRepository = detalleVentaRepository;
         this.ventaRepository = ventaRepository;
         this.carritoService = carritoService;
         this.productoService = productoService;
+        this.cuponDescuentoService = cuponDescuentoService;
     }
 
     public Venta realizarVenta(Venta venta) {
@@ -58,10 +60,14 @@ public class VentaService {
 
             detallesVenta.add(detalle);
             totalVenta += detalle.getSubtotal();
-        }
-
-        venta.setDetalles(detallesVenta);
-        venta.setTotal(totalVenta);
+        }        venta.setDetalles(detallesVenta);
+        
+        // Guardar el total sin descuento
+        venta.setTotalSinDescuento(totalVenta);
+        
+        // Aplicar cupón si existe
+        double totalFinal = aplicarCuponSiExiste(venta, totalVenta);
+        venta.setTotal(totalFinal);
 
         Venta ventaGuardada = ventaRepository.add(venta);
 
@@ -98,10 +104,85 @@ public class VentaService {
 
     public List<Venta> obtenerVentasPorCliente(int idCliente) {
         return ventaRepository.getByClientId(idCliente);
-    }
-
+    }    
+    
     public List<Venta> obtenerVentasPorEstado(String estado) {
         return ventaRepository.getByEstado(estado);
+    }
+
+    // === MÉTODOS PARA MANEJO DE CUPONES ===
+
+    /**
+     * Aplica un cupón a la venta si existe un código de cupón válido
+     */
+    private double aplicarCuponSiExiste(Venta venta, double totalBase) {
+        String codigoCupon = venta.getCodigoCuponAplicado();
+        
+        // Si no hay código de cupón, retornar el total base
+        if (codigoCupon == null || codigoCupon.trim().isEmpty()) {
+            venta.setDescuentoAplicado(0);
+            return totalBase;
+        }
+        
+        try {
+            // Validar y calcular descuento
+            if (!cuponDescuentoService.validarCupon(codigoCupon)) {
+                throw new IllegalArgumentException("Cupón inválido o expirado: " + codigoCupon);
+            }
+            
+            double descuento = cuponDescuentoService.calcularDescuento(codigoCupon, totalBase);
+            double totalConDescuento = totalBase - descuento;
+            
+            // Guardar información del descuento aplicado
+            venta.setDescuentoAplicado(descuento);
+            
+            return totalConDescuento;
+            
+        } catch (Exception e) {
+            // Si hay error con el cupón, lanzar excepción
+            throw new IllegalArgumentException("Error al aplicar cupón: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Realiza una venta con cupón específico
+     */
+    public Venta realizarVentaConCupon(Venta venta, String codigoCupon) {
+        venta.setCodigoCuponAplicado(codigoCupon);
+        return realizarVenta(venta);
+    }
+
+    /**
+     * Calcula el total de una venta con un cupón sin procesarla
+     */
+    public double calcularTotalConCupon(int idCliente, String codigoCupon) {
+        Carrito carrito = carritoService.getCarritoByIdCliente(idCliente);
+        
+        if (carrito == null || carrito.getItems() == null || carrito.getItems().isEmpty()) {
+            throw new IllegalArgumentException("El carrito está vacío o no existe.");
+        }
+        
+        double totalBase = 0;
+        
+        // Calcular total base
+        for (ItemCarrito itemCarrito : carrito.getItems()) {
+            Producto producto = productoService.listarProductoPorId(itemCarrito.getIdProducto());
+            if (producto == null) {
+                throw new IllegalArgumentException("Producto con ID " + itemCarrito.getIdProducto() + " no encontrado.");
+            }
+            totalBase += itemCarrito.getCantidad() * producto.getPrecio();
+        }
+        
+        // Aplicar cupón si existe
+        if (codigoCupon != null && !codigoCupon.trim().isEmpty()) {
+            if (!cuponDescuentoService.validarCupon(codigoCupon)) {
+                throw new IllegalArgumentException("Cupón inválido o expirado: " + codigoCupon);
+            }
+            double descuento = cuponDescuentoService.calcularDescuento(codigoCupon, totalBase);
+            return totalBase - descuento;
+        }
+        
+        return totalBase;
     }
 
 }

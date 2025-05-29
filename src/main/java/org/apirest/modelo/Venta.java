@@ -3,14 +3,17 @@ package org.apirest.modelo;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Venta {
-
-    private int id;
+public class Venta {    private int id;
     private LocalDate fechaVenta;
     private int idCliente;
     private String estado;
     private double total;
     private List<DetalleVenta> detalles;
+    
+    // Campos para manejo de cupones
+    private String codigoCuponAplicado;
+    private double descuentoAplicado;
+    private double totalSinDescuento;
 
     public Venta() {
     }
@@ -67,9 +70,32 @@ public class Venta {
 
     public List<DetalleVenta> getDetalles() {
         return detalles;
+    }    public void setDetalles(List<DetalleVenta> detalles) {
+        this.detalles = detalles;
     }
 
-    public void setDetalles(List<DetalleVenta> detalles) {
-        this.detalles = detalles;
+    // Getters y Setters para cupones
+    public String getCodigoCuponAplicado() {
+        return codigoCuponAplicado;
+    }
+
+    public void setCodigoCuponAplicado(String codigoCuponAplicado) {
+        this.codigoCuponAplicado = codigoCuponAplicado;
+    }
+
+    public double getDescuentoAplicado() {
+        return descuentoAplicado;
+    }
+
+    public void setDescuentoAplicado(double descuentoAplicado) {
+        this.descuentoAplicado = descuentoAplicado;
+    }
+
+    public double getTotalSinDescuento() {
+        return totalSinDescuento;
+    }
+
+    public void setTotalSinDescuento(double totalSinDescuento) {
+        this.totalSinDescuento = totalSinDescuento;
     }
 }
