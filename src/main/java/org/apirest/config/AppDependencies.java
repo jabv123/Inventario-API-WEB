@@ -18,6 +18,8 @@ import org.apirest.service.VentaService;
 import org.apirest.repository.ImgProductoRepo;
 import org.apirest.repository.ItemCarritoRepo;
 import org.apirest.service.ImgProductoService;
+import org.apirest.repository.CuponDescuentoRepo;
+import org.apirest.service.CuponDescuentoService;
 
 public class AppDependencies {
 
@@ -48,12 +50,16 @@ public class AppDependencies {
     // Para carritos
     private final CarritoRepo carritoRepository;
     private final ItemCarritoRepo itemCarritoRepository;
-    private final CarritoService carritoService;
-
+    private final CarritoService carritoService;    
+    
     // Para ventas
     private final VentaRepo ventaRepository;
     private final DetalleVentaRepo detalleVentaRepository;
     private final VentaService ventaService;
+
+    // Para cupones de descuento
+    private final CuponDescuentoRepo cuponDescuentoRepository;
+    private final CuponDescuentoService cuponDescuentoService;
 
     public AppDependencies() {
         // Productos
@@ -78,17 +84,19 @@ public class AppDependencies {
 
         // Imágenes de Productos
         imgProductoRepository = new ImgProductoRepo();
-        imgProductoService = new ImgProductoService(imgProductoRepository);
-
-        // Carritos
+        imgProductoService = new ImgProductoService(imgProductoRepository);        // Carritos
         carritoRepository = new CarritoRepo();
         itemCarritoRepository = new ItemCarritoRepo();
         carritoService = new CarritoService(carritoRepository, itemCarritoRepository, productoService);
 
+        // Cupones de descuento
+        cuponDescuentoRepository = new CuponDescuentoRepo();
+        cuponDescuentoService = new CuponDescuentoService(cuponDescuentoRepository);
+
         // Ventas
         ventaRepository = new VentaRepo();
         detalleVentaRepository = new DetalleVentaRepo();
-        ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService);
+        ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService, cuponDescuentoService);
     }
 
     // Getters para los servicios
@@ -118,9 +126,11 @@ public class AppDependencies {
 
     public CarritoService getCarritoService() {
         return carritoService;
+    }    public VentaService getVentaService() {
+        return ventaService;
     }
 
-    public VentaService getVentaService() {
-        return ventaService;
+    public CuponDescuentoService getCuponDescuentoService() {
+        return cuponDescuentoService;
     }
 }

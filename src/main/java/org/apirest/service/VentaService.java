@@ -109,9 +109,7 @@ public class VentaService {
     public List<Venta> obtenerVentasPorEstado(String estado) {
         return ventaRepository.getByEstado(estado);
     }
-
-    // === MÉTODOS PARA MANEJO DE CUPONES ===
-
+    
     /**
      * Aplica un cupón a la venta si existe un código de cupón válido
      */
@@ -141,48 +139,6 @@ public class VentaService {
         } catch (Exception e) {
             // Si hay error con el cupón, lanzar excepción
             throw new IllegalArgumentException("Error al aplicar cupón: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Realiza una venta con cupón específico
-     */
-    public Venta realizarVentaConCupon(Venta venta, String codigoCupon) {
-        venta.setCodigoCuponAplicado(codigoCupon);
-        return realizarVenta(venta);
-    }
-
-    /**
-     * Calcula el total de una venta con un cupón sin procesarla
-     */
-    public double calcularTotalConCupon(int idCliente, String codigoCupon) {
-        Carrito carrito = carritoService.getCarritoByIdCliente(idCliente);
-        
-        if (carrito == null || carrito.getItems() == null || carrito.getItems().isEmpty()) {
-            throw new IllegalArgumentException("El carrito está vacío o no existe.");
-        }
-        
-        double totalBase = 0;
-        
-        // Calcular total base
-        for (ItemCarrito itemCarrito : carrito.getItems()) {
-            Producto producto = productoService.listarProductoPorId(itemCarrito.getIdProducto());
-            if (producto == null) {
-                throw new IllegalArgumentException("Producto con ID " + itemCarrito.getIdProducto() + " no encontrado.");
-            }
-            totalBase += itemCarrito.getCantidad() * producto.getPrecio();
-        }
-        
-        // Aplicar cupón si existe
-        if (codigoCupon != null && !codigoCupon.trim().isEmpty()) {
-            if (!cuponDescuentoService.validarCupon(codigoCupon)) {
-                throw new IllegalArgumentException("Cupón inválido o expirado: " + codigoCupon);
-            }
-            double descuento = cuponDescuentoService.calcularDescuento(codigoCupon, totalBase);
-            return totalBase - descuento;
-        }
-        
-        return totalBase;
-    }
+        }    }
 
 }

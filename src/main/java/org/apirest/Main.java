@@ -3,6 +3,7 @@ package org.apirest;
 import org.apirest.Controllers.CarritoController;
 import org.apirest.Controllers.CategoriaController;
 import org.apirest.Controllers.ClienteController;
+import org.apirest.Controllers.CuponDescuentoController;
 import org.apirest.Controllers.ImgProductoController;
 import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
@@ -18,7 +19,7 @@ public class Main {
     public static void main(String[] args) {
         // Configuración centralizada de dependencias
         AppDependencies appConfig = new AppDependencies();
-
+        
         // Obtener servicios desde AppConfig
         ProductoService productoService = appConfig.getProductoService();
         CategoriaService categoriaService = appConfig.getCategoriaService();
@@ -28,7 +29,8 @@ public class Main {
         ImgProductoService imgProductoService = appConfig.getImgProductoService();
         CarritoService carritoService = appConfig.getCarritoService();
         VentaService ventaService = appConfig.getVentaService();
-
+        CuponDescuentoService cuponDescuentoService = appConfig.getCuponDescuentoService();
+        
         // Controladores
         ProductoController productoController = new ProductoController(productoService);
         CategoriaController categoriaController = new CategoriaController(categoriaService);
@@ -38,6 +40,7 @@ public class Main {
         ClienteController clienteController = new ClienteController(clienteService);
         CarritoController carritoController = new CarritoController(carritoService);
         VentaController ventaController = new VentaController(ventaService);
+        CuponDescuentoController cuponDescuentoController = new CuponDescuentoController(cuponDescuentoService);
 
         // Configuración del servidor Javalin
         Javalin app = Javalin.create(config -> {
@@ -51,6 +54,7 @@ public class Main {
                 clienteController.addClienteRoutes();
                 carritoController.rutasCarrito();
                 ventaController.rutasVentas();
+                cuponDescuentoController.rutasCupones();
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
             // config.showJavalinBanner = false;

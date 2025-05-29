@@ -25,11 +25,16 @@ public class ExceptionsConfig {
         // Excepción para manejar errores de JSON malformado no se puedo serializar o deserializar
         app.exception(JsonProcessingException.class, (e, ctx) -> { // Específico para Jackson
             ctx.status(400).json(new Mensaje("JSON inválido o malformado: " + e.getOriginalMessage(), null));
-        });
-
+        });        
+        
         //Indica algun error al desarrollador o error de negocio
         app.exception(IllegalArgumentException.class, (e, ctx) -> {
             ctx.status(400).json(new Mensaje("Argumento ilegal o datos de entrada inválidos: " + e.getMessage(), null));
+        });
+
+        // Manejador para NumberFormatException (IDs inválidos, formatos numéricos incorrectos)
+        app.exception(NumberFormatException.class, (e, ctx) -> {
+            ctx.status(400).json(new Mensaje("Formato de número inválido: " + e.getMessage(), null));
         });
 
         // Manejador para IllegalStateException
