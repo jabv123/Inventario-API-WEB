@@ -1,6 +1,6 @@
 package org.apirest.service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apirest.modelo.CuponDescuento;
@@ -43,6 +43,9 @@ public class CuponDescuentoService {
             throw new IllegalArgumentException("El valor del cupón debe ser mayor a 0");
         }
 
+        //Establecer estado como activo por defecto
+        cupon.setActivo(true);
+
         return cuponRepository.crear(cupon);
     }
 
@@ -78,10 +81,17 @@ public class CuponDescuentoService {
     }
 
     public boolean activarCupon(int id) {
+        if (cuponRepository.getById(id).isActivo()) {
+            throw new IllegalArgumentException("El cupón ya está activo");
+            
+        }
         return cuponRepository.activar(id);
     }
 
     public boolean desactivarCupon(int id) {
+        if (!cuponRepository.getById(id).isActivo()) {
+            throw new IllegalArgumentException("El cupón ya está desactivado");
+        }
         return cuponRepository.desactivar(id);
     }
 
@@ -100,8 +110,8 @@ public class CuponDescuentoService {
         
         // Verificar si está expirado
         if (cupon.getFechaExpiracion() != null) {
-            Date fechaActual = new Date();
-            if (cupon.getFechaExpiracion().before(fechaActual)) {
+            LocalDate fechaActual = LocalDate.now();
+            if (cupon.getFechaExpiracion().isBefore(fechaActual)) {
                 return false; // Cupón expirado
             }
         }

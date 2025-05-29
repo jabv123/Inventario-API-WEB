@@ -1,13 +1,13 @@
 package org.apirest.modelo;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class CuponDescuento {
     private int id;
     private String codigo;
     private double valor;
     private String tipoValor; // "porcentaje" o "fijo"
-    private Date fechaExpiracion;
+    private LocalDate fechaExpiracion;
     private boolean activo;
 
     // Constructor vacío
@@ -15,7 +15,7 @@ public class CuponDescuento {
     }
 
     // Constructor completo
-    public CuponDescuento(String codigo, double valor, String tipoValor, Date fechaExpiracion, boolean activo) {
+    public CuponDescuento(String codigo, double valor, String tipoValor, LocalDate fechaExpiracion, boolean activo) {
         this.codigo = codigo;
         this.valor = valor;
         this.tipoValor = tipoValor;
@@ -24,7 +24,7 @@ public class CuponDescuento {
     }
 
     // Constructor sin ID (para creación)
-    public CuponDescuento(int id, String codigo, double valor, String tipoValor, Date fechaExpiracion, boolean activo) {
+    public CuponDescuento(int id, String codigo, double valor, String tipoValor, LocalDate fechaExpiracion, boolean activo) {
         this.id = id;
         this.codigo = codigo;
         this.valor = valor;
@@ -66,11 +66,11 @@ public class CuponDescuento {
         this.tipoValor = tipoValor;
     }
 
-    public Date getFechaExpiracion() {
+    public LocalDate getFechaExpiracion() {
         return fechaExpiracion;
     }
 
-    public void setFechaExpiracion(Date fechaExpiracion) {
+    public void setFechaExpiracion(LocalDate fechaExpiracion) {
         this.fechaExpiracion = fechaExpiracion;
     }
 

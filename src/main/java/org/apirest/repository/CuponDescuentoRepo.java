@@ -1,8 +1,8 @@
 package org.apirest.repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,10 +50,10 @@ public class CuponDescuentoRepo {
 
     // Obtener cupones válidos (activos y no expirados)
     public List<CuponDescuento> getCuponesValidos() {
-        Date fechaActual = new Date();
+        LocalDate fechaActual = LocalDate.now();
         return cupones.stream()
                 .filter(cupon -> cupon.isActivo() && 
-                        (cupon.getFechaExpiracion() == null || cupon.getFechaExpiracion().after(fechaActual)))
+                        (cupon.getFechaExpiracion() == null || cupon.getFechaExpiracion().isAfter(fechaActual)))
                 .toList();
     }
 

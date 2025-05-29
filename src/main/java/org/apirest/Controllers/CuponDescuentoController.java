@@ -17,12 +17,21 @@ public class CuponDescuentoController {
 
     public CuponDescuentoController(CuponDescuentoService cuponDescuentoService) {
         this.cuponDescuentoService = cuponDescuentoService;
-    }
-
+    }    
+    
     public void rutasCupones() {
         path("/api/cupones", () -> {
-            get(this::obtenerTodosLosCupones);
             post(this::crearCupon);
+            get(this::obtenerTodosLosCupones);
+            path("/activos", () -> {
+                get(this::obtenerCuponesActivos);
+            });
+            path("/validos", () -> {
+                get(this::obtenerCuponesValidos);
+            });
+            path("/codigo/{codigo}", () -> {
+                get(this::obtenerCuponPorCodigo);
+            });
             path("/{id}", () -> {
                 get(this::obtenerCuponPorId);
                 put(this::actualizarCupon);
@@ -30,36 +39,28 @@ public class CuponDescuentoController {
                 patch("/activar", this::activarCupon);
                 patch("/desactivar", this::desactivarCupon);
             });
-            path("/codigo/{codigo}", () -> {
-                get(this::obtenerCuponPorCodigo);
-            });
-            path("/activos", () -> {
-                get(this::obtenerCuponesActivos);
-            });
-            path("/validos", () -> {
-                get(this::obtenerCuponesValidos);
-            });
         });
     }
 
+    private void crearCupon(Context ctx) {
+        CuponDescuento cupon = ctx.bodyAsClass(CuponDescuento.class);
+        CuponDescuento cuponCreado = cuponDescuentoService.crearCupon(cupon);
+        ctx.status(201).json(new Mensaje("Cupón creado", cuponCreado));
+    }    
+    
     private void obtenerTodosLosCupones(Context ctx) {
         List<CuponDescuento> cupones = cuponDescuentoService.obtenerTodosLosCupones();
-        if (cupones.isEmpty()) {
-            ctx.status(204).json(new Mensaje("No hay cupones disponibles", null));
-            return;
-        }
         ctx.status(200).json(new Mensaje("Lista de cupones", cupones));
     }
+    
+    private void obtenerCuponesActivos(Context ctx) {
+        List<CuponDescuento> cupones = cuponDescuentoService.obtenerCuponesActivos();
+        ctx.status(200).json(new Mensaje("Lista de cupones activos", cupones));
+    }
 
-    private void obtenerCuponPorId(Context ctx) {
-        int id = Integer.parseInt(ctx.pathParam("id"));
-        CuponDescuento cupon = cuponDescuentoService.obtenerCuponPorId(id);
-        
-        if (cupon != null) {
-            ctx.status(200).json(new Mensaje("Cupón encontrado", cupon));
-        } else {
-            throw new NotFoundResponse("Cupón no encontrado");
-        }
+    private void obtenerCuponesValidos(Context ctx) {
+        List<CuponDescuento> cupones = cuponDescuentoService.obtenerCuponesValidos();
+        ctx.status(200).json(new Mensaje("Lista de cupones válidos", cupones));
     }
 
     private void obtenerCuponPorCodigo(Context ctx) {
@@ -73,10 +74,15 @@ public class CuponDescuentoController {
         }
     }
 
-    private void crearCupon(Context ctx) {
-        CuponDescuento cupon = ctx.bodyAsClass(CuponDescuento.class);
-        CuponDescuento cuponCreado = cuponDescuentoService.crearCupon(cupon);
-        ctx.status(201).json(new Mensaje("Cupón creado", cuponCreado));
+    private void obtenerCuponPorId(Context ctx) {
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        CuponDescuento cupon = cuponDescuentoService.obtenerCuponPorId(id);
+        
+        if (cupon != null) {
+            ctx.status(200).json(new Mensaje("Cupón encontrado", cupon));
+        } else {
+            throw new NotFoundResponse("Cupón no encontrado");
+        }
     }
 
     private void actualizarCupon(Context ctx) {
@@ -97,16 +103,6 @@ public class CuponDescuentoController {
         } else {
             throw new NotFoundResponse("Cupón no encontrado");
         }
-    }
-
-    private void obtenerCuponesActivos(Context ctx) {
-        List<CuponDescuento> cupones = cuponDescuentoService.obtenerCuponesActivos();
-        ctx.status(200).json(cupones);
-    }
-
-    private void obtenerCuponesValidos(Context ctx) {
-        List<CuponDescuento> cupones = cuponDescuentoService.obtenerCuponesValidos();
-        ctx.status(200).json(cupones);
     }
 
     private void activarCupon(Context ctx) {
