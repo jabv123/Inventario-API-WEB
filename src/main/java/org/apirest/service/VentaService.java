@@ -32,7 +32,6 @@ public class VentaService {
          * Con esto completamos los detalles de la venta
          */
 
-         //TODO: Implementar la reducción de stock de productos
         // Obtener el cliente desde la venta
         int idCliente = venta.getIdCliente();
         // Obtener carrito del cliente
@@ -80,6 +79,7 @@ public class VentaService {
         return ventaGuardada;
     }
 
+    //TODO: Recomendacion, implementar un metodo para actulizar stock de un producto, no solo reducirlo si no aumentarlo en caso de devoluciones
     public Venta actualizarVenta(Venta venta) {
         return ventaRepository.update(venta);
     }
