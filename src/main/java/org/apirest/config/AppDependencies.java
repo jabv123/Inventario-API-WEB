@@ -20,6 +20,8 @@ import org.apirest.repository.ItemCarritoRepo;
 import org.apirest.service.ImgProductoService;
 import org.apirest.repository.CuponDescuentoRepo;
 import org.apirest.service.CuponDescuentoService;
+import org.apirest.repository.AjusteStockRepo;
+import org.apirest.service.AjusteStockService;
 
 public class AppDependencies {
 
@@ -57,9 +59,13 @@ public class AppDependencies {
     private final DetalleVentaRepo detalleVentaRepository;
     private final VentaService ventaService;
 
-    // Para cupones de descuento
+  // Para cupones de descuento
     private final CuponDescuentoRepo cuponDescuentoRepository;
     private final CuponDescuentoService cuponDescuentoService;
+
+    // Para ajustes de stock
+    private final AjusteStockRepo ajusteStockRepository;
+    private final AjusteStockService ajusteStockService;
 
     public AppDependencies() {
         // Productos
@@ -97,6 +103,10 @@ public class AppDependencies {
         ventaRepository = new VentaRepo();
         detalleVentaRepository = new DetalleVentaRepo();
         ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService, cuponDescuentoService);
+
+        // Ajustes de stock
+        ajusteStockRepository = new AjusteStockRepo();
+        ajusteStockService = new AjusteStockService(ajusteStockRepository, productoService);
     }
 
     // Getters para los servicios
@@ -126,11 +136,17 @@ public class AppDependencies {
 
     public CarritoService getCarritoService() {
         return carritoService;
-    }    public VentaService getVentaService() {
+    }    
+    
+    public VentaService getVentaService() {
         return ventaService;
     }
 
     public CuponDescuentoService getCuponDescuentoService() {
         return cuponDescuentoService;
+    }
+
+    public AjusteStockService getAjusteStockService() {
+        return ajusteStockService;
     }
 }
