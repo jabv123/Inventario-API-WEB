@@ -28,11 +28,14 @@ public class AjusteStockRepo {
                 .orElse(null);
     }
 
-    public AjusteStock getByCliente(int idCliente) {
-        return ajustes.stream()
-                .filter(ajuste -> ajuste.getIdUsuario() == idCliente)
-                .findFirst()
-                .orElse(null);
+    public List<AjusteStock> getByUsuario(int idUsuario) {
+        List<AjusteStock> result = new ArrayList<>();
+        for (AjusteStock ajuste : ajustes) {
+            if (ajuste.getIdUsuario() == idUsuario) {
+                result.add(ajuste);
+            }
+        }
+        return result;
     }
 
     public List<AjusteStock> getByProducto(int idProducto) {

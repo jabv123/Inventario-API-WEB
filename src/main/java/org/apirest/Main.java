@@ -1,5 +1,6 @@
 package org.apirest;
 
+import org.apirest.Controllers.AjusteStockController;
 import org.apirest.Controllers.CarritoController;
 import org.apirest.Controllers.CategoriaController;
 import org.apirest.Controllers.ClienteController;
@@ -30,6 +31,7 @@ public class Main {
         CarritoService carritoService = appConfig.getCarritoService();
         VentaService ventaService = appConfig.getVentaService();
         CuponDescuentoService cuponDescuentoService = appConfig.getCuponDescuentoService();
+        AjusteStockService ajusteStockService = appConfig.getAjusteStockService();
         
         // Controladores
         ProductoController productoController = new ProductoController(productoService);
@@ -41,6 +43,7 @@ public class Main {
         CarritoController carritoController = new CarritoController(carritoService);
         VentaController ventaController = new VentaController(ventaService);
         CuponDescuentoController cuponDescuentoController = new CuponDescuentoController(cuponDescuentoService);
+        AjusteStockController ajusteStockController = new AjusteStockController(ajusteStockService);
 
         // Configuración del servidor Javalin
         Javalin app = Javalin.create(config -> {
@@ -55,6 +58,7 @@ public class Main {
                 carritoController.rutasCarrito();
                 ventaController.rutasVentas();
                 cuponDescuentoController.rutasCupones();
+                ajusteStockController.rutasAjustesStock();
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
             // config.showJavalinBanner = false;

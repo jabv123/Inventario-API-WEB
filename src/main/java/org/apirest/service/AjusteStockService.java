@@ -30,8 +30,8 @@ public class AjusteStockService {
         return ajusteStockRepo.getByProducto(idProducto);
     }
 
-    public AjusteStock obtenerAjustesPorUsuario(int idUsuario) {
-        return ajusteStockRepo.getByCliente(idUsuario);
+    public List<AjusteStock> obtenerAjustesPorUsuario(int idUsuario) {
+        return ajusteStockRepo.getByUsuario(idUsuario);
     }
 
     public AjusteStock actualizarAjuste(AjusteStock ajuste) {
