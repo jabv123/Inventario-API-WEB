@@ -80,9 +80,41 @@ public class MetodoPagoService {
         return metodos; // Retorna todos los métodos de pago encontrados
     }
 
+    // Actualizar método de pago incluyendo sus detalles
     public MetodoPago actualizarMetodoPago(MetodoPago metodoPago) {
         validarMetodoPago(metodoPago.getId());
-        return metodoPagoRepo.update(metodoPago);
+        
+        // Actualizar el método de pago principal
+        MetodoPago metodoPagoActualizado = metodoPagoRepo.update(metodoPago);
+        
+        // Si se proporcionan detalles, actualizarlos
+        if (metodoPago.getDetalles() != null && !metodoPago.getDetalles().isEmpty()) {
+            // Eliminar los detalles existentes
+            detalleMetodoPagoRepo.deleteByMetodoPago(metodoPago.getId());
+            
+            // Agregar los nuevos detalles
+            List<DetalleMetodoPago> detallesGuardados = new ArrayList<>();
+            for (DetalleMetodoPago detalle : metodoPago.getDetalles()) {
+                if (detalle == null) {
+                    throw new IllegalArgumentException("Los detalles del método de pago no pueden ser nulos.");
+                }
+                
+                if (detalle.getValor() == null || detalle.getValor().isEmpty()) {
+                    throw new IllegalArgumentException("El valor del detalle del método de pago no puede ser nulo o vacío.");
+                }
+                
+                if (detalle.getClave() == null || detalle.getClave().isEmpty()) {
+                    throw new IllegalArgumentException("La clave del detalle del método de pago no puede ser nula o vacía.");
+                }
+                
+                detalle.setIdMetodoPago(metodoPago.getId());
+                DetalleMetodoPago detalleGuardado = detalleMetodoPagoRepo.save(detalle);
+                detallesGuardados.add(detalleGuardado);
+            }
+            metodoPagoActualizado.setDetalles(detallesGuardados);
+        }
+        
+        return metodoPagoActualizado;
     }
 
     public List<DetalleMetodoPago> obtenerDetalleMetodoPago(int idMetodoPago) {
@@ -111,7 +143,6 @@ public class MetodoPagoService {
         }
         return actualizado;
     }
-
 
     //Metodo auxiliar para validar cliente
     private void validarCliente(int idCliente) {

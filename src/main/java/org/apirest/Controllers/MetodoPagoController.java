@@ -56,7 +56,7 @@ public class MetodoPagoController {
         MetodoPago metodoPago = ctx.bodyAsClass(MetodoPago.class);
         metodoPago.setId(idMetodoPago);
         MetodoPago metodoPagoActualizado = metodoPagoService.actualizarMetodoPago(metodoPago);
-        ctx.status(200).json(new Mensaje("Método de pago actualizado exitosamente", metodoPagoActualizado));
+        ctx.status(200).json(new Mensaje("Método de pago y detalles actualizados exitosamente", metodoPagoActualizado));
     }
 
     private void obtenerMetodosPagoPorCliente(Context ctx) {
@@ -76,5 +76,4 @@ public class MetodoPagoController {
         }
         ctx.status(200).json(new Mensaje("Detalles del método de pago obtenidos exitosamente", detalles));
     }
-
 }
