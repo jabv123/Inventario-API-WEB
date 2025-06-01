@@ -109,19 +109,19 @@ public class AppDependencies {
         cuponDescuentoRepository = new CuponDescuentoRepo();
         cuponDescuentoService = new CuponDescuentoService(cuponDescuentoRepository);
 
-        // Ventas
-        ventaRepository = new VentaRepo();
-        detalleVentaRepository = new DetalleVentaRepo();
-        ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService, cuponDescuentoService);
-
-        // Ajustes de stock
-        ajusteStockRepository = new AjusteStockRepo();
-        ajusteStockService = new AjusteStockService(ajusteStockRepository, productoService);
-
         // Metodos de pago
         metodoPagoRepository = new MetodoPagoRepo();
         detalleMetodoPagoRepository = new DetalleMetodoPagoRepo();
         metodoPagoService = new MetodoPagoService(metodoPagoRepository,  detalleMetodoPagoRepository, clienteService);
+
+        // Ventas
+        ventaRepository = new VentaRepo();
+        detalleVentaRepository = new DetalleVentaRepo();
+        ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService, cuponDescuentoService, metodoPagoService);
+
+        // Ajustes de stock
+        ajusteStockRepository = new AjusteStockRepo();
+        ajusteStockService = new AjusteStockService(ajusteStockRepository, productoService);
     }
 
     // Getters para los servicios

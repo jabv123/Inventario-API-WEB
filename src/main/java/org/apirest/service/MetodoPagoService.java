@@ -80,6 +80,33 @@ public class MetodoPagoService {
         return metodos; // Retorna todos los métodos de pago encontrados
     }
 
+    public MetodoPago obtenerMetodoPagoParaVenta(int idCliente, int idMetodoPago) {
+        // Validar que el cliente existe
+        validarCliente(idCliente);
+        
+        // Validar que el método de pago existe
+        validarMetodoPago(idMetodoPago);
+        
+        // Obtener el método de pago
+        MetodoPago metodoPago = metodoPagoRepo.findById(idMetodoPago);
+        
+        // Validar que el método de pago pertenece al cliente
+        if (metodoPago.getIdCliente() != idCliente) {
+            throw new IllegalArgumentException("El método de pago con ID: " + idMetodoPago + " no pertenece al cliente con ID: " + idCliente);
+        }
+        
+        // Validar que el método de pago está activo
+        if (!metodoPago.isActivo()) {
+            throw new IllegalArgumentException("El método de pago con ID: " + idMetodoPago + " no está activo");
+        }
+        
+        // Obtener los detalles del método de pago
+        List<DetalleMetodoPago> detalles = detalleMetodoPagoRepo.findByMetodoPago(idMetodoPago);
+        metodoPago.setDetalles(detalles);
+        
+        return metodoPago;
+    }
+
     // Actualizar método de pago incluyendo sus detalles
     public MetodoPago actualizarMetodoPago(MetodoPago metodoPago) {
         validarMetodoPago(metodoPago.getId());
