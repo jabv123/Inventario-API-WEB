@@ -2,7 +2,7 @@ package org.apirest.modelo;
 
 import java.time.LocalDate;
 import java.util.List;
-
+//TODO: Implementar MetodoPago
 public class Venta {    private int id;
     private LocalDate fechaVenta;
     private int idCliente;
