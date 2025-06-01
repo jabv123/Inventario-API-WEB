@@ -25,6 +25,13 @@ public class DetalleMetodoPagoRepo {
                 .orElse(null);
     }
 
+    public DetalleMetodoPago findByMetodoPago(int idMetodoPago) {
+        return detalles.stream()
+                .filter(detalle -> detalle.getIdMetodoPago() == idMetodoPago)
+                .findFirst()
+                .orElse(null);
+    }
+
     public boolean deleteByMetodoPago(int idMetodoPago) {
         return detalles.removeIf(detalle -> detalle.getIdMetodoPago() == idMetodoPago);
     }

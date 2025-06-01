@@ -59,7 +59,7 @@ public class MetodoPagoRepo {
     }
 
     // Eliminacion o actualizacion logica
-    public boolean updateActivoById(int id, boolean activo) {
+    public boolean updateActivo(int id, boolean activo) {
         for (MetodoPago metodo : metodosPago) {
             if (metodo.getId() == id) {
                 metodo.setActivo(activo);
