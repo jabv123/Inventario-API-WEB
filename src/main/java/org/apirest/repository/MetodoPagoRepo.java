@@ -48,10 +48,8 @@ public class MetodoPagoRepo {
                 if(metodoPago.getTipoPago() != null) {
                     mp.setTipoPago(metodoPago.getTipoPago());
                 }
-                if(metodoPago.getDetalles() != null) {
-                    mp.setDetalles(metodoPago.getDetalles());
-                }
                 mp.setActivo(metodoPago.isActivo());
+                return mp;
             }
         }
         return null;

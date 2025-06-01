@@ -9,6 +9,8 @@ import org.apirest.modelo.MetodoPago;
 import org.apirest.repository.DetalleMetodoPagoRepo;
 import org.apirest.repository.MetodoPagoRepo;
 
+import io.javalin.http.NotFoundResponse;
+
 public class MetodoPagoService {
 
     private final MetodoPagoRepo metodoPagoRepo;
@@ -79,13 +81,10 @@ public class MetodoPagoService {
     }
 
     public MetodoPago actualizarMetodoPago(MetodoPago metodoPago) {
-        if (metodoPago == null || metodoPago.getId() <= 0) {
-            throw new IllegalArgumentException("El método de pago no puede ser nulo y debe tener un ID válido.");
-        }
+        validarMetodoPago(metodoPago.getId());
         return metodoPagoRepo.update(metodoPago);
     }
 
-    // TODO: Ver flujo ya que aqui solo se trae un detalle, pero se pueden tener varios
     public List<DetalleMetodoPago> obtenerDetalleMetodoPago(int idMetodoPago) {
         validarMetodoPago(idMetodoPago);
         List<DetalleMetodoPago> detalles = detalleMetodoPagoRepo.findByMetodoPago(idMetodoPago);
@@ -114,11 +113,11 @@ public class MetodoPagoService {
     }
 
 
-    //Metodo auxiliar para validar cliente y metodo de pago
+    //Metodo auxiliar para validar cliente
     private void validarCliente(int idCliente) {
         Cliente cliente = clienteService.listarClientePorId(idCliente);
         if (cliente == null) {
-            throw new IllegalArgumentException("Cliente no encontrado con ID: " + idCliente);
+            throw new NotFoundResponse("Cliente no encontrado con ID: " + idCliente);
         }
     }
 
@@ -126,7 +125,7 @@ public class MetodoPagoService {
     private void validarMetodoPago(int idMetodoPago) {
         MetodoPago metodoPago = metodoPagoRepo.findById(idMetodoPago);
         if (metodoPago == null) {
-            throw new IllegalArgumentException("Método de pago no encontrado con ID: " + idMetodoPago);
+            throw new NotFoundResponse("Método de pago no encontrado con ID: " + idMetodoPago);
         }
     }
 
