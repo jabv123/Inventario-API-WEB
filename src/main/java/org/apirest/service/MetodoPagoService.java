@@ -137,6 +137,13 @@ public class MetodoPagoService {
 
     public boolean actualizarEstadoMetodoPago(int idMetodoPago, boolean estado) {
         validarMetodoPago(idMetodoPago);
+
+        // Verificar si el estado a actualizar es el mismo que el actual
+        MetodoPago metodoPago = metodoPagoRepo.findById(idMetodoPago);
+        if (metodoPago.isActivo() == estado) {
+            throw new IllegalArgumentException("El estado del método de pago con ID: " + idMetodoPago + " ya es " + estado);
+        }
+
         boolean actualizado = metodoPagoRepo.updateActivo(idMetodoPago, estado);
         if (!actualizado) {
             throw new IllegalArgumentException("No se pudo actualizar el estado del método de pago con ID: " + idMetodoPago);

@@ -1,6 +1,7 @@
 package org.apirest.Controllers;
 
 import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.patch;
 import static io.javalin.apibuilder.ApiBuilder.path;
 import static io.javalin.apibuilder.ApiBuilder.post;
 import static io.javalin.apibuilder.ApiBuilder.put;
@@ -33,6 +34,7 @@ public class MetodoPagoController {
             });
             path("{id}", () -> {
                 put(this::actualizarMetodoPago);
+                patch(this::actualizarEstadoMetodoPago);
             });
             path("/{id}/detalles", () -> {
                 get(this::obtenerDetallesMetodoPago);
@@ -57,6 +59,13 @@ public class MetodoPagoController {
         metodoPago.setId(idMetodoPago);
         MetodoPago metodoPagoActualizado = metodoPagoService.actualizarMetodoPago(metodoPago);
         ctx.status(200).json(new Mensaje("Método de pago y detalles actualizados exitosamente", metodoPagoActualizado));
+    }
+
+    private void actualizarEstadoMetodoPago(Context ctx) {
+        int idMetodoPago = Integer.parseInt(ctx.pathParam("id"));
+        boolean estado = Boolean.parseBoolean(ctx.queryParam("estado"));
+        boolean metodoPagoActualizado = metodoPagoService.actualizarEstadoMetodoPago(idMetodoPago, estado);
+        ctx.status(200).json(new Mensaje("Estado del método de pago actualizado exitosamente", metodoPagoActualizado));
     }
 
     private void obtenerMetodosPagoPorCliente(Context ctx) {
