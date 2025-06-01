@@ -17,8 +17,11 @@ import org.apirest.service.UsuarioService;
 import org.apirest.service.VentaService;
 import org.apirest.repository.ImgProductoRepo;
 import org.apirest.repository.ItemCarritoRepo;
+import org.apirest.repository.MetodoPagoRepo;
 import org.apirest.service.ImgProductoService;
+import org.apirest.service.MetodoPagoService;
 import org.apirest.repository.CuponDescuentoRepo;
+import org.apirest.repository.DetalleMetodoPagoRepo;
 import org.apirest.service.CuponDescuentoService;
 import org.apirest.repository.AjusteStockRepo;
 import org.apirest.service.AjusteStockService;
@@ -59,13 +62,18 @@ public class AppDependencies {
     private final DetalleVentaRepo detalleVentaRepository;
     private final VentaService ventaService;
 
+    // Para ajustes de stock
+    private final AjusteStockRepo ajusteStockRepository;
+    private final AjusteStockService ajusteStockService;
+
   // Para cupones de descuento
     private final CuponDescuentoRepo cuponDescuentoRepository;
     private final CuponDescuentoService cuponDescuentoService;
 
-    // Para ajustes de stock
-    private final AjusteStockRepo ajusteStockRepository;
-    private final AjusteStockService ajusteStockService;
+    // Para métodos de pago
+    private final MetodoPagoRepo metodoPagoRepository;
+    private final DetalleMetodoPagoRepo detalleMetodoPagoRepository;
+    private final MetodoPagoService metodoPagoService;
 
     public AppDependencies() {
         // Productos
@@ -90,7 +98,9 @@ public class AppDependencies {
 
         // Imágenes de Productos
         imgProductoRepository = new ImgProductoRepo();
-        imgProductoService = new ImgProductoService(imgProductoRepository);        // Carritos
+        imgProductoService = new ImgProductoService(imgProductoRepository);        
+        
+        // Carritos
         carritoRepository = new CarritoRepo();
         itemCarritoRepository = new ItemCarritoRepo();
         carritoService = new CarritoService(carritoRepository, itemCarritoRepository, productoService);
@@ -107,6 +117,11 @@ public class AppDependencies {
         // Ajustes de stock
         ajusteStockRepository = new AjusteStockRepo();
         ajusteStockService = new AjusteStockService(ajusteStockRepository, productoService);
+
+        // Metodos de pago
+        metodoPagoRepository = new MetodoPagoRepo();
+        detalleMetodoPagoRepository = new DetalleMetodoPagoRepo();
+        metodoPagoService = new MetodoPagoService(metodoPagoRepository,  detalleMetodoPagoRepository, clienteService);
     }
 
     // Getters para los servicios
@@ -148,5 +163,9 @@ public class AppDependencies {
 
     public AjusteStockService getAjusteStockService() {
         return ajusteStockService;
+    }
+
+    public MetodoPagoService getMetodoPagoService() {
+        return metodoPagoService;
     }
 }

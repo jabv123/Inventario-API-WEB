@@ -1,5 +1,6 @@
 package org.apirest.modelo;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class MetodoPago {
@@ -8,12 +9,12 @@ public class MetodoPago {
     private String tipoPago; // Ejemplo: "Tarjeta de Crédito", "PayPal", etc.
     private List<DetalleMetodoPago> detalles; // Detalles del método de pago, como el número de tarjeta (enmascarado), fecha de vencimiento, etc.
     private boolean activo; // Indica si el método de pago está activo o no
-    private String fechaCreacion; // Fecha de creación del método de pago
+    private LocalDate fechaCreacion; // Fecha de creación del método de pago
 
     public MetodoPago() {
     }
 
-    public MetodoPago(int idCliente, String tipoPago, List<DetalleMetodoPago> detalles, boolean activo, String fechaCreacion) {
+    public MetodoPago(int idCliente, String tipoPago, List<DetalleMetodoPago> detalles, boolean activo, LocalDate fechaCreacion) {
         this.idCliente = idCliente;
         this.tipoPago = tipoPago;
         this.detalles = detalles;
@@ -56,10 +57,10 @@ public class MetodoPago {
         this.activo = activo;
     }
 
-    public String getFechaCreacion() {
+    public LocalDate getFechaCreacion() {
         return fechaCreacion;
     }
-    public void setFechaCreacion(String fechaCreacion) {
+    public void setFechaCreacion(LocalDate fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 }

@@ -1,5 +1,6 @@
 package org.apirest.repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,10 +14,13 @@ public class MetodoPagoRepo {
 
     public MetodoPago save(MetodoPago metodoPago) {
         metodoPago.setId(id.getAndIncrement());
-        metodoPago.setDetalles(new ArrayList<>()); // Inicializar la lista de detalles
-        metodoPago.setFechaCreacion(java.time.LocalDateTime.now().toString());
+        metodoPago.setFechaCreacion(LocalDate.now());
         metodosPago.add(metodoPago);
         return metodoPago;
+    }
+
+    public List<MetodoPago> findAll() {
+        return new ArrayList<>(metodosPago);
     }
 
     public MetodoPago findById(int id) {

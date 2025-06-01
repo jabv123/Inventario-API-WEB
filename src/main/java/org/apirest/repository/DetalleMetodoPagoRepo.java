@@ -25,11 +25,10 @@ public class DetalleMetodoPagoRepo {
                 .orElse(null);
     }
 
-    public DetalleMetodoPago findByMetodoPago(int idMetodoPago) {
+    public List<DetalleMetodoPago> findByMetodoPago(int idMetodoPago) {
         return detalles.stream()
                 .filter(detalle -> detalle.getIdMetodoPago() == idMetodoPago)
-                .findFirst()
-                .orElse(null);
+                .toList();
     }
 
     public boolean deleteByMetodoPago(int idMetodoPago) {
