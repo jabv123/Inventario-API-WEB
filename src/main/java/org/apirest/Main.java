@@ -6,6 +6,7 @@ import org.apirest.Controllers.CategoriaController;
 import org.apirest.Controllers.ClienteController;
 import org.apirest.Controllers.CuponDescuentoController;
 import org.apirest.Controllers.ImgProductoController;
+import org.apirest.Controllers.LogSistemaController;
 import org.apirest.Controllers.MetodoPagoController;
 import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
@@ -34,6 +35,7 @@ public class Main {
         CuponDescuentoService cuponDescuentoService = appConfig.getCuponDescuentoService();
         AjusteStockService ajusteStockService = appConfig.getAjusteStockService();
         MetodoPagoService metodoPagoService = appConfig.getMetodoPagoService();
+        LogSistemaService logSistemaService = appConfig.getLogSistemaService();
         
         // Controladores
         ProductoController productoController = new ProductoController(productoService);
@@ -47,6 +49,7 @@ public class Main {
         CuponDescuentoController cuponDescuentoController = new CuponDescuentoController(cuponDescuentoService);
         AjusteStockController ajusteStockController = new AjusteStockController(ajusteStockService);
         MetodoPagoController metodoPagoController = new MetodoPagoController(metodoPagoService);
+        LogSistemaController logSistemaController = new LogSistemaController(logSistemaService);
 
         // Configuración del servidor Javalin
         Javalin app = Javalin.create(config -> {
@@ -63,6 +66,7 @@ public class Main {
                 cuponDescuentoController.rutasCupones();
                 ajusteStockController.rutasAjustesStock();
                 metodoPagoController.rutasMetodoPago();
+                logSistemaController.rutasLogSistema();
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
             config.showJavalinBanner = false;

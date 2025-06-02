@@ -17,8 +17,10 @@ import org.apirest.service.UsuarioService;
 import org.apirest.service.VentaService;
 import org.apirest.repository.ImgProductoRepo;
 import org.apirest.repository.ItemCarritoRepo;
+import org.apirest.repository.LogSistemaRepo;
 import org.apirest.repository.MetodoPagoRepo;
 import org.apirest.service.ImgProductoService;
+import org.apirest.service.LogSistemaService;
 import org.apirest.service.MetodoPagoService;
 import org.apirest.repository.CuponDescuentoRepo;
 import org.apirest.repository.DetalleMetodoPagoRepo;
@@ -75,27 +77,35 @@ public class AppDependencies {
     private final DetalleMetodoPagoRepo detalleMetodoPagoRepository;
     private final MetodoPagoService metodoPagoService;
 
+    // Para logs del sistema
+    private final LogSistemaRepo logSistemaRepository;
+    private final LogSistemaService logSistemaService;
+    
     public AppDependencies() {
+        // Inicializar el servicio de logs del sistema
+        logSistemaRepository = new LogSistemaRepo();
+        logSistemaService = new LogSistemaService(logSistemaRepository);
+        
         // Productos
         productoRepository = new ProductoRepo();
         productoService = new ProductoService(productoRepository);
-
+        
         // Categorías
         categoriaRepository = new CategoriaRepo();
         categoriaService = new CategoriaService(categoriaRepository);
-
+        
         // Proveedores
         proveedorRepository = new ProveedorRepo();
         proveedorService = new ProveedorService(proveedorRepository);
-
+        
         // Clientes
         clienteRepository = new ClienteRepo();
         clienteService = new ClienteService(clienteRepository);
-
+        
         // Usuarios
         usuarioRepository = new UsuarioRepo();
-        usuarioService = new UsuarioService(usuarioRepository);
-
+        usuarioService = new UsuarioService(usuarioRepository, logSistemaService);
+        
         // Imágenes de Productos
         imgProductoRepository = new ImgProductoRepo();
         imgProductoService = new ImgProductoService(imgProductoRepository);        
@@ -167,5 +177,9 @@ public class AppDependencies {
 
     public MetodoPagoService getMetodoPagoService() {
         return metodoPagoService;
+    }
+
+    public LogSistemaService getLogSistemaService() {
+        return logSistemaService;
     }
 }

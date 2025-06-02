@@ -8,8 +8,11 @@ import org.apirest.repository.UsuarioRepo;
 public class UsuarioService {
 
     private final UsuarioRepo usuarioRepo;
-    public UsuarioService(UsuarioRepo usuarioRepo) {
+    private final LogSistemaService logSistemaService;
+
+    public UsuarioService(UsuarioRepo usuarioRepo, LogSistemaService logSistemaService) {
         this.usuarioRepo = usuarioRepo;
+        this.logSistemaService = logSistemaService;
     }
 
     //Listar todos los usuarios
@@ -24,14 +27,18 @@ public class UsuarioService {
 
     //Crear usuario
     public Usuario createUsuario(Usuario usuario) {
-        return usuarioRepo.createUsuario(usuario);
+        Usuario usuarioGuardado = usuarioRepo.createUsuario(usuario);
+        logSistemaService.registrarLog("Crear usuario", usuario.getIdUsuario());
+        return usuarioGuardado;
     }
     //Actualizar usuario
     public Usuario actualizarUsuario(Usuario usuarioActualizar) {
+        logSistemaService.registrarLog("Actualizar usuario", usuarioActualizar.getIdUsuario());
         return usuarioRepo.actualizarUsuario(usuarioActualizar);
     }
     //Eliminar usuario
     public boolean eliminarUsuario(int idUsuario) {
+        logSistemaService.registrarLog("Eliminar usuario", idUsuario);
         return usuarioRepo.eliminarUsuario(idUsuario);
     }
 

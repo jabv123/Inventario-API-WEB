@@ -8,15 +8,13 @@ public class LogSistema {
     private LocalDateTime fecha;
     private String mensaje;
     private int idReferencia;
-    private String nombre;
 
     public LogSistema(){}
 
-    public LogSistema(LocalDateTime fecha, String mensaje, int idReferencia, String nombre) {
+    public LogSistema(LocalDateTime fecha, String mensaje, int idReferencia) {
         this.fecha = fecha;
         this.mensaje = mensaje;
         this.idReferencia = idReferencia;
-        this.nombre = nombre;
     }
 
     public int getId() {
@@ -45,12 +43,5 @@ public class LogSistema {
     }
     public void setIdReferencia(int idReferencia) {
         this.idReferencia = idReferencia;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
     }
 }
