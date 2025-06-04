@@ -2,10 +2,10 @@ package org.apirest.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.Context;
-import io.javalin.http.NotFoundResponse; // Importar NotFoundResponse
+import io.javalin.http.NotFoundResponse;
 import org.apirest.modelo.EnvioSimulado;
 import org.apirest.service.EnvioSimuladoService;
-import org.apirest.Util.ResponseUtil; // Asumiendo que ResponseUtil es tu clase para envolver respuestas
+import org.apirest.Util.ResponseUtil;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,14 +16,14 @@ public class EnvioSimuladoController {
     private final EnvioSimuladoService envioService;
     private final ObjectMapper objectMapper; // Aunque ObjectMapper se usa internamente, se mantiene aquí
 
-    // 1. Modificar el constructor para inyectar el servicio
+    // constructor para inyectar el servicio
     public EnvioSimuladoController(EnvioSimuladoService envioService) {
         this.envioService = envioService; // Asignar el servicio inyectado
         this.objectMapper = new ObjectMapper();
         this.objectMapper.findAndRegisterModules();
     }
 
-    // 2. Crear el método que define las rutas
+    // método que define las rutas
     public void rutasEnvios() {
         path("/api/envios", () -> {
             post(this::crearEnvio);
@@ -35,15 +35,11 @@ public class EnvioSimuladoController {
                 delete(this::eliminarEnvio);
             });
 
-            // Rutas adicionales que tenías
             get("/venta/{idVenta}", this::obtenerEnvioPorVenta);
             put("/{id}/estado", this::actualizarEstadoEnvio); // Ojo: esta ruta usa un queryParam para 'estado'
         });
     }
 
-    // Métodos de manejo de solicitudes (handlers)
-    // No necesitan cambios sustanciales, solo se asegurarían de manejar sus propias excepciones.
-    // He agregado el lanzamiento de NotFoundResponse explícitamente para seguir el patrón de VentaController.
 
     private void crearEnvio(Context ctx) {
         try {
