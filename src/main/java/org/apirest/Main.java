@@ -9,6 +9,7 @@ import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
 import org.apirest.Controllers.VentaController;
+import org.apirest.Controllers.EnvioSimuladoController; // Asegúrate de que esta importación esté
 import org.apirest.config.AppDependencies;
 import org.apirest.config.ExceptionsConfig;
 import org.apirest.service.*;
@@ -19,8 +20,9 @@ public class Main {
     public static void main(String[] args) {
         // Configuración centralizada de dependencias
         AppDependencies appConfig = new AppDependencies();
-        
+
         // Obtener servicios desde AppConfig
+        EnvioSimuladoService envioSimuladoService = appConfig.getEnvioSimuladoService(); // <-- CAMBIO AQUÍ
         ProductoService productoService = appConfig.getProductoService();
         CategoriaService categoriaService = appConfig.getCategoriaService();
         ProveedorService proveedorService = appConfig.getProveedorService();
@@ -30,8 +32,9 @@ public class Main {
         CarritoService carritoService = appConfig.getCarritoService();
         VentaService ventaService = appConfig.getVentaService();
         CuponDescuentoService cuponDescuentoService = appConfig.getCuponDescuentoService();
-        
+
         // Controladores
+        EnvioSimuladoController envioSimuladoController = new EnvioSimuladoController(envioSimuladoService); // <-- CAMBIO AQUÍ
         ProductoController productoController = new ProductoController(productoService);
         CategoriaController categoriaController = new CategoriaController(categoriaService);
         ProveedorController proveedorController = new ProveedorController(proveedorService);
@@ -55,6 +58,8 @@ public class Main {
                 carritoController.rutasCarrito();
                 ventaController.rutasVentas();
                 cuponDescuentoController.rutasCupones();
+                // No olvides añadir las rutas de EnvioSimuladoController
+                envioSimuladoController.rutasEnvios(); // <-- AGREGAR ESTA LÍNEA
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
             // config.showJavalinBanner = false;
