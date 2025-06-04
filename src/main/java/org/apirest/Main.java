@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] args) {
         // Configuración centralizada de dependencias
         AppDependencies appConfig = new AppDependencies();
-        
+
         // Obtener servicios desde AppConfig
         ProductoService productoService = appConfig.getProductoService();
         CategoriaService categoriaService = appConfig.getCategoriaService();
