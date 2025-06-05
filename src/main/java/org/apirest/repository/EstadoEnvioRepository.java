@@ -2,65 +2,43 @@ package org.apirest.repository;
 
 import org.apirest.modelo.EstadoEnvio;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class EstadoEnvioRepository {
-    private static EstadoEnvioRepository instance;
-    private final Map<String, EstadoEnvio> estados;
-    private final AtomicInteger idCounter;
-
-    private EstadoEnvioRepository() {
-        this.estados = new ConcurrentHashMap<>();
-        this.idCounter = new AtomicInteger(1);
-        initializeDefaultStates();
-    }
-
-    public static EstadoEnvioRepository getInstance() {
-        if (instance == null) {
-            instance = new EstadoEnvioRepository();
-        }
-        return instance;
-    }
-
-    private void initializeDefaultStates() {
-        save(new EstadoEnvio("1", "pendiente"));
-        save(new EstadoEnvio("2", "empaquetando"));
-        save(new EstadoEnvio("3", "en_transito"));
-        save(new EstadoEnvio("4", "entregado"));
-    }
+    private final List<EstadoEnvio> estados = Collections.synchronizedList(new ArrayList<>());
+    private final AtomicInteger idCounter = new AtomicInteger(1);
 
     public EstadoEnvio save(EstadoEnvio estado) {
-        if (estado.getId() == null || estado.getId().isEmpty()) {
-            estado.setId(String.valueOf(idCounter.getAndIncrement()));
-        }
-        estados.put(estado.getId(), estado);
+        estado.setId(idCounter.getAndIncrement());
+        estados.add(estado);
         return estado;
     }
 
-    public Optional<EstadoEnvio> findById(String id) {
-        return Optional.ofNullable(estados.get(id));
+    public Optional<EstadoEnvio> findById(int id) {
+        return estados.stream().filter(estado -> estado.getId() == id).findFirst();
     }
 
     public List<EstadoEnvio> findAll() {
-        return new ArrayList<>(estados.values());
+        return new ArrayList<>(estados);
     }
 
     public Optional<EstadoEnvio> findByNombre(String nombreEstado) {
-        return estados.values().stream()
+        return estados.stream()
                 .filter(estado -> estado.getNombreEstado().equalsIgnoreCase(nombreEstado))
                 .findFirst();
     }
 
-    public boolean deleteById(String id) {
-        return estados.remove(id) != null;
+    public boolean deleteById(int id) {
+        return estados.removeIf(estado -> estado.getId() == id);
     }
 
-    public EstadoEnvio update(String id, EstadoEnvio estadoActualizado) {
-        if (estados.containsKey(id)) {
-            estadoActualizado.setId(id);
-            estados.put(id, estadoActualizado);
-            return estadoActualizado;
+    public EstadoEnvio update(int id, EstadoEnvio estadoActualizado) {
+        for (int i = 0; i < estados.size(); i++) {
+            EstadoEnvio estado = estados.get(i);
+            if (estado.getId() == id) {
+                estados.set(i, estadoActualizado);
+                return estadoActualizado;
+            }
         }
         return null;
     }

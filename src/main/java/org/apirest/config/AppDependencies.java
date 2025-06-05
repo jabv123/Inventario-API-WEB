@@ -23,6 +23,7 @@ import org.apirest.repository.AjusteStockRepo;
 import org.apirest.service.AjusteStockService;
 
 import org.apirest.repository.EnvioSimuladoRepository;
+import org.apirest.repository.EstadoEnvioRepository;
 import org.apirest.service.EnvioSimuladoService;
 
 
@@ -81,8 +82,11 @@ public class AppDependencies {
     private final LogSistemaService logSistemaService;
     
     // Para envío simulado
-    private final EnvioSimuladoRepository envioSimuladoRepository; // Declaración
-    private final EnvioSimuladoService envioSimuladoService;       // Declaración
+    private final EnvioSimuladoRepository envioSimuladoRepository;
+    private final EnvioSimuladoService envioSimuladoService;
+
+    // Para estado de envío
+    private final EstadoEnvioRepository estadoEnvioRepository;
     private final EstadoEnvioService estadoEnvioService;
 
     // Constructor sin parámetros para que esta clase se encargue de inicializar todo
@@ -140,8 +144,12 @@ public class AppDependencies {
         ajusteStockService = new AjusteStockService(ajusteStockRepository, productoService);
 
         // Envio
-        this.envioSimuladoRepository = new EnvioSimuladoRepository();
-        this.envioSimuladoService = new EnvioSimuladoService(this.envioSimuladoRepository);
+        envioSimuladoRepository = new EnvioSimuladoRepository();
+        envioSimuladoService = new EnvioSimuladoService(envioSimuladoRepository);
+
+        // Estado de envío
+        estadoEnvioRepository = new EstadoEnvioRepository();
+        estadoEnvioService = new EstadoEnvioService(estadoEnvioRepository);
     }
 
     // Getters para los servicios
@@ -193,7 +201,7 @@ public class AppDependencies {
     public LogSistemaService getLogSistemaService() {
         return logSistemaService;
     }
-}
+
     // Getter para el servicio de envío simulado
     public EnvioSimuladoService getEnvioSimuladoService() {
         return envioSimuladoService;
@@ -201,6 +209,6 @@ public class AppDependencies {
 
     // Getter para el servicio de estado de envío -- Corrección
     public EstadoEnvioService getEstadoEnvioService(){
-        return estadoEnvioService; // Ahora retorna la instancia inicializada
+        return estadoEnvioService;
     }
 }

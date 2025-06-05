@@ -59,7 +59,7 @@ public class EstadoEnvioController {
     private void actualizarEstadoEnvio(Context ctx) {
         int id = Integer.parseInt(ctx.pathParam("id"));
         EstadoEnvio estadoEnvioActualizar = ctx.bodyAsClass(EstadoEnvio.class);
-        estadoEnvioActualizar.setId(String.valueOf(id)); // Asegúrate de que tu modelo EstadoEnvio tenga un método setId
+        estadoEnvioActualizar.setId(id); // Asegúrate de que tu modelo EstadoEnvio tenga un método setId
         EstadoEnvio estadoEnvioActualizado = estadoEnvioService.actualizarEstadoEnvio(estadoEnvioActualizar);
         if (estadoEnvioActualizado == null) {
             throw new NotFoundResponse("Estado de envío no encontrado");

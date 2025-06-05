@@ -7,21 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class EnvioSimuladoService {
-    private static EnvioSimuladoService instance;
     private final EnvioSimuladoRepository envioRepository;
-    private EnvioSimuladoRepository envioSimuladoRepository;
 
     public EnvioSimuladoService(EnvioSimuladoRepository envioSimuladoRepository) {
-        this.envioRepository = EnvioSimuladoRepository.getInstance();
+        this.envioRepository = envioSimuladoRepository;
     }
 
-    public EnvioSimuladoService getInstance() {
-        if (instance == null) {
-            instance = new EnvioSimuladoService(this.envioSimuladoRepository);
-        }
-        return instance;
-    }
-
+    
     public EnvioSimulado crearEnvio(EnvioSimulado envio) {
         // Establecer fecha de creación actual si no se proporciona
         if (envio.getFechaCreacion() == null) {
@@ -65,7 +57,7 @@ public class EnvioSimuladoService {
     public Optional<EnvioSimulado> actualizarEnvio(String id) {
         Optional<EnvioSimulado> envioExistente = envioRepository.findById(id);
         if (envioExistente.isPresent()) {
-            EnvioSimulado envioActualizado = null;
+            EnvioSimulado envioActualizado = envioExistente.get();
             envioActualizado.setFechaActualizacionEstado(LocalDateTime.now());
             return Optional.of(envioRepository.update(id, envioActualizado));
         }

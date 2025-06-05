@@ -6,25 +6,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class EstadoEnvioService {
-    private static EstadoEnvioService instance;
     private final EstadoEnvioRepository estadoRepository;
 
-    private EstadoEnvioService() {
-        this.estadoRepository = EstadoEnvioRepository.getInstance();
-    }
-
-    public static EstadoEnvioService getInstance() {
-        if (instance == null) {
-            instance = new EstadoEnvioService();
-        }
-        return instance;
+    public EstadoEnvioService(EstadoEnvioRepository estadoRepository) {
+        this.estadoRepository = estadoRepository;
     }
 
     public EstadoEnvio crearEstado(EstadoEnvio estado) {
         return estadoRepository.save(estado);
     }
 
-    public Optional<EstadoEnvio> obtenerEstadoPorId(String id) {
+    public Optional<EstadoEnvio> obtenerEstadoPorId(int id) {
         return estadoRepository.findById(id);
     }
 
@@ -36,7 +28,7 @@ public class EstadoEnvioService {
         return estadoRepository.findByNombre(nombreEstado);
     }
 
-    public Optional<EstadoEnvio> actualizarEstado(String id, EstadoEnvio estadoActualizado) {
+    public Optional<EstadoEnvio> actualizarEstado(int id, EstadoEnvio estadoActualizado) {
         Optional<EstadoEnvio> estadoExistente = estadoRepository.findById(id);
         if (estadoExistente.isPresent()) {
             return Optional.of(estadoRepository.update(id, estadoActualizado));
@@ -44,7 +36,7 @@ public class EstadoEnvioService {
         return Optional.empty();
     }
 
-    public boolean eliminarEstado(String id) {
+    public boolean eliminarEstado(int id) {
         return estadoRepository.deleteById(id);
     }
 
