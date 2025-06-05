@@ -3,7 +3,7 @@
 [![Java](https://img.shields.io/badge/Java-21%2B-orange.svg)](https://www.oracle.com/java/)
 [![Maven](https://img.shields.io/badge/Maven-3.6%2B-blue.svg)](https://maven.apache.org/)
 [![Javalin](https://img.shields.io/badge/Javalin-5.6-green.svg)](https://javalin.io/)
-
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/jabv123/Inventario-API-WEB)
 > **API REST para gestión de inventarios** desarrollada con Java 21 y Javalin (Soporte para Java 17+)
 
 **👥 Autores:** [Neider Guindigua](https://github.com/Neid-09) • [Andres Botina](https://github.com/jabv123)
