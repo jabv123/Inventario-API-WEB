@@ -7,18 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class FacturaService {
-    private static FacturaService instance;
     private final FacturaRepository facturaRepository;
 
-    private FacturaService() {
-        this.facturaRepository = FacturaRepository.getInstance();
-    }
-
-    public static FacturaService getInstance() {
-        if (instance == null) {
-            instance = new FacturaService();
-        }
-        return instance;
+    public FacturaService(FacturaRepository facturaRepository) {
+        this.facturaRepository = facturaRepository;
     }
 
     public Factura crearFactura(Factura factura) {
@@ -35,7 +27,7 @@ public class FacturaService {
         return facturaRepository.save(factura);
     }
 
-    public Optional<Factura> obtenerFacturaPorId(String id) {
+    public Optional<Factura> obtenerFacturaPorId(int id) {
         return facturaRepository.findById(id);
     }
 
@@ -43,11 +35,11 @@ public class FacturaService {
         return facturaRepository.findAll();
     }
 
-    public List<Factura> obtenerFacturasPorVenta(String idVenta) {
+    public List<Factura> obtenerFacturasPorVenta(int idVenta) {
         return facturaRepository.findByIdVenta(idVenta);
     }
 
-    public Optional<Factura> actualizarFactura(String id, Factura facturaActualizada) {
+    public Optional<Factura> actualizarFactura(int id, Factura facturaActualizada) {
         Optional<Factura> facturaExistente = facturaRepository.findById(id);
         if (facturaExistente.isPresent()) {
             return Optional.of(facturaRepository.update(id, facturaActualizada));
@@ -55,7 +47,7 @@ public class FacturaService {
         return Optional.empty();
     }
 
-    public boolean eliminarFactura(String id) {
+    public boolean eliminarFactura(int id) {
         return facturaRepository.deleteById(id);
     }
 
