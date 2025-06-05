@@ -11,9 +11,20 @@ import org.apirest.repository.UsuarioRepo;
 import org.apirest.repository.VentaRepo;
 import org.apirest.repository.ImgProductoRepo;
 import org.apirest.repository.ItemCarritoRepo;
+import org.apirest.repository.LogSistemaRepo;
+import org.apirest.repository.MetodoPagoRepo;
+import org.apirest.service.ImgProductoService;
+import org.apirest.service.LogSistemaService;
+import org.apirest.service.MetodoPagoService;
 import org.apirest.repository.CuponDescuentoRepo;
+import org.apirest.repository.DetalleMetodoPagoRepo;
+import org.apirest.service.CuponDescuentoService;
+import org.apirest.repository.AjusteStockRepo;
+import org.apirest.service.AjusteStockService;
+
 import org.apirest.repository.EnvioSimuladoRepository;
 import org.apirest.service.EnvioSimuladoService;
+
 
 
 public class AppDependencies {
@@ -52,40 +63,58 @@ public class AppDependencies {
     private final DetalleVentaRepo detalleVentaRepository;
     private final VentaService ventaService;
 
-    // Para cupones de descuento
+    // Para ajustes de stock
+    private final AjusteStockRepo ajusteStockRepository;
+    private final AjusteStockService ajusteStockService;
+
+  // Para cupones de descuento
     private final CuponDescuentoRepo cuponDescuentoRepository;
     private final CuponDescuentoService cuponDescuentoService;
 
+    // Para métodos de pago
+    private final MetodoPagoRepo metodoPagoRepository;
+    private final DetalleMetodoPagoRepo detalleMetodoPagoRepository;
+    private final MetodoPagoService metodoPagoService;
+
+    // Para logs del sistema
+    private final LogSistemaRepo logSistemaRepository;
+    private final LogSistemaService logSistemaService;
+    
     // Para envío simulado
     private final EnvioSimuladoRepository envioSimuladoRepository; // Declaración
     private final EnvioSimuladoService envioSimuladoService;       // Declaración
-    private EstadoEnvioService estadoEnvioService;
+    private final EstadoEnvioService estadoEnvioService;
 
     // Constructor sin parámetros para que esta clase se encargue de inicializar todo
     public AppDependencies() {
+        // Inicializar el servicio de logs del sistema
+        logSistemaRepository = new LogSistemaRepo();
+        logSistemaService = new LogSistemaService(logSistemaRepository);
+        
         // Productos
         productoRepository = new ProductoRepo();
         productoService = new ProductoService(productoRepository);
-
+        
         // Categorías
         categoriaRepository = new CategoriaRepo();
         categoriaService = new CategoriaService(categoriaRepository);
-
+        
         // Proveedores
         proveedorRepository = new ProveedorRepo();
         proveedorService = new ProveedorService(proveedorRepository);
-
+        
         // Clientes
         clienteRepository = new ClienteRepo();
         clienteService = new ClienteService(clienteRepository);
-
+        
         // Usuarios
         usuarioRepository = new UsuarioRepo();
-        usuarioService = new UsuarioService(usuarioRepository);
-
+        usuarioService = new UsuarioService(usuarioRepository, logSistemaService);
+        
         // Imágenes de Productos
         imgProductoRepository = new ImgProductoRepo();
-        imgProductoService = new ImgProductoService(imgProductoRepository);
+
+        imgProductoService = new ImgProductoService(imgProductoRepository);        
 
         // Carritos
         carritoRepository = new CarritoRepo();
@@ -96,10 +125,19 @@ public class AppDependencies {
         cuponDescuentoRepository = new CuponDescuentoRepo();
         cuponDescuentoService = new CuponDescuentoService(cuponDescuentoRepository);
 
+        // Metodos de pago
+        metodoPagoRepository = new MetodoPagoRepo();
+        detalleMetodoPagoRepository = new DetalleMetodoPagoRepo();
+        metodoPagoService = new MetodoPagoService(metodoPagoRepository,  detalleMetodoPagoRepository, clienteService);
+
         // Ventas
         ventaRepository = new VentaRepo();
         detalleVentaRepository = new DetalleVentaRepo();
-        ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService, cuponDescuentoService);
+        ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService, cuponDescuentoService, metodoPagoService);
+
+        // Ajustes de stock
+        ajusteStockRepository = new AjusteStockRepo();
+        ajusteStockService = new AjusteStockService(ajusteStockRepository, productoService);
 
         // Envio
         this.envioSimuladoRepository = new EnvioSimuladoRepository();
@@ -133,7 +171,8 @@ public class AppDependencies {
 
     public CarritoService getCarritoService() {
         return carritoService;
-    }
+    }    
+    
 
     public VentaService getVentaService() {
         return ventaService;
@@ -143,6 +182,18 @@ public class AppDependencies {
         return cuponDescuentoService;
     }
 
+    public AjusteStockService getAjusteStockService() {
+        return ajusteStockService;
+    }
+
+    public MetodoPagoService getMetodoPagoService() {
+        return metodoPagoService;
+    }
+
+    public LogSistemaService getLogSistemaService() {
+        return logSistemaService;
+    }
+}
     // Getter para el servicio de envío simulado
     public EnvioSimuladoService getEnvioSimuladoService() {
         return envioSimuladoService;

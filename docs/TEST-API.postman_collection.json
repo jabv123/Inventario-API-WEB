@@ -1,0 +1,1785 @@
+{
+	"info": {
+		"_postman_id": "7026294f-a959-4cba-9bf3-78f88bf1c5dd",
+		"name": "TEST-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43694049",
+		"_collection_link": "https://neider-2306759.postman.co/workspace/API-WEB~180c709a-6107-47df-a989-7b62c8f8d278/collection/43694049-7026294f-a959-4cba-9bf3-78f88bf1c5dd?action=share&source=collection_link&creator=43694049"
+	},
+	"item": [
+		{
+			"name": "API-PRODUCTOS",
+			"item": [
+				{
+					"name": "createProd",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Monitor 25 pulgadas\",\r\n  \"marca\": \"LG\",\r\n  \"precio\": 850000,\r\n  \"cantidad\": 3,\r\n  \"descripcion\": \"Monitor Full HD con panel IPS y tasa de refresco de 75Hz\",\r\n  \"categoria\": \"Monitores\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/productos",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"productos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "optenerTodosProd",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/productos",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"productos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "prodByID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/productos/2",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"productos",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarProd",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Monitor 24 pulgadas test00000\",\r\n  \"marca\": \"LG tes\",\r\n  \"precio\": 850000,\r\n  \"cantidad\": 15,\r\n  \"descripcion\": \"Monitor Full HD con panel IPS y tasa de refresco de 75Hz tes\",\r\n  \"categoria\": \"Monitores\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/productos/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"productos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/productos/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"productos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "### Instrucciones para [ProductoController](https://null)\n\n**Base Path:** `{{baseUrl}}/productos`\n\nEsta carpeta contiene requests para gestionar los productos del inventario.\n\n- **`GET /`** **(Listar todos los productos):**\n    \n    - Envía esta request para obtener una lista de todos los productos.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y la lista de productos.\n        \n- **`GET /:id`** **(Obtener producto por ID):**\n    \n    - Envía esta request para obtener los detalles de un producto específico.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID numérico del producto (ej. `{{baseUrl}}/productos/1`).\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y los datos del producto, o un mensaje de error.\n        \n- **`POST /`** **(Crear producto):**\n    \n    - Envía esta request para añadir un nuevo producto al inventario.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON de ejemplo con los datos del nuevo producto (ej.`{ \"nombre\": \"Monitor 24 pulgadas\", \"marca\": \"LG\", \"precio\": 850000, \"cantidad\": 15, \"descripcion\": \"Monitor Full HD con panel IPS y tasa de refresco de 75Hz\", \"categoria\": \"Monitores\"}`). Asegúrate de que la estructura coincida con la clase [Producto](https://null).\n        \n    - Respuesta esperada: JSON con un mensaje y los datos del producto creado (incluyendo su nuevo ID).\n        \n- **`PUT /:id`** **(Actualizar producto):**\n    \n    - Envía esta request para modificar los datos de un producto existente.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID del producto a actualizar.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON con los nuevos datos. Puedes incluir solo los campos que quieres cambiar.(ej. `{ \"nombre\": \"Monitor 24 pulgadas test\", \"marca\": \"LG tes\", \"precio\": 850000, \"cantidad\": 15, \"descripcion\": \"Monitor Full HD con panel IPS y tasa de refresco de 75Hz tes\", \"categoria\": \"Monitores\"}`)\n        \n    - Respuesta esperada: JSON con un mensaje y los datos del producto actualizado, o un mensaje de error.\n        \n- **`DELETE /:id`** **(Eliminar producto):**\n    \n    - Envía esta request para eliminar un producto del inventario.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID del producto a eliminar.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: Código de estado `204 No Content` sin cuerpo si tiene éxito, o un JSON con mensaje de error si no se encuentra o el ID es inválido."
+		},
+		{
+			"name": "API-PROVEEDOR",
+			"item": [
+				{
+					"name": "createProv",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"GW\",\r\n    \"contacto\": \"Jouse31\",\r\n    \"telefono\": \"312236432\",\r\n    \"email\": \"gw@gmail.com\",\r\n    \"direccion\": \"Bogota CR 13 #22\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/proveedores",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "todosProveedores",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/proveedores",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"proveedores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "proveedorById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/proveedores/11",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"proveedores",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarProv",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"GW TEST NEW\",\r\n    \"contacto\": \"Jouse TEST\",\r\n    \"telefono\": \"312236432\",\r\n    \"email\": \"gw@gmail.TEST\",\r\n    \"direccion\": \"Bogota CR 13 #22\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/proveedores/11",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"proveedores",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/proveedores/3",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"proveedores",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "### Instrucciones para [ProveedorController](https://null)\n\n**Base Path:** `{{baseUrl}}/proveedores`\n\nEsta carpeta contiene requests para gestionar la información de los proveedores.\n\n- **`GET /`** **(Listar todos los proveedores):**\n    \n    - Envía esta request para obtener una lista de todos los proveedores.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con la lista de proveedores (o un mensaje de error).\n        \n- **`GET /:id`** **(Obtener proveedor por ID):**\n    \n    - Envía esta request para obtener los detalles de un proveedor específico.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID numérico del proveedor (ej. `{{baseUrl}}/proveedores/1`).\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con los datos del proveedor, o un mensaje de error si no se encuentra o el ID es inválido.\n        \n- **`POST /`** **(Crear proveedor):**\n    \n    - Envía esta request para registrar un nuevo proveedor.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON de ejemplo con los datos del nuevo proveedor (ej. `{\"nombre\": \"GW\", \"contacto\": \"Jouse\", \"telefono\": \"312236432\", \"email\": \"gw@gmail.com\", \"direccion\": \"Bogota CR 13 #22\"}`). El campo [nombre](https://null) es obligatorio.\n        \n    - Respuesta esperada: JSON con un mensaje y los datos del proveedor creado (incluyendo su nuevo ID).\n        \n- **`PUT /:id`** **(Actualizar proveedor):**\n    \n    - Envía esta request para modificar los datos de un proveedor existente.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID del proveedor a actualizar.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON con los nuevos datos. Puedes incluir solo los campos que quieres cambiar.(ej. `{\"nombre\": \"GW TEST\",    \"contacto\": \"Jouse TEST\",    \"telefono\": \"312236432\",    \"email\": \"gw@gmail.TEST\",    \"direccion\": \"Bogota CR 13 #22\"}`)\n        \n    - Respuesta esperada: JSON con un mensaje y los datos del proveedor actualizado, o un mensaje de error.\n        \n- **`DELETE /:id`** **(Eliminar proveedor):**\n    \n    - Envía esta request para eliminar un proveedor.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID del proveedor a eliminar.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje indicando el éxito o fracaso de la eliminación."
+		},
+		{
+			"name": "API-CATEGORIA",
+			"item": [
+				{
+					"name": "crearCategoria",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Ficción NEW\",\r\n    \"descripcion\": \"Novelas, cuentos y relatos de ficción. NEW\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/categorias",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"categorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TodasCategorias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/categorias",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"categorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "categoriaByID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/categorias/4",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"categorias",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarCategoria",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Accion\",\r\n    \"descripcion\": \"Es Accion\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/categorias/4",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"categorias",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/categorias/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"categorias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "### Instrucciones para [CategoriaController](https://null)\n\n**Base Path:** `{{baseUrl}}/categorias`\n\nEsta carpeta contiene requests para gestionar las categorías de los productos.\n\n- **`GET /`** **(Listar todas las categorías):**\n    \n    - Envía esta request para obtener una lista de todas las categorías disponibles.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y la lista de categorías.\n        \n- **`GET /:id`** **(Obtener categoría por ID):**\n    \n    - Envía esta request para obtener los detalles de una categoría específica.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID numérico de la categoría (ej. `{{baseUrl}}/categorias/1`).\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y los datos de la categoría, o un mensaje de error.\n        \n- **`POST /`** **(Crear categoría):**\n    \n    - Envía esta request para crear una nueva categoría.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON de ejemplo con los datos de la nueva categoría (ej. `{\"nombre\": \"Ficción\", \"descripcion\": \"Novelas, cuentos y relatos de ficción.\"}`).\n        \n    - Respuesta esperada: JSON con un mensaje y los datos de la categoría creada (incluyendo su nuevo ID).\n        \n- **`PUT /:id`** **(Actualizar categoría):**\n    \n    - Envía esta request para modificar los datos de una categoría existente.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID de la categoría a actualizar.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON con los nuevos datos (nombre y/o descripción).(ej.`{\"nombre\": \"Ficción TEST\",    \"descripcion\": \"Novelas, cuentos y relatos de ficción. TES\"}`)\n        \n    - Respuesta esperada: JSON con un mensaje y los datos de la categoría actualizada, o un mensaje de error.\n        \n- **`DELETE /:id`** **(Eliminar categoría):**\n    \n    - Envía esta request para eliminar una categoría.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID de la categoría a eliminar.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje indicando el éxito o fracaso de la eliminación."
+		},
+		{
+			"name": "API-IMGsPRODUCTOS",
+			"item": [
+				{
+					"name": "listarAllImg",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/imgProductos",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"imgProductos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarImgId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/imgProductos/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"imgProductos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listByProductID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/imgProductos/producto/2",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"imgProductos",
+								"producto",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createImg",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idProducto\":2,\r\n    \"url\":\"Url.test\",\r\n    \"orden\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/imgProductos",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"imgProductos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarImg",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idProducto\":2,\r\n    \"url\":\"Url.test2222\",\r\n    \"orden\":2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}//api/imgProductos/10",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"",
+								"api",
+								"imgProductos",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarImgId",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}//api/imgProductos/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"",
+								"api",
+								"imgProductos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarImgsByProducto",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/imgProductos/producto/2",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"imgProductos",
+								"producto",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "### Instrucciones para [ImgProductoController](https://null)\n\n**Base Path:** `{{baseUrl}}/api/imgProductos`\n\nEsta carpeta gestiona las URLs de las imágenes asociadas a los productos.\n\n- **`GET /`** **(Listar todas las imágenes):**\n    \n    - Envía esta request para obtener una lista de todas las URLs de imágenes registradas para todos los productos.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y la lista de objetos [ImgProducto](https://null).\n        \n- **`GET /:id`** **(Obtener imagen por ID de imagen):**\n    \n    - Envía esta request para obtener los detalles de una URL de imagen específica usando su propio ID.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID numérico de la _imagen_ (ej. `{{baseUrl}}/api/imgProductos/5`).\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y los datos de la imagen, o un mensaje de error.\n        \n- **`GET /producto/:id`** **(Listar imágenes por ID de producto):**\n    \n    - Envía esta request para obtener todas las URLs de imágenes asociadas a un producto específico.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID numérico del _producto_ (ej. `{{baseUrl}}/api/imgProductos/producto/1`).\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y la lista de imágenes para ese producto, o un mensaje de error.\n        \n- **`POST /`** **(Crear imagen de producto):**\n    \n    - Envía esta request para asociar una nueva URL de imagen a un producto.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON de ejemplo (ej. `{\"idProducto\":2, \"url\":\"Url.test\", \"orden\":2}`). Asegúrate de que [idProducto](https://null) exista.\n        \n    - Respuesta esperada: JSON con un mensaje y los datos de la imagen creada (incluyendo su nuevo ID).\n        \n- **`PUT /:id`** **(Actualizar imagen por ID de imagen):**\n    \n    - Envía esta request para modificar una URL de imagen existente usando su propio ID.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID de la _imagen_ a actualizar.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON con los nuevos datos (probablemente solo la `url` y/o [idProducto](https://null)). (ej. `{\"idProducto\":2, \"url\":\"Url.testActualizado\", \"orden\":2}`)\n        \n    - Respuesta esperada: JSON con un mensaje y los datos de la imagen actualizada, o un mensaje de error.\n        \n- **`DELETE /:id`** **(Eliminar imagen por ID de imagen):**\n    \n    - Envía esta request para eliminar una URL de imagen específica usando su propio ID.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID de la _imagen_ a eliminar.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje indicando el éxito o fracaso.\n        \n- **`DELETE /producto/:id`** **(Eliminar imágenes por ID de producto):**\n    \n    - Envía esta request para eliminar _todas_ las URLs de imágenes asociadas a un producto específico.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID del _producto_ cuyas imágenes quieres eliminar.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje indicando el éxito o fracaso."
+		},
+		{
+			"name": "API-CLIENTES",
+			"item": [
+				{
+					"name": "crearCliente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\":\"newName\",\r\n    \"email\":\"test\",\r\n    \"contraseña\":\"test123\",\r\n    \"direccion\":\"av\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/clientes",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarTodosClient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/clientes",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"clientes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarByClient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/clientes/3",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"clientes",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarCliente",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\":\"nameActualizado\",\r\n    \"email\":\"test\",\r\n    \"contraseña\":\"test123\",\r\n    \"direccion\":\"av\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/clientes/3",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"clientes",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarCliente",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/clientes/2",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"clientes",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "### Instrucciones para [ClienteController](https://null)\n\n**Base Path:** `{{baseUrl}}/api/clientes`\n\nEsta carpeta contiene requests para gestionar la información de los clientes.\n\n- **`GET /`** **(Listar todos los clientes):**\n    \n    - Envía esta request para obtener una lista de todos los clientes registrados.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y la lista de clientes.\n        \n- **`GET /:id`** **(Obtener cliente por ID):**\n    \n    - Envía esta request para obtener los detalles de un cliente específico.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID numérico del cliente (ej. `{{baseUrl}}/api/clientes/1`).\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y los datos del cliente, o un mensaje de error.\n        \n- **`POST /`** **(Crear cliente):**\n    \n    - Envía esta request para registrar un nuevo cliente.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON de ejemplo con los datos del nuevo cliente (ej.`{\"nombre\":\"newName\", \"email\":\"test\", \"contraseña\":\"test123\", \"direccion\":\"av\"}`). Asegúrate de que la estructura coincida con la clase [Cliente](https://null).\n        \n    - Respuesta esperada: JSON con un mensaje y los datos del cliente creado (incluyendo su nuevo ID).\n        \n- **`PUT /:idCliente`** **(Actualizar cliente):**\n    \n    - Envía esta request para modificar los datos de un cliente existente.\n        \n    - **Importante:** Reemplaza `:idCliente` en la URL con el ID del cliente a actualizar.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON con los nuevos datos. Puedes incluir solo los campos que quieres cambiar. (ej. `{\"nombre\":\"nameAatualizado\",    \"email\":\"test\",    \"contraseña\":\"test123\",    \"direccion\":\"avActualizada\"}`)\n        \n    - Respuesta esperada: JSON con un mensaje y los datos del cliente actualizado, o un mensaje de error.\n        \n- **`DELETE /:idCliente`** **(Eliminar cliente):**\n    \n    - Envía esta request para eliminar un cliente del sistema.\n        \n    - **Importante:** Reemplaza `:idCliente` en la URL con el ID del cliente a eliminar.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje indicando el éxito o fracaso de la eliminación."
+		},
+		{
+			"name": "API-USUARIOS",
+			"item": [
+				{
+					"name": "listarTodosUsuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/usuarios",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarUserId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/usuarios/2",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"usuarios",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\":\"{{$randomUserName}}\",\r\n    \"email\":\"{{$randomEmail}}\",\r\n    \"contraseña\":\"{{$randomPassword}}\",\r\n    \"rol\":\"Admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/usuarios",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actualizarUser",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\":\"Pedro\",\r\n    \"email\":\"email.pedro\",\r\n    \"contraseña\":\"contraseña.pedro\",\r\n    \"rol\":\"Admin32\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/usuarios/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"usuarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/usuarios/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"usuarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "### Instrucciones para [UsuarioController](https://null)\n\n**Base Path:** `{{baseUrl}}/api/usuarios`\n\nEsta carpeta contiene requests para gestionar los usuarios del sistema.\n\n- **`GET /`** **(Listar todos los usuarios):**\n    \n    - Envía esta request para obtener una lista de todos los usuarios registrados.\n        \n    - No requiere cuerpo (Body) ni parámetros adicionales.\n        \n    - Respuesta esperada: JSON con un mensaje y la lista de usuarios.\n        \n- **`GET /:id`** **(Obtener usuario por ID):**\n    \n    - Envía esta request para obtener los detalles de un usuario específico.\n        \n    - **Importante:** Antes de enviar, reemplaza `:id` en la URL con el ID numérico del usuario que deseas consultar (ej. `{{baseUrl}}/api/usuarios/1`).\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje y los datos del usuario, o un mensaje de error si no se encuentra.\n        \n- **`POST /`** **(Crear usuario):**\n    \n    - Envía esta request para registrar un nuevo usuario.\n        \n    - Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n        \n    - Modifica el objeto JSON de ejemplo con los datos del nuevo usuario (ej.\n        \n\n`{\"nombre\":\"Pedro\",`\n\n`\"email\":\"email.pedro\",`\n\n`\"contraseña\":\"contraseña.pedro\",`\n\n`\"rol\":\"Admin\"}`\n\n). Asegúrate de que la estructura coincida con la clase [Usuario](https://null).\n\n- Respuesta esperada: JSON con un mensaje y los datos del usuario creado (incluyendo su nuevo ID).\n    \n- **`PUT /:id`** **(Actualizar usuario):**\n    \n    - Envía esta request para modificar los datos de un usuario existente.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID del usuario a actualizar (ej. `{    \"nombre\":\"nActualizado\",    \"email\":\"eActualizado\",    \"contraseña\":\"contraseñaActualizada\",    \"rol\":\"rolActualizado\"}`)\n        \n- Ve a la pestaña **\"Body\"**, selecciona **\"raw\"** y **\"JSON\"**.\n    \n- Modifica el objeto JSON con los nuevos datos que deseas aplicar al usuario. Puedes incluir solo los campos que quieres cambiar.\n    \n- Respuesta esperada: JSON con un mensaje y los datos del usuario actualizado, o un mensaje de error si no se encuentra.\n    \n- **`DELETE /:id`** **(Eliminar usuario):**\n    \n    - Envía esta request para eliminar un usuario del sistema.\n        \n    - **Importante:** Reemplaza `:id` en la URL con el ID del usuario que deseas eliminar.\n        \n    - No requiere cuerpo (Body).\n        \n    - Respuesta esperada: JSON con un mensaje indicando el éxito o fracaso de la eliminación."
+		},
+		{
+			"name": "API - CARRITO",
+			"item": [
+				{
+					"name": "Cliente",
+					"item": [
+						{
+							"name": "obtenerByCliente",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"idCliente\":1\r\n}"
+								},
+								"url": {
+									"raw": "{{URL_BASE}}/api/carrito/cliente/85",
+									"host": [
+										"{{URL_BASE}}"
+									],
+									"path": [
+										"api",
+										"carrito",
+										"cliente",
+										"85"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteByCliente",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"idCliente\":1\r\n}"
+								},
+								"url": {
+									"raw": "{{URL_BASE}}/api/carrito/cliente/85",
+									"host": [
+										"{{URL_BASE}}"
+									],
+									"path": [
+										"api",
+										"carrito",
+										"cliente",
+										"85"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Items",
+					"item": [
+						{
+							"name": "añadirItems",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"idProducto\":1\r\n\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_BASE}}/api/carrito/1/item",
+									"host": [
+										"{{URL_BASE}}"
+									],
+									"path": [
+										"api",
+										"carrito",
+										"1",
+										"item"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "+ o - cantidad",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"cantidad\":1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_BASE}}/api/carrito/1/item/1",
+									"host": [
+										"{{URL_BASE}}"
+									],
+									"path": [
+										"api",
+										"carrito",
+										"1",
+										"item",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "eliminarItem",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"idProducto\":\"{{$randomInt}}\"\r\n\r\n}"
+								},
+								"url": {
+									"raw": "{{URL_BASE}}/api/carrito/1/item/1",
+									"host": [
+										"{{URL_BASE}}"
+									],
+									"path": [
+										"api",
+										"carrito",
+										"1",
+										"item",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "crear🛒",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"idCliente\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/carrito",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"carrito"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarTodos🛒",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCliente\":1\r\n}"
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/carrito",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"carrito"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "byID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/carrito/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"carrito",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCliente\":1222\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/carrito/3",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"carrito",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCliente\":1\r\n}"
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/carrito/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"carrito",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTotalCarrito",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCliente\":1\r\n}"
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/carrito/total/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"carrito",
+								"total",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API-VENTAS",
+			"item": [
+				{
+					"name": "realizarVenta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCliente\":1,\r\n    \"estado\":\"COMPLETADA\",\r\n    \"idMetodoPago\": 1\r\n    //\"codigoCuponAplicado\":\"DESCUENTO15\" //Opcional\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/ventas",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ventas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TodasLasVentas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/ventas",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ventas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateVenta",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCliente\":2,\r\n    \"estado\":\"CANCELADA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/ventas/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ventas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API-CUPON DE DESCUESTOS",
+			"item": [
+				{
+					"name": "crearCupon",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    //tipo valor: porcentaje ó fijo\r\n    \"codigo\": \"DESCUENTO15\",\r\n    \"valor\": 15.0, //\r\n    \"tipoValor\": \"porcentaje\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getALL",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuponesActivos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones/activos",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones",
+								"activos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuponesValidos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones/validos",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones",
+								"validos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuponByCodigo",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones/codigo/DESCUENTO15",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones",
+								"codigo",
+								"DESCUENTO15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuponByID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cuponById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actulizarCupon",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"codigo\": \"DESCUENTO20\",\r\n    \"valor\": 20.0,\r\n    \"tipoValor\": \"porcentaje\",\r\n    \"fechaExpiracion\": \"2025-12-31\",\r\n    \"activo\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "eliminarCupon",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activarCupon",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones/1/activar",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones",
+								"1",
+								"activar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "desactivarCupon",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/cupones/1/desactivar",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"cupones",
+								"1",
+								"desactivar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API - AJUSTE STOCK",
+			"item": [
+				{
+					"name": "crearAjuste",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idProducto\": 1,\r\n  \"cantidadAjuste\": 10,\r\n  \"motivo\": \"Nuevo lote de productos\",\r\n  \"idUsuario\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/ajustes-stock",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ajustes-stock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "todoLosAjuste",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/ajustes-stock",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ajustes-stock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ajusteByID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/ajustes-stock/2",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ajustes-stock",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ajustesPorProducto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/ajustes-stock/producto/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ajustes-stock",
+								"producto",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ajustePorUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/ajustes-stock/usuario/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ajustes-stock",
+								"usuario",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateAjuste",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idProducto\": 1,\r\n  \"cantidadAjuste\": 30,\r\n  \"motivo\": \"Motivo actualizado\",\r\n  \"fechaAjuste\": \"2025-05-30\",\r\n  \"idUsuario\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/ajustes-stock/2",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ajustes-stock",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteAjuste",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/ajustes-stock/2",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"ajustes-stock",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API - METODOS DE PAGO",
+			"item": [
+				{
+					"name": "crearMetodoPago",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idCliente\": 1,\r\n  \"tipoPago\": \"Tarjeta de Crédito\", \r\n  \"activo\": true,\r\n  \"detalles\": [\r\n    {\"clave\": \"numeroEnmascarado\", \"valor\": \"12312 3231231 32 1234\"},\r\n    {\"clave\": \"fechaVencimiento\", \"valor\": \"12/25\"},\r\n    {\"clave\": \"tipoTarjeta\", \"valor\": \"Visa\"}\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/metodos-pago",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"metodos-pago"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "todosMetodosPago",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/metodos-pago",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"metodos-pago"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "metodosPagosByClient",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/metodos-pago/cliente/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"metodos-pago",
+								"cliente",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "detallesMetodoPago",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/metodos-pago/1/detalles",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"metodos-pago",
+								"1",
+								"detalles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actulaizarMetodoPago",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  //\"idCliente\": 1,\r\n  \"tipoPago\": \"Tarjeta de Crédito NEW\", \r\n  \"activo\": true,\r\n  \"detalles\": [\r\n    {\"clave\": \"numeroEnmascarado NEW\", \"valor\": \"090123 120933 12331\"},\r\n    {\"clave\": \"fechaVencimiento\", \"valor\": \"12/31\"},\r\n    {\"clave\": \"tipoTarjeta\", \"valor\": \"Visa NEW\"}\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_BASE}}/api/metodos-pago/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"metodos-pago",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cambiarEstado",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/metodos-pago/1?estado=false",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"metodos-pago",
+								"1"
+							],
+							"query": [
+								{
+									"key": "estado",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API - LOGS SISTEMA",
+			"item": [
+				{
+					"name": "todosLogs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/logs-sistema",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"logs-sistema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logsByIdReferencia",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_BASE}}/api/logs-sistema/1",
+							"host": [
+								"{{URL_BASE}}"
+							],
+							"path": [
+								"api",
+								"logs-sistema",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL_BASE",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

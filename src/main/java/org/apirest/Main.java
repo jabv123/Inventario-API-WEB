@@ -1,10 +1,13 @@
 package org.apirest;
 
+import org.apirest.Controllers.AjusteStockController;
 import org.apirest.Controllers.CarritoController;
 import org.apirest.Controllers.CategoriaController;
 import org.apirest.Controllers.ClienteController;
 import org.apirest.Controllers.CuponDescuentoController;
 import org.apirest.Controllers.ImgProductoController;
+import org.apirest.Controllers.LogSistemaController;
+import org.apirest.Controllers.MetodoPagoController;
 import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
@@ -33,7 +36,11 @@ public class Main {
         CarritoService carritoService = appConfig.getCarritoService();
         VentaService ventaService = appConfig.getVentaService();
         CuponDescuentoService cuponDescuentoService = appConfig.getCuponDescuentoService();
+        AjusteStockService ajusteStockService = appConfig.getAjusteStockService();
+        MetodoPagoService metodoPagoService = appConfig.getMetodoPagoService();
+        LogSistemaService logSistemaService = appConfig.getLogSistemaService();
         EstadoEnvioService estadoEnvioService = appConfig.getEstadoEnvioService();
+
 
         // Controladores
         EnvioSimuladoController envioSimuladoController = new EnvioSimuladoController(envioSimuladoService); // <-- CAMBIO AQUÍ
@@ -46,9 +53,11 @@ public class Main {
         CarritoController carritoController = new CarritoController(carritoService);
         VentaController ventaController = new VentaController(ventaService);
         CuponDescuentoController cuponDescuentoController = new CuponDescuentoController(cuponDescuentoService);
+        AjusteStockController ajusteStockController = new AjusteStockController(ajusteStockService);
+        MetodoPagoController metodoPagoController = new MetodoPagoController(metodoPagoService);
+        LogSistemaController logSistemaController = new LogSistemaController(logSistemaService);
         EstadoEnvioController estadoEnvioController = new EstadoEnvioController(estadoEnvioService);
-
-
+      
         // Configuración del servidor Javalin
         Javalin app = Javalin.create(config -> {
             // Configuración de rutas
@@ -62,11 +71,14 @@ public class Main {
                 carritoController.rutasCarrito();
                 ventaController.rutasVentas();
                 cuponDescuentoController.rutasCupones();
+                ajusteStockController.rutasAjustesStock();
+                metodoPagoController.rutasMetodoPago();
+                logSistemaController.rutasLogSistema();
                 envioSimuladoController.rutasEnvios();
                 estadoEnvioController.rutasEstadoEnvio();
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
-            // config.showJavalinBanner = false;
+            config.showJavalinBanner = false;
         });
 
         // Manejo de excepciones

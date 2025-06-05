@@ -38,7 +38,7 @@ public class ProductoService {
         return productoRepo.eliminar(id);
     }
 
-    //Reduce el stock de un producto
+    //Reduce el stock de un producto(Para ventas)
     public Producto reducirStock(int idProducto, int cantidadAReducir) {
         Producto producto = productoRepo.getById(idProducto);
         if (producto == null) {
@@ -52,4 +52,38 @@ public class ProductoService {
         return productoRepo.actualizar(producto);
     }
 
+    //Ajusta el stock de un producto (positivo o negativo)
+    public Producto ajustarStock(int idProducto, int cantidadAjuste) {
+        if (cantidadAjuste == 0) {
+            throw new IllegalArgumentException("La cantidad de ajuste no puede ser 0");
+        }
+        
+        Producto producto = productoRepo.getById(idProducto);
+        if (producto == null) {
+            throw new IllegalArgumentException("Producto con ID " + idProducto + " no encontrado.");
+        }
+        
+        int nuevoStock = producto.getCantidad() + cantidadAjuste;
+        if (nuevoStock < 0) {
+            throw new IllegalArgumentException("El ajuste resultaría en stock negativo. Stock actual: " + 
+                                             producto.getCantidad() + ", ajuste solicitado: " + cantidadAjuste);
+        }
+        
+        producto.setCantidad(nuevoStock);
+        return productoRepo.actualizar(producto);
+    }
+
+    //Verifica si un producto existe
+    public boolean existeProducto(int idProducto) {
+        return productoRepo.getById(idProducto) != null;
+    }
+
+    //Obtiene el stock actual de un producto
+    public int obtenerStockActual(int idProducto) {
+        Producto producto = productoRepo.getById(idProducto);
+        if (producto == null) {
+            throw new IllegalArgumentException("Producto con ID " + idProducto + " no encontrado.");
+        }
+        return producto.getCantidad();
+    }
 }

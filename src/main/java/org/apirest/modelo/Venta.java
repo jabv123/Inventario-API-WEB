@@ -3,9 +3,12 @@ package org.apirest.modelo;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Venta {    private int id;
+public class Venta {    
+    
+    private int id;
     private LocalDate fechaVenta;
     private int idCliente;
+    private int idMetodoPago;
     private String estado;
     private double total;
     private List<DetalleVenta> detalles;
@@ -18,10 +21,11 @@ public class Venta {    private int id;
     public Venta() {
     }
 
-    public Venta(int id, LocalDate fechaVenta, int idCliente, String estado, double total, List<DetalleVenta> detalles) {
+    public Venta(int id, LocalDate fechaVenta, int idCliente, int idMetodoPago, String estado, double total, List<DetalleVenta> detalles) {
         this.id = id;
         this.fechaVenta = fechaVenta;
         this.idCliente = idCliente;
+        this.idMetodoPago = idMetodoPago;
         this.estado = estado;
         this.total = total;
         this.detalles = detalles;
@@ -50,6 +54,14 @@ public class Venta {    private int id;
 
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
+    }
+
+    public int getIdMetodoPago() {
+        return idMetodoPago;
+    }
+
+    public void setIdMetodoPago(int idMetodoPago) {
+        this.idMetodoPago = idMetodoPago;
     }
 
     public String getEstado() {

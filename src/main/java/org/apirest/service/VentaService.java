@@ -7,6 +7,7 @@ import org.apirest.modelo.Venta;
 import org.apirest.modelo.Carrito;
 import org.apirest.modelo.DetalleVenta;
 import org.apirest.modelo.ItemCarrito;
+import org.apirest.modelo.MetodoPago;
 import org.apirest.modelo.Producto;
 import org.apirest.repository.DetalleVentaRepo;
 import org.apirest.repository.VentaRepo;
@@ -18,13 +19,15 @@ public class VentaService {
     private final CarritoService carritoService;
     private final ProductoService productoService;
     private final CuponDescuentoService cuponDescuentoService;
+    private final MetodoPagoService metodoPagoService;
 
-    public VentaService(VentaRepo ventaRepository, DetalleVentaRepo detalleVentaRepository, CarritoService carritoService, ProductoService productoService, CuponDescuentoService cuponDescuentoService) {
+    public VentaService(VentaRepo ventaRepository, DetalleVentaRepo detalleVentaRepository, CarritoService carritoService, ProductoService productoService, CuponDescuentoService cuponDescuentoService, MetodoPagoService metodoPagoService) {
         this.detalleVentaRepository = detalleVentaRepository;
         this.ventaRepository = ventaRepository;
         this.carritoService = carritoService;
         this.productoService = productoService;
         this.cuponDescuentoService = cuponDescuentoService;
+        this.metodoPagoService = metodoPagoService;
     }
 
     public Venta realizarVenta(Venta venta) {
@@ -36,6 +39,18 @@ public class VentaService {
 
         // Obtener el cliente desde la venta
         int idCliente = venta.getIdCliente();
+        
+        // VALIDACIÓN OBLIGATORIA: La venta debe tener un método de pago
+        if (venta.getIdMetodoPago() == 0) {
+            throw new IllegalArgumentException("La venta debe especificar un método de pago válido");
+        }
+        
+        // Validar que el método de pago pertenece al cliente y está activo
+        MetodoPago metodoPagoValidado = metodoPagoService.obtenerMetodoPagoParaVenta(idCliente, venta.getIdMetodoPago());
+        if (metodoPagoValidado == null) {
+            throw new IllegalArgumentException("Método de pago no válido para este cliente o no activo");
+        }
+        
         // Obtener carrito del cliente
         Carrito carrito = carritoService.getCarritoByIdCliente(idCliente);
 
@@ -139,6 +154,7 @@ public class VentaService {
         } catch (Exception e) {
             // Si hay error con el cupón, lanzar excepción
             throw new IllegalArgumentException("Error al aplicar cupón: " + e.getMessage());
-        }    }
+        }    
+    }
 
 }
