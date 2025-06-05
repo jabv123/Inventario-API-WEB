@@ -2,19 +2,13 @@ package org.apirest.config;
 
 import org.apirest.repository.ProductoRepo;
 import org.apirest.repository.ProveedorRepo;
-import org.apirest.service.ProductoService;
-import org.apirest.service.ProveedorService;
+import org.apirest.service.*;
 import org.apirest.repository.CarritoRepo;
 import org.apirest.repository.CategoriaRepo;
-import org.apirest.service.CarritoService;
-import org.apirest.service.CategoriaService;
 import org.apirest.repository.ClienteRepo;
 import org.apirest.repository.DetalleVentaRepo;
-import org.apirest.service.ClienteService;
 import org.apirest.repository.UsuarioRepo;
 import org.apirest.repository.VentaRepo;
-import org.apirest.service.UsuarioService;
-import org.apirest.service.VentaService;
 import org.apirest.repository.ImgProductoRepo;
 import org.apirest.repository.ItemCarritoRepo;
 import org.apirest.repository.LogSistemaRepo;
@@ -27,6 +21,11 @@ import org.apirest.repository.DetalleMetodoPagoRepo;
 import org.apirest.service.CuponDescuentoService;
 import org.apirest.repository.AjusteStockRepo;
 import org.apirest.service.AjusteStockService;
+
+import org.apirest.repository.EnvioSimuladoRepository;
+import org.apirest.service.EnvioSimuladoService;
+
+
 
 public class AppDependencies {
 
@@ -57,8 +56,8 @@ public class AppDependencies {
     // Para carritos
     private final CarritoRepo carritoRepository;
     private final ItemCarritoRepo itemCarritoRepository;
-    private final CarritoService carritoService;    
-    
+    private final CarritoService carritoService;
+
     // Para ventas
     private final VentaRepo ventaRepository;
     private final DetalleVentaRepo detalleVentaRepository;
@@ -81,6 +80,12 @@ public class AppDependencies {
     private final LogSistemaRepo logSistemaRepository;
     private final LogSistemaService logSistemaService;
     
+    // Para envío simulado
+    private final EnvioSimuladoRepository envioSimuladoRepository; // Declaración
+    private final EnvioSimuladoService envioSimuladoService;       // Declaración
+    private final EstadoEnvioService estadoEnvioService;
+
+    // Constructor sin parámetros para que esta clase se encargue de inicializar todo
     public AppDependencies() {
         // Inicializar el servicio de logs del sistema
         logSistemaRepository = new LogSistemaRepo();
@@ -108,8 +113,9 @@ public class AppDependencies {
         
         // Imágenes de Productos
         imgProductoRepository = new ImgProductoRepo();
+
         imgProductoService = new ImgProductoService(imgProductoRepository);        
-        
+
         // Carritos
         carritoRepository = new CarritoRepo();
         itemCarritoRepository = new ItemCarritoRepo();
@@ -132,6 +138,10 @@ public class AppDependencies {
         // Ajustes de stock
         ajusteStockRepository = new AjusteStockRepo();
         ajusteStockService = new AjusteStockService(ajusteStockRepository, productoService);
+
+        // Envio
+        this.envioSimuladoRepository = new EnvioSimuladoRepository();
+        this.envioSimuladoService = new EnvioSimuladoService(this.envioSimuladoRepository);
     }
 
     // Getters para los servicios
@@ -163,6 +173,7 @@ public class AppDependencies {
         return carritoService;
     }    
     
+
     public VentaService getVentaService() {
         return ventaService;
     }
@@ -181,5 +192,15 @@ public class AppDependencies {
 
     public LogSistemaService getLogSistemaService() {
         return logSistemaService;
+    }
+}
+    // Getter para el servicio de envío simulado
+    public EnvioSimuladoService getEnvioSimuladoService() {
+        return envioSimuladoService;
+    }
+
+    // Getter para el servicio de estado de envío -- Corrección
+    public EstadoEnvioService getEstadoEnvioService(){
+        return estadoEnvioService; // Ahora retorna la instancia inicializada
     }
 }

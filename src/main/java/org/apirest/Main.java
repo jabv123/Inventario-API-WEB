@@ -12,6 +12,8 @@ import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
 import org.apirest.Controllers.VentaController;
+import org.apirest.Controllers.EnvioSimuladoController;
+import org.apirest.Controllers.EstadoEnvioController;
 import org.apirest.config.AppDependencies;
 import org.apirest.config.ExceptionsConfig;
 import org.apirest.service.*;
@@ -22,8 +24,9 @@ public class Main {
     public static void main(String[] args) {
         // Configuración centralizada de dependencias
         AppDependencies appConfig = new AppDependencies();
-        
+
         // Obtener servicios desde AppConfig
+        EnvioSimuladoService envioSimuladoService = appConfig.getEnvioSimuladoService();
         ProductoService productoService = appConfig.getProductoService();
         CategoriaService categoriaService = appConfig.getCategoriaService();
         ProveedorService proveedorService = appConfig.getProveedorService();
@@ -36,8 +39,11 @@ public class Main {
         AjusteStockService ajusteStockService = appConfig.getAjusteStockService();
         MetodoPagoService metodoPagoService = appConfig.getMetodoPagoService();
         LogSistemaService logSistemaService = appConfig.getLogSistemaService();
-        
+        EstadoEnvioService estadoEnvioService = appConfig.getEstadoEnvioService();
+
+
         // Controladores
+        EnvioSimuladoController envioSimuladoController = new EnvioSimuladoController(envioSimuladoService); // <-- CAMBIO AQUÍ
         ProductoController productoController = new ProductoController(productoService);
         CategoriaController categoriaController = new CategoriaController(categoriaService);
         ProveedorController proveedorController = new ProveedorController(proveedorService);
@@ -50,7 +56,8 @@ public class Main {
         AjusteStockController ajusteStockController = new AjusteStockController(ajusteStockService);
         MetodoPagoController metodoPagoController = new MetodoPagoController(metodoPagoService);
         LogSistemaController logSistemaController = new LogSistemaController(logSistemaService);
-
+        EstadoEnvioController estadoEnvioController = new EstadoEnvioController(estadoEnvioService);
+      
         // Configuración del servidor Javalin
         Javalin app = Javalin.create(config -> {
             // Configuración de rutas
@@ -67,6 +74,8 @@ public class Main {
                 ajusteStockController.rutasAjustesStock();
                 metodoPagoController.rutasMetodoPago();
                 logSistemaController.rutasLogSistema();
+                envioSimuladoController.rutasEnvios();
+                estadoEnvioController.rutasEstadoEnvio();
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
             config.showJavalinBanner = false;
