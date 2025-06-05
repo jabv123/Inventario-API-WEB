@@ -12,8 +12,8 @@ import org.apirest.repository.VentaRepo;
 import org.apirest.repository.ImgProductoRepo;
 import org.apirest.repository.ItemCarritoRepo;
 import org.apirest.repository.CuponDescuentoRepo;
-import org.apirest.repository.EnvioSimuladoRepository; // Importar el repositorio de envío
-import org.apirest.service.EnvioSimuladoService; // Importar el servicio de envío
+import org.apirest.repository.EnvioSimuladoRepository;
+import org.apirest.service.EnvioSimuladoService;
 
 
 public class AppDependencies {
@@ -59,6 +59,7 @@ public class AppDependencies {
     // Para envío simulado
     private final EnvioSimuladoRepository envioSimuladoRepository; // Declaración
     private final EnvioSimuladoService envioSimuladoService;       // Declaración
+    private EstadoEnvioService estadoEnvioService;
 
     // Constructor sin parámetros para que esta clase se encargue de inicializar todo
     public AppDependencies() {
@@ -145,5 +146,10 @@ public class AppDependencies {
     // Getter para el servicio de envío simulado
     public EnvioSimuladoService getEnvioSimuladoService() {
         return envioSimuladoService;
+    }
+
+    // Getter para el servicio de estado de envío -- Corrección
+    public EstadoEnvioService getEstadoEnvioService(){
+        return estadoEnvioService; // Ahora retorna la instancia inicializada
     }
 }

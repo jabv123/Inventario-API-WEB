@@ -47,4 +47,24 @@ public class EstadoEnvioService {
     public boolean eliminarEstado(String id) {
         return estadoRepository.deleteById(id);
     }
+
+    public void crearEstadoEnvio(EstadoEnvio estadoEnvio) {
+
+    }
+
+    public Object obtenerTodosLosEstadosEnvio() {
+            return null;
+    }
+
+    public EstadoEnvio actualizarEstadoEnvio(EstadoEnvio estadoEnvioActualizar) {
+        return null;
+    }
+
+    public boolean eliminarEstadoEnvio(int id) {
+        return false;
+    }
+
+    public EstadoEnvio obtenerEstadoEnvioPorId(int id) {
+        return null;
+    }
 }
