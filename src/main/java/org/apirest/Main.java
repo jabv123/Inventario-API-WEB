@@ -9,7 +9,8 @@ import org.apirest.Controllers.ProductoController;
 import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
 import org.apirest.Controllers.VentaController;
-import org.apirest.Controllers.EnvioSimuladoController; // Asegúrate de que esta importación esté
+import org.apirest.Controllers.EnvioSimuladoController;
+import org.apirest.Controllers.EstadoEnvioController;
 import org.apirest.config.AppDependencies;
 import org.apirest.config.ExceptionsConfig;
 import org.apirest.service.*;
@@ -22,7 +23,7 @@ public class Main {
         AppDependencies appConfig = new AppDependencies();
 
         // Obtener servicios desde AppConfig
-        EnvioSimuladoService envioSimuladoService = appConfig.getEnvioSimuladoService(); // <-- CAMBIO AQUÍ
+        EnvioSimuladoService envioSimuladoService = appConfig.getEnvioSimuladoService();
         ProductoService productoService = appConfig.getProductoService();
         CategoriaService categoriaService = appConfig.getCategoriaService();
         ProveedorService proveedorService = appConfig.getProveedorService();
@@ -32,6 +33,7 @@ public class Main {
         CarritoService carritoService = appConfig.getCarritoService();
         VentaService ventaService = appConfig.getVentaService();
         CuponDescuentoService cuponDescuentoService = appConfig.getCuponDescuentoService();
+        EstadoEnvioService estadoEnvioService = appConfig.getEstadoEnvioService();
 
         // Controladores
         EnvioSimuladoController envioSimuladoController = new EnvioSimuladoController(envioSimuladoService); // <-- CAMBIO AQUÍ
@@ -44,6 +46,8 @@ public class Main {
         CarritoController carritoController = new CarritoController(carritoService);
         VentaController ventaController = new VentaController(ventaService);
         CuponDescuentoController cuponDescuentoController = new CuponDescuentoController(cuponDescuentoService);
+        EstadoEnvioController estadoEnvioController = new EstadoEnvioController(estadoEnvioService);
+
 
         // Configuración del servidor Javalin
         Javalin app = Javalin.create(config -> {
@@ -58,8 +62,8 @@ public class Main {
                 carritoController.rutasCarrito();
                 ventaController.rutasVentas();
                 cuponDescuentoController.rutasCupones();
-                // No olvides añadir las rutas de EnvioSimuladoController
-                envioSimuladoController.rutasEnvios(); // <-- AGREGAR ESTA LÍNEA
+                envioSimuladoController.rutasEnvios();
+                estadoEnvioController.rutasEstadoEnvio();
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
             // config.showJavalinBanner = false;

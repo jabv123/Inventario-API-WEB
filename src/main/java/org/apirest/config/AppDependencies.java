@@ -59,6 +59,7 @@ public class AppDependencies {
     // Para envío simulado
     private final EnvioSimuladoRepository envioSimuladoRepository; // Declaración
     private final EnvioSimuladoService envioSimuladoService;       // Declaración
+    private EstadoEnvioService estadoEnvioService;
 
     // Constructor sin parámetros para que esta clase se encargue de inicializar todo
     public AppDependencies() {
@@ -145,5 +146,10 @@ public class AppDependencies {
     // Getter para el servicio de envío simulado
     public EnvioSimuladoService getEnvioSimuladoService() {
         return envioSimuladoService;
+    }
+
+    // Getter para el servicio de estado de envío -- Corrección
+    public EstadoEnvioService getEstadoEnvioService(){
+        return estadoEnvioService; // Ahora retorna la instancia inicializada
     }
 }
