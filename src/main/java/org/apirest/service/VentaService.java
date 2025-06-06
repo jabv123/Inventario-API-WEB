@@ -9,6 +9,8 @@ import org.apirest.modelo.DetalleVenta;
 import org.apirest.modelo.ItemCarrito;
 import org.apirest.modelo.MetodoPago;
 import org.apirest.modelo.Producto;
+import org.apirest.modelo.Factura;
+import org.apirest.modelo.Cliente;
 import org.apirest.repository.DetalleVentaRepo;
 import org.apirest.repository.VentaRepo;
 
@@ -20,14 +22,18 @@ public class VentaService {
     private final ProductoService productoService;
     private final CuponDescuentoService cuponDescuentoService;
     private final MetodoPagoService metodoPagoService;
+    private final FacturaService facturaService;
+    private final ClienteService clienteService;
 
-    public VentaService(VentaRepo ventaRepository, DetalleVentaRepo detalleVentaRepository, CarritoService carritoService, ProductoService productoService, CuponDescuentoService cuponDescuentoService, MetodoPagoService metodoPagoService) {
+    public VentaService(VentaRepo ventaRepository, DetalleVentaRepo detalleVentaRepository, CarritoService carritoService, ProductoService productoService, CuponDescuentoService cuponDescuentoService, MetodoPagoService metodoPagoService, FacturaService facturaService, ClienteService clienteService) {
         this.detalleVentaRepository = detalleVentaRepository;
         this.ventaRepository = ventaRepository;
         this.carritoService = carritoService;
         this.productoService = productoService;
         this.cuponDescuentoService = cuponDescuentoService;
         this.metodoPagoService = metodoPagoService;
+        this.facturaService = facturaService;
+        this.clienteService = clienteService;
     }
 
     public Venta realizarVenta(Venta venta) {
@@ -89,13 +95,14 @@ public class VentaService {
         for (DetalleVenta detalle : ventaGuardada.getDetalles()) {
             detalle.setIdVenta(ventaGuardada.getId());
             detalleVentaRepository.add(detalle);
-        }
-
-        carritoService.eliminarCarritoPorIdCliente(idCliente);
+        }        carritoService.eliminarCarritoPorIdCliente(idCliente);
         // Actualizar el stock de los productos vendidos
         for (ItemCarrito itemCarrito : carrito.getItems()) {
             productoService.reducirStock(itemCarrito.getIdProducto(), itemCarrito.getCantidad());
         }
+
+        // Crear factura automáticamente para la venta completada
+        crearFacturaParaVenta(ventaGuardada);
 
         return ventaGuardada;
     }
@@ -124,8 +131,7 @@ public class VentaService {
     public List<Venta> obtenerVentasPorEstado(String estado) {
         return ventaRepository.getByEstado(estado);
     }
-    
-    /**
+      /**
      * Aplica un cupón a la venta si existe un código de cupón válido
      */
     private double aplicarCuponSiExiste(Venta venta, double totalBase) {
@@ -155,6 +161,52 @@ public class VentaService {
             // Si hay error con el cupón, lanzar excepción
             throw new IllegalArgumentException("Error al aplicar cupón: " + e.getMessage());
         }    
+    }
+
+    /**
+     * Crea automáticamente una factura para la venta completada
+     */
+    private void crearFacturaParaVenta(Venta venta) {
+        try {
+            // Obtener datos del cliente
+            Cliente cliente = clienteService.listarClientePorId(venta.getIdCliente());
+            if (cliente == null) {
+                throw new IllegalArgumentException("Cliente no encontrado con ID: " + venta.getIdCliente());
+            }
+
+            // Formatear datos del cliente para la factura
+            String datosCliente = formatearDatosCliente(cliente);
+
+            // Crear factura
+            Factura factura = new Factura();
+            factura.setIdVenta(venta.getId());
+            factura.setTotalFacturado(venta.getTotal());
+            factura.setDatosClienteFactura(datosCliente);
+            // numeroFactura y fechaFactura se generan automáticamente en FacturaService
+
+            // Guardar factura
+            facturaService.crearFactura(factura);
+            
+        } catch (Exception e) {
+            // Log del error pero no interrumpir la venta
+            System.err.println("Error al crear factura para venta ID " + venta.getId() + ": " + e.getMessage());
+        }
+    }
+
+    /**
+     * Formatea los datos del cliente para incluir en la factura
+     */
+    private String formatearDatosCliente(Cliente cliente) {
+        StringBuilder datos = new StringBuilder();
+        datos.append("ID Cliente: ").append(cliente.getIdCliente()).append(" | ");
+        datos.append("Nombre: ").append(cliente.getNombre()).append(" | ");
+        datos.append("Email: ").append(cliente.getEmail()).append(" | ");
+        if (cliente.getDireccion() != null && !cliente.getDireccion().trim().isEmpty()) {
+            datos.append("Dirección: ").append(cliente.getDireccion());
+        } else {
+            datos.append("Dirección: No especificada");
+        }
+        return datos.toString();
     }
 
 }

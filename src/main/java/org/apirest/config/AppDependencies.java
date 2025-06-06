@@ -1,32 +1,7 @@
 package org.apirest.config;
 
-import org.apirest.repository.ProductoRepo;
-import org.apirest.repository.ProveedorRepo;
+import org.apirest.repository.*;
 import org.apirest.service.*;
-import org.apirest.repository.CarritoRepo;
-import org.apirest.repository.CategoriaRepo;
-import org.apirest.repository.ClienteRepo;
-import org.apirest.repository.DetalleVentaRepo;
-import org.apirest.repository.UsuarioRepo;
-import org.apirest.repository.VentaRepo;
-import org.apirest.repository.ImgProductoRepo;
-import org.apirest.repository.ItemCarritoRepo;
-import org.apirest.repository.LogSistemaRepo;
-import org.apirest.repository.MetodoPagoRepo;
-import org.apirest.service.ImgProductoService;
-import org.apirest.service.LogSistemaService;
-import org.apirest.service.MetodoPagoService;
-import org.apirest.repository.CuponDescuentoRepo;
-import org.apirest.repository.DetalleMetodoPagoRepo;
-import org.apirest.service.CuponDescuentoService;
-import org.apirest.repository.AjusteStockRepo;
-import org.apirest.service.AjusteStockService;
-
-import org.apirest.repository.EnvioSimuladoRepository;
-import org.apirest.repository.EstadoEnvioRepository;
-import org.apirest.service.EnvioSimuladoService;
-
-
 
 public class AppDependencies {
 
@@ -89,6 +64,10 @@ public class AppDependencies {
     private final EstadoEnvioRepository estadoEnvioRepository;
     private final EstadoEnvioService estadoEnvioService;
 
+    //Para facturas
+    private final FacturaRepository facturaRepository;
+    private final FacturaService facturaService;
+
     // Constructor sin parámetros para que esta clase se encargue de inicializar todo
     public AppDependencies() {
         // Inicializar el servicio de logs del sistema
@@ -134,10 +113,14 @@ public class AppDependencies {
         detalleMetodoPagoRepository = new DetalleMetodoPagoRepo();
         metodoPagoService = new MetodoPagoService(metodoPagoRepository,  detalleMetodoPagoRepository, clienteService);
 
+        // Facturas
+        facturaRepository = new FacturaRepository();
+        facturaService = new FacturaService(facturaRepository);
+
         // Ventas
         ventaRepository = new VentaRepo();
         detalleVentaRepository = new DetalleVentaRepo();
-        ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService, cuponDescuentoService, metodoPagoService);
+        ventaService = new VentaService(ventaRepository, detalleVentaRepository, carritoService, productoService, cuponDescuentoService, metodoPagoService, facturaService, clienteService);
 
         // Ajustes de stock
         ajusteStockRepository = new AjusteStockRepo();
@@ -210,5 +193,9 @@ public class AppDependencies {
     // Getter para el servicio de estado de envío -- Corrección
     public EstadoEnvioService getEstadoEnvioService(){
         return estadoEnvioService;
+    }
+
+    public FacturaService getFacturaService() {
+        return facturaService;
     }
 }
