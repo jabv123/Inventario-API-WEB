@@ -1,0 +1,456 @@
+@startuml Sistema_Inventario_Completo
+
+!theme vibrant
+title Diagrama de Clases UML - Sistema de Inventario API\nCompleto con Relaciones y Multiplicidades
+
+' ===== CLASES BASE =====
+abstract class Persona {
+    - String nombre
+    - String email
+    - String contraseña
+    --
+    + Persona()
+    + Persona(String, String, String)
+    + String getNombre()
+    + void setNombre(String)
+    + String getEmail()
+    + void setEmail(String)
+    + String getContraseña()
+    + void setContraseña(String)
+}
+
+' ===== CLASES DERIVADAS DE PERSONA =====
+class Cliente {
+    - int idCliente
+    - String direccion
+    --
+    + Cliente()
+    + Cliente(String, String, String, int, String)
+    + int getIdCliente()
+    + void setIdCliente(int)
+    + String getDireccion()
+    + void setDireccion(String)
+}
+
+class Usuario {
+    - int idUsuario
+    - String rol
+    --
+    + Usuario()
+    + Usuario(String, String, String, int, String)
+    + int getIdUsuario()
+    + void setIdUsuario(int)
+    + String getRol()
+    + void setRol(String)
+}
+
+' ===== CLASES DE PRODUCTOS =====
+class Producto {
+    - int id
+    - String nombre
+    - double precio
+    - int cantidad
+    - String categoria
+    - String descripcion
+    - String marca
+    --
+    + Producto()
+    + Producto(String, double, int, String, String, String)
+    + int getId()
+    + void setId(int)
+    + String getNombre()
+    + void setNombre(String)
+    + double getPrecio()
+    + void setPrecio(double)
+    + int getCantidad()
+    + void setCantidad(int)
+    + String getCategoria()
+    + void setCategoria(String)
+    + String getDescripcion()
+    + void setDescripcion(String)
+    + String getMarca()
+    + void setMarca(String)
+}
+
+class Categoria {
+    - int id
+    - String nombre
+    - String descripcion
+    --
+    + Categoria()
+    + Categoria(String, String)
+    + int getId()
+    + void setId(int)
+    + String getNombre()
+    + void setNombre(String)
+    + String getDescripcion()
+    + void setDescripcion(String)
+}
+
+class ImgProducto {
+    - int id
+    - int idProducto
+    - String url
+    - int orden
+    --
+    + ImgProducto()
+    + ImgProducto(int, int, String, int)
+    + int getId()
+    + void setId(int)
+    + int getIdProducto()
+    + void setIdProducto(int)
+    + String getUrl()
+    + void setUrl(String)
+    + int getOrden()
+    + void setOrden(int)
+}
+
+class Proveedor {
+    - Long id
+    - String nombre
+    - String contacto
+    - String telefono
+    - String email
+    - String direccion
+    --
+    + Proveedor()
+    + Proveedor(String, String, String, String, String)
+    + Long getId()
+    + void setId(Long)
+    + String getNombre()
+    + void setNombre(String)
+    + String getContacto()
+    + void setContacto(String)
+    + String getTelefono()
+    + void setTelefono(String)
+    + String getEmail()
+    + void setEmail(String)
+    + String getDireccion()
+    + void setDireccion(String)
+}
+
+' ===== CARRITO DE COMPRAS =====
+class Carrito {
+    - int id
+    - int idCliente
+    - List<ItemCarrito> items
+    - LocalDate fechaCreacion
+    - LocalDate fechaModificacion
+    --
+    + Carrito()
+    + Carrito(int, int, List<ItemCarrito>, LocalDate, LocalDate)
+    + int getId()
+    + void setId(int)
+    + int getIdCliente()
+    + void setIdCliente(int)
+    + List<ItemCarrito> getItems()
+    + void setItems(List<ItemCarrito>)
+    + LocalDate getFechaCreacion()
+    + void setFechaCreacion(LocalDate)
+    + LocalDate getFechaModificacion()
+    + void setFechaModificacion(LocalDate)
+}
+
+class ItemCarrito {
+    - int id
+    - int idCarrito
+    - int idProducto
+    - int cantidad
+    - double precioUnitario
+    --
+    + ItemCarrito()
+    + ItemCarrito(int, int, int, double)
+    + int getId()
+    + void setId(int)
+    + int getIdCarrito()
+    + void setIdCarrito(int)
+    + int getIdProducto()
+    + void setIdProducto(int)
+    + int getCantidad()
+    + void setCantidad(int)
+    + double getPrecioUnitario()
+    + void setPrecioUnitario(double)
+}
+
+' ===== VENTAS =====
+class Venta {
+    - int id
+    - LocalDate fechaVenta
+    - int idCliente
+    - int idMetodoPago
+    - String estado
+    - double total
+    - List<DetalleVenta> detalles
+    - String codigoCuponAplicado
+    - double descuentoAplicado
+    - double totalSinDescuento
+    --
+    + Venta()
+    + Venta(int, LocalDate, int, int, String, double, List<DetalleVenta>)
+    + int getId()
+    + void setId(int)
+    + LocalDate getFechaVenta()
+    + void setFechaVenta(LocalDate)
+    + int getIdCliente()
+    + void setIdCliente(int)
+    + int getIdMetodoPago()
+    + void setIdMetodoPago(int)
+    + String getEstado()
+    + void setEstado(String)
+    + double getTotal()
+    + void setTotal(double)
+    + List<DetalleVenta> getDetalles()
+    + void setDetalles(List<DetalleVenta>)
+    + String getCodigoCuponAplicado()
+    + void setCodigoCuponAplicado(String)
+    + double getDescuentoAplicado()
+    + void setDescuentoAplicado(double)
+}
+
+class DetalleVenta {
+    - int id
+    - int idVenta
+    - int idProducto
+    - int cantidad
+    - double precioUnitario
+    - double subtotal
+    --
+    + DetalleVenta()
+    + DetalleVenta(int, int, int, int, double, double)
+    + int getId()
+    + void setId(int)
+    + int getIdVenta()
+    + void setIdVenta(int)
+    + int getIdProducto()
+    + void setIdProducto(int)
+    + int getCantidad()
+    + void setCantidad(int)
+    + double getPrecioUnitario()
+    + void setPrecioUnitario(double)
+    + double getSubtotal()
+    + void setSubtotal(double)
+}
+
+' ===== MÉTODOS DE PAGO =====
+class MetodoPago {
+    - int id
+    - int idCliente
+    - String tipoPago
+    - List<DetalleMetodoPago> detalles
+    - boolean activo
+    - LocalDate fechaCreacion
+    --
+    + MetodoPago()
+    + MetodoPago(int, String, List<DetalleMetodoPago>, boolean, LocalDate)
+    + int getId()
+    + void setId(int)
+    + int getIdCliente()
+    + void setIdCliente(int)
+    + String getTipoPago()
+    + void setTipoPago(String)
+    + List<DetalleMetodoPago> getDetalles()
+    + void setDetalles(List<DetalleMetodoPago>)
+    + boolean isActivo()
+    + void setActivo(boolean)
+    + LocalDate getFechaCreacion()
+    + void setFechaCreacion(LocalDate)
+}
+
+class DetalleMetodoPago {
+    - int id
+    - int idMetodoPago
+    - String clave
+    - String valor
+    --
+    + DetalleMetodoPago()
+    + DetalleMetodoPago(int, String, String)
+    + int getId()
+    + void setId(int)
+    + int getIdMetodoPago()
+    + void setIdMetodoPago(int)
+    + String getClave()
+    + void setClave(String)
+    + String getValor()
+    + void setValor(String)
+}
+
+' ===== CUPONES Y DESCUENTOS =====
+class CuponDescuento {
+    - int id
+    - String codigo
+    - double valor
+    - String tipoValor
+    - LocalDate fechaExpiracion
+    - boolean activo
+    --
+    + CuponDescuento()
+    + int getId()
+    + void setId(int)
+    + String getCodigo()
+    + void setCodigo(String)
+    + double getValor()
+    + void setValor(double)
+    + String getTipoValor()
+    + void setTipoValor(String)
+    + LocalDate getFechaExpiracion()
+    + void setFechaExpiracion(LocalDate)
+    + boolean isActivo()
+    + void setActivo(boolean)
+}
+
+' ===== FACTURACIÓN =====
+class Factura {
+    - int id
+    - int idVenta
+    - String numeroFactura
+    - LocalDateTime fechaFactura
+    - double totalFacturado
+    - String datosClienteFactura
+    --
+    + Factura()
+    + Factura(int, int, String, LocalDateTime, double, String)
+    + int getId()
+    + void setId(int)
+    + int getIdVenta()
+    + void setIdVenta(int)
+    + String getNumeroFactura()
+    + void setNumeroFactura(String)
+    + LocalDateTime getFechaFactura()
+    + void setFechaFactura(LocalDateTime)
+    + double getTotalFacturado()
+    + void setTotalFacturado(double)
+    + String getDatosClienteFactura()
+    + void setDatosClienteFactura(String)
+}
+
+' ===== ENVÍOS =====
+class EnvioSimulado {
+    - int id
+    - int idVenta
+    - String direccionEnvio
+    - int idEstadoEnvio
+    - LocalDateTime fechaCreacion
+    - LocalDateTime fechaActualizacionEstado
+    --
+    + EnvioSimulado()
+    + EnvioSimulado(int, int, String, int, LocalDateTime, LocalDateTime)
+    + int getId()
+    + void setId(int)
+    + int getIdVenta()
+    + void setIdVenta(int)
+    + String getDireccionEnvio()
+    + void setDireccionEnvio(String)
+    + int getIdEstadoEnvio()
+    + void setIdEstadoEnvio(int)
+    + LocalDateTime getFechaCreacion()
+    + void setFechaCreacion(LocalDateTime)
+    + LocalDateTime getFechaActualizacionEstado()
+    + void setFechaActualizacionEstado(LocalDateTime)
+}
+
+class EstadoEnvio {
+    - int id
+    - String nombreEstado
+    --
+    + EstadoEnvio()
+    + EstadoEnvio(int, String)
+    + int getId()
+    + void setId(int)
+    + String getNombreEstado()
+    + void setNombreEstado(String)
+    + String toString()
+}
+
+' ===== AJUSTES DE STOCK =====
+class AjusteStock {
+    - int id
+    - int idProducto
+    - int cantidadAjuste
+    - String motivo
+    - LocalDate fechaAjuste
+    - int idUsuario
+    --
+    + AjusteStock()
+    + AjusteStock(int, int, String, LocalDate, int)
+    + int getId()
+    + void setId(int)
+    + int getIdProducto()
+    + void setIdProducto(int)
+    + int getCantidadAjuste()
+    + void setCantidadAjuste(int)
+    + String getMotivo()
+    + void setMotivo(String)
+    + LocalDate getFechaAjuste()
+    + void setFechaAjuste(LocalDate)
+    + int getIdUsuario()
+    + void setIdUsuario(int)
+}
+
+' ===== LOGS DEL SISTEMA =====
+class LogSistema {
+    - int id
+    - LocalDateTime fecha
+    - String mensaje
+    - int idReferencia
+    --
+    + LogSistema()
+    + LogSistema(LocalDateTime, String, int)
+    + int getId()
+    + void setId(int)
+    + LocalDateTime getFecha()
+    + void setFecha(LocalDateTime)
+    + String getMensaje()
+    + void setMensaje(String)
+    + int getIdReferencia()
+    + void setIdReferencia(int)
+}
+
+' ===== RELACIONES DE HERENCIA =====
+Persona <|-- Cliente : extends
+Persona <|-- Usuario : extends
+
+' ===== RELACIONES DE ASOCIACIÓN =====
+
+' Cliente y sus relaciones
+Cliente ||--o{ Carrito : "1" --> "1" : tiene
+Cliente ||--o{ Venta : "1" --> "*" : realiza
+Cliente ||--o{ MetodoPago : "1" --> "*" : posee
+
+' Carrito y ItemCarrito
+Carrito ||--o{ ItemCarrito : "1" --> "*" : contiene
+
+' Producto y sus relaciones
+Producto ||--o{ ImgProducto : "1" --> "*" : tiene_imagenes
+Producto ||--o{ ItemCarrito : "1" --> "*" : se_añade_a
+Producto ||--o{ DetalleVenta : "1" --> "*" : se_vende_en
+Producto ||--o{ AjusteStock : "1" --> "*" : tiene_ajustes
+
+' Venta y sus relaciones
+Venta ||--o{ DetalleVenta : "1" --> "*" : contiene
+Venta ||--|| Factura : "1" --> "1" : genera
+Venta ||--|| EnvioSimulado : "1" --> "1" : tiene
+
+' Métodos de pago
+MetodoPago ||--o{ DetalleMetodoPago : "1" --> "*" : tiene_detalles
+
+' Estado de envío
+EstadoEnvio ||--o{ EnvioSimulado : "1" --> "*" : define_estado
+
+' Usuario y ajustes
+Usuario ||--o{ AjusteStock : "1" --> "*" : realiza
+
+' Cupones aplicados a ventas
+CuponDescuento ||--o{ Venta : "0" --> "*" : se_aplica_a
+
+' ===== NOTAS EXPLICATIVAS =====
+note top of Persona : Clase abstracta base\nque define atributos comunes\npara Cliente y Usuario
+
+note right of Carrito : Gestiona los productos\nseleccionados por el cliente\nantes de la compra
+
+note bottom of Venta : Registra las transacciones\ncompletas con sus detalles\ny métodos de pago
+
+note left of AjusteStock : Registra cambios en el\ninventario con trazabilidad\nde usuario y motivo
+
+note top of LogSistema : Sistema de auditoría\npara seguimiento de\noperaciones importantes
+
+@enduml
