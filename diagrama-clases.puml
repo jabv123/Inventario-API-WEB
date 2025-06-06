@@ -44,89 +44,92 @@ class Usuario {
     + void setRol(String)
 }
 
-' ===== CLASES DE PRODUCTOS =====
-class Producto {
-    - int id
-    - String nombre
-    - double precio
-    - int cantidad
-    - String categoria
-    - String descripcion
-    - String marca
-    --
-    + Producto()
-    + Producto(String, double, int, String, String, String)
-    + int getId()
-    + void setId(int)
-    + String getNombre()
-    + void setNombre(String)
-    + double getPrecio()
-    + void setPrecio(double)
-    + int getCantidad()
-    + void setCantidad(int)
-    + String getCategoria()
-    + void setCategoria(String)
-    + String getDescripcion()
-    + void setDescripcion(String)
-    + String getMarca()
-    + void setMarca(String)
-}
+' ===== CLASES DE PRODUCTOS Y RELACIONADAS =====
+' Agrupación visual de clases relacionadas con productos
+together {
+    class Producto {
+        - int id
+        - String nombre
+        - double precio
+        - int cantidad
+        - String categoria
+        - String descripcion
+        - String marca
+        --
+        + Producto()
+        + Producto(String, double, int, String, String, String)
+        + int getId()
+        + void setId(int)
+        + String getNombre()
+        + void setNombre(String)
+        + double getPrecio()
+        + void setPrecio(double)
+        + int getCantidad()
+        + void setCantidad(int)
+        + String getCategoria()
+        + void setCategoria(String)
+        + String getDescripcion()
+        + void setDescripcion(String)
+        + String getMarca()
+        + void setMarca(String)
+    }
 
-class Categoria {
-    - int id
-    - String nombre
-    - String descripcion
-    --
-    + Categoria()
-    + Categoria(String, String)
-    + int getId()
-    + void setId(int)
-    + String getNombre()
-    + void setNombre(String)
-    + String getDescripcion()
-    + void setDescripcion(String)
-}
+    class Categoria {
+        - int id
+        - String nombre
+        - String descripcion
+        --
+        + Categoria()
+        + Categoria(String, String)
+        + int getId()
+        + void setId(int)
+        + String getNombre()
+        + void setNombre(String)
+        + String getDescripcion()
+        + void setDescripcion(String)
+    }
 
-class ImgProducto {
-    - int id
-    - int idProducto
-    - String url
-    - int orden
-    --
-    + ImgProducto()
-    + ImgProducto(int, int, String, int)
-    + int getId()
-    + void setId(int)
-    + int getIdProducto()
-    + void setIdProducto(int)
-    + String getUrl()
-    + void setUrl(String)
-    + int getOrden()
-    + void setOrden(int)
-}
+    class Proveedor {
+        - Long id
+        - String nombre
+        - String contacto
+        - String telefono
+        - String email
+        - String direccion
+        --
+        + Proveedor()
+        + Proveedor(String, String, String, String, String)
+        + Long getId()
+        + void setId(Long)
+        + String getNombre()
+        + void setNombre(String)
+        + String getContacto()
+        + void setContacto(String)
+        + String getTelefono()
+        + void setTelefono(String)
+        + String getEmail()
+        + void setEmail(String)
+        + String getDireccion()
+        + void setDireccion(String)
+    }
 
-class Proveedor {
-    - Long id
-    - String nombre
-    - String contacto
-    - String telefono
-    - String email
-    - String direccion
-    --
-    + Proveedor()
-    + Proveedor(String, String, String, String, String)
-    + Long getId()
-    + void setId(Long)
-    + String getNombre()
-    + void setNombre(String)
-    + String getContacto()
-    + void setContacto(String)
-    + String getTelefono()
-    + void setTelefono(String)
-    + String getEmail()
-    + void setEmail(String)
-    + String getDireccion()
-    + void setDireccion(String)
+    class ImgProducto {
+        - int id
+        - int idProducto
+        - String url
+        - int orden
+        --
+        + ImgProducto()
+        + ImgProducto(int, int, String, int)
+        + int getId()
+        + void setId(int)
+        + int getIdProducto()
+        + void setIdProducto(int)
+        + String getUrl()
+        + void setUrl(String)
+        + int getOrden()
+        + void setOrden(int)
+    }
 }
 
 ' ===== CARRITO DE COMPRAS =====
@@ -405,6 +408,19 @@ class LogSistema {
     + void setIdReferencia(int)
 }
 
+' ===== CLASES DE UTILIDAD =====
+class Mensaje <<utility>> {
+    - String mensaje
+    - Object data
+    --
+    + Mensaje(String)
+    + Mensaje(String, Object)
+    + String getMensaje()
+    + void setMensaje(String)
+    + Object getData()
+    + void setData(Object)
+}
+
 ' ===== RELACIONES DE HERENCIA =====
 Persona <|-- Cliente : extends
 Persona <|-- Usuario : extends
@@ -452,5 +468,7 @@ note bottom of Venta : Registra las transacciones\ncompletas con sus detalles\ny
 note left of AjusteStock : Registra cambios en el\ninventario con trazabilidad\nde usuario y motivo
 
 note top of LogSistema : Sistema de auditoría\npara seguimiento de\noperaciones importantes
+
+note right of Mensaje : Clase de utilidad para\nestandarizar respuestas JSON\nde la API REST
 
 @enduml
