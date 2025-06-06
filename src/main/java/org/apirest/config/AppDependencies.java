@@ -124,15 +124,13 @@ public class AppDependencies {
 
         // Ajustes de stock
         ajusteStockRepository = new AjusteStockRepo();
-        ajusteStockService = new AjusteStockService(ajusteStockRepository, productoService);
-
-        // Envio
-        envioSimuladoRepository = new EnvioSimuladoRepository();
-        envioSimuladoService = new EnvioSimuladoService(envioSimuladoRepository);
-
-        // Estado de envío
+        ajusteStockService = new AjusteStockService(ajusteStockRepository, productoService);        // Estado de envío (debe inicializarse antes que envío)
         estadoEnvioRepository = new EstadoEnvioRepository();
         estadoEnvioService = new EstadoEnvioService(estadoEnvioRepository);
+        
+        // Envio (ahora con la dependencia de estado)
+        envioSimuladoRepository = new EnvioSimuladoRepository();
+        envioSimuladoService = new EnvioSimuladoService(envioSimuladoRepository, estadoEnvioService);
     }
 
     // Getters para los servicios

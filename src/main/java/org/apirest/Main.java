@@ -13,7 +13,6 @@ import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
 import org.apirest.Controllers.VentaController;
 import org.apirest.Controllers.EnvioSimuladoController;
-import org.apirest.Controllers.EstadoEnvioController;
 import org.apirest.Controllers.FacturaController;
 import org.apirest.config.AppDependencies;
 import org.apirest.config.ExceptionsConfig;
@@ -41,7 +40,6 @@ public class Main {
         AjusteStockService ajusteStockService = appConfig.getAjusteStockService();
         LogSistemaService logSistemaService = appConfig.getLogSistemaService();
         EnvioSimuladoService envioSimuladoService = appConfig.getEnvioSimuladoService();
-        EstadoEnvioService estadoEnvioService = appConfig.getEstadoEnvioService();
 
         // Controladores
         ProductoController productoController = new ProductoController(productoService);
@@ -58,7 +56,6 @@ public class Main {
         AjusteStockController ajusteStockController = new AjusteStockController(ajusteStockService);
         LogSistemaController logSistemaController = new LogSistemaController(logSistemaService);
         EnvioSimuladoController envioSimuladoController = new EnvioSimuladoController(envioSimuladoService);
-        EstadoEnvioController estadoEnvioController = new EstadoEnvioController(estadoEnvioService);
         
         // Configuración del servidor Javalin
         Javalin app = Javalin.create(config -> {
@@ -78,7 +75,6 @@ public class Main {
                 ajusteStockController.rutasAjustesStock();
                 logSistemaController.rutasLogSistema();
                 envioSimuladoController.rutasEnvios();
-                estadoEnvioController.rutasEstadoEnvio();
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
             config.showJavalinBanner = false;
