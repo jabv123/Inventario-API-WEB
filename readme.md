@@ -19,7 +19,7 @@ mvn clean package
 java -jar target/Inventario-API-WEB-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-🌐 **Servidor:** <http://localhost:8080>
+🌐 **Servidor:** [http://localhost:8080](http://localhost:8080)
 
 ## 🔗 Documentación
 
