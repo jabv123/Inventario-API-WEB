@@ -31,7 +31,7 @@ java -jar target/Inventario-API-WEB-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 ## ✨ Características Principales
 
-- 🏗️ **Arquitectura MVC** con separación clara
+- 🏗️ **Arquitectura MVC** con separación clara de responsabilidades
 - 🔄 **Patrón Repository** para abstracción de datos  
 - 💉 **Inyección de dependencias** personalizada
 - 🛡️ **Manejo centralizado** de excepciones
