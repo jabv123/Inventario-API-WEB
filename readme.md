@@ -55,4 +55,3 @@ curl -X POST http://localhost:8080/productos \
 ## Copyright
 
 © 2025 Neider Guindigua, Andres Botina
-Todos los derechos reservados.
