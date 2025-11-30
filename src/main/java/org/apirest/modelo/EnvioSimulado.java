@@ -4,46 +4,46 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
 public class EnvioSimulado {
-    private String id;
-    private String idVenta;
+    private int id;
+    private int idVenta;
     private String direccionEnvio;
-    private String estadoEnvio;
-    
+    private int idEstadoEnvio;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaCreacion;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaActualizacionEstado;
 
     // Constructor vacío
-    public EnvioSimulado() {}
+    public EnvioSimulado() {
+    } // Constructor completo
 
-    // Constructor completo
-    public EnvioSimulado(String id, String idVenta, String direccionEnvio, 
-                        String estadoEnvio, LocalDateTime fechaCreacion, 
-                        LocalDateTime fechaActualizacionEstado) {
+    public EnvioSimulado(int id, int idVenta, String direccionEnvio,
+            int idEstadoEnvio, LocalDateTime fechaCreacion,
+            LocalDateTime fechaActualizacionEstado) {
         this.id = id;
         this.idVenta = idVenta;
         this.direccionEnvio = direccionEnvio;
-        this.estadoEnvio = estadoEnvio;
+        this.idEstadoEnvio = idEstadoEnvio;
         this.fechaCreacion = fechaCreacion;
         this.fechaActualizacionEstado = fechaActualizacionEstado;
     }
 
     // Getters y Setters
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getIdVenta() {
+    public int getIdVenta() {
         return idVenta;
     }
 
-    public void setIdVenta(String idVenta) {
+    public void setIdVenta(int idVenta) {
         this.idVenta = idVenta;
     }
 
@@ -55,12 +55,12 @@ public class EnvioSimulado {
         this.direccionEnvio = direccionEnvio;
     }
 
-    public String getEstadoEnvio() {
-        return estadoEnvio;
+    public int getIdEstadoEnvio() {
+        return idEstadoEnvio;
     }
 
-    public void setEstadoEnvio(String estadoEnvio) {
-        this.estadoEnvio = estadoEnvio;
+    public void setIdEstadoEnvio(int idEstadoEnvio) {
+        this.idEstadoEnvio = idEstadoEnvio;
     }
 
     public LocalDateTime getFechaCreacion() {
@@ -85,7 +85,7 @@ public class EnvioSimulado {
                 "id='" + id + '\'' +
                 ", idVenta='" + idVenta + '\'' +
                 ", direccionEnvio='" + direccionEnvio + '\'' +
-                ", estadoEnvio='" + estadoEnvio + '\'' +
+                ", idEstadoEnvio='" + idEstadoEnvio + '\'' +
                 ", fechaCreacion=" + fechaCreacion +
                 ", fechaActualizacionEstado=" + fechaActualizacionEstado +
                 '}';

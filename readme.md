@@ -8,6 +8,8 @@
 
 **👥 Autores:** [Neider Guindigua](https://github.com/Neid-09) • [Andres Botina](https://github.com/jabv123)
 
+Esta API RESTful está diseñada para gestionar inventarios de productos, permitiendo operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre los productos almacenados. Construida con Java 21 y el framework Javalin, ofrece una solución ligera y eficiente para aplicaciones de inventario.
+
 ## ⚡ Inicio Rápido
 
 ```bash
@@ -16,7 +18,8 @@ cd Inventario-API-WEB
 mvn clean package
 java -jar target/Inventario-API-WEB-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
-🌐 **Servidor:** http://localhost:8080
+
+🌐 **Servidor:** [http://localhost:8080](http://localhost:8080)
 
 ## 🔗 Documentación
 
@@ -31,7 +34,7 @@ java -jar target/Inventario-API-WEB-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 ## ✨ Características Principales
 
-- 🏗️ **Arquitectura MVC** con separación clara
+- 🏗️ **Arquitectura MVC** con separación clara de responsabilidades
 - 🔄 **Patrón Repository** para abstracción de datos  
 - 💉 **Inyección de dependencias** personalizada
 - 🛡️ **Manejo centralizado** de excepciones
@@ -50,5 +53,5 @@ curl -X POST http://localhost:8080/productos \
 ```
 
 ## Copyright
+
 © 2025 Neider Guindigua, Andres Botina
-Todos los derechos reservados.

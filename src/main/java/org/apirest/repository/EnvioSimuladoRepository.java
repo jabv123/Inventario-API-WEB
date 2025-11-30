@@ -2,59 +2,51 @@ package org.apirest.repository;
 
 import org.apirest.modelo.EnvioSimulado;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class EnvioSimuladoRepository {
-    private static EnvioSimuladoRepository instance;
-    private final Map<String, EnvioSimulado> envios;
-    private final AtomicInteger idCounter;
-
-    public EnvioSimuladoRepository() {
-        this.envios = new ConcurrentHashMap<>();
-        this.idCounter = new AtomicInteger(1);
-    }
-
-    public static EnvioSimuladoRepository getInstance() {
-        if (instance == null) {
-            instance = new EnvioSimuladoRepository();
-        }
-        return instance;
-    }
+    private final List<EnvioSimulado> enviosList = Collections.synchronizedList(new ArrayList<>());
+    private final AtomicInteger idCounter = new AtomicInteger(1);
 
     public EnvioSimulado save(EnvioSimulado envio) {
-        if (envio.getId() == null || envio.getId().isEmpty()) {
-            envio.setId(String.valueOf(idCounter.getAndIncrement()));
-        }
-        envios.put(envio.getId(), envio);
+        envio.setId(idCounter.getAndIncrement());
+        enviosList.add(envio);
         return envio;
     }
 
-    public Optional<EnvioSimulado> findById(String id) {
-        return Optional.ofNullable(envios.get(id));
+    public Optional<EnvioSimulado> findById(int id) {
+        return enviosList.stream().filter(envio -> envio.getId() == id).findFirst();
     }
 
     public List<EnvioSimulado> findAll() {
-        return new ArrayList<>(envios.values());
+        return new ArrayList<>(enviosList);
     }
 
-    public Optional<EnvioSimulado> findByIdVenta(String idVenta) {
-        return envios.values().stream()
-                .filter(envio -> envio.getIdVenta().equals(idVenta))
+    public Optional<EnvioSimulado> findByIdVenta(int idVenta) {
+        return enviosList.stream()
+                .filter(envio -> envio.getIdVenta() == idVenta)
                 .findFirst();
     }
 
-    public boolean deleteById(String id) {
-        return envios.remove(id) != null;
+    public boolean deleteById(int id) {
+        return enviosList.removeIf(envio -> envio.getId() == id);
     }
 
-    public EnvioSimulado update(String id, EnvioSimulado envioActualizado) {
-        if (envios.containsKey(id)) {
-            envioActualizado.setId(id);
-            envios.put(id, envioActualizado);
-            return envioActualizado;
+    public EnvioSimulado update(int id, EnvioSimulado envioActualizado) {
+        for (int i = 0; i < enviosList.size(); i++) {
+            if (enviosList.get(i).getId() == id) {
+                envioActualizado.setId(id);
+                enviosList.set(i, envioActualizado);
+                return envioActualizado;
+            }
         }
         return null;
     }
 
+    public List<EnvioSimulado> findByIdEstadoEnvio(int idEstadoEnvio) {
+        return enviosList.stream()
+                .filter(envio -> envio.getIdEstadoEnvio() == idEstadoEnvio)
+                .collect(Collectors.toList());
+    }
 }

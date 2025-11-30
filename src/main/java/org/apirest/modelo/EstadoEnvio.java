@@ -1,24 +1,24 @@
 package org.apirest.modelo;
 
 public class EstadoEnvio {
-    private String id;
+    private int id;
     private String nombreEstado;
 
     // Constructor vacío
     public EstadoEnvio() {}
 
     // Constructor completo
-    public EstadoEnvio(String id, String nombreEstado) {
+    public EstadoEnvio(int id, String nombreEstado) {
         this.id = id;
         this.nombreEstado = nombreEstado;
     }
 
     // Getters y Setters
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

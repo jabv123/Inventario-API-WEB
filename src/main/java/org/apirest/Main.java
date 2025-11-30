@@ -13,7 +13,7 @@ import org.apirest.Controllers.ProveedorController;
 import org.apirest.Controllers.UsuarioController;
 import org.apirest.Controllers.VentaController;
 import org.apirest.Controllers.EnvioSimuladoController;
-import org.apirest.Controllers.EstadoEnvioController;
+import org.apirest.Controllers.FacturaController;
 import org.apirest.config.AppDependencies;
 import org.apirest.config.ExceptionsConfig;
 import org.apirest.service.*;
@@ -26,24 +26,22 @@ public class Main {
         AppDependencies appConfig = new AppDependencies();
 
         // Obtener servicios desde AppConfig
-        EnvioSimuladoService envioSimuladoService = appConfig.getEnvioSimuladoService();
         ProductoService productoService = appConfig.getProductoService();
         CategoriaService categoriaService = appConfig.getCategoriaService();
         ProveedorService proveedorService = appConfig.getProveedorService();
         ClienteService clienteService = appConfig.getClienteService();
         UsuarioService usuarioService = appConfig.getUsuarioService();
-        ImgProductoService imgProductoService = appConfig.getImgProductoService();
         CarritoService carritoService = appConfig.getCarritoService();
-        VentaService ventaService = appConfig.getVentaService();
+        ImgProductoService imgProductoService = appConfig.getImgProductoService();
         CuponDescuentoService cuponDescuentoService = appConfig.getCuponDescuentoService();
-        AjusteStockService ajusteStockService = appConfig.getAjusteStockService();
         MetodoPagoService metodoPagoService = appConfig.getMetodoPagoService();
+        VentaService ventaService = appConfig.getVentaService();
+        FacturaService facturaService = appConfig.getFacturaService();
+        AjusteStockService ajusteStockService = appConfig.getAjusteStockService();
         LogSistemaService logSistemaService = appConfig.getLogSistemaService();
-        EstadoEnvioService estadoEnvioService = appConfig.getEstadoEnvioService();
-
+        EnvioSimuladoService envioSimuladoService = appConfig.getEnvioSimuladoService();
 
         // Controladores
-        EnvioSimuladoController envioSimuladoController = new EnvioSimuladoController(envioSimuladoService); // <-- CAMBIO AQUÍ
         ProductoController productoController = new ProductoController(productoService);
         CategoriaController categoriaController = new CategoriaController(categoriaService);
         ProveedorController proveedorController = new ProveedorController(proveedorService);
@@ -51,13 +49,14 @@ public class Main {
         UsuarioController usuarioController = new UsuarioController(usuarioService);
         ClienteController clienteController = new ClienteController(clienteService);
         CarritoController carritoController = new CarritoController(carritoService);
-        VentaController ventaController = new VentaController(ventaService);
         CuponDescuentoController cuponDescuentoController = new CuponDescuentoController(cuponDescuentoService);
-        AjusteStockController ajusteStockController = new AjusteStockController(ajusteStockService);
         MetodoPagoController metodoPagoController = new MetodoPagoController(metodoPagoService);
+        VentaController ventaController = new VentaController(ventaService);
+        FacturaController facturaController = new FacturaController(facturaService);
+        AjusteStockController ajusteStockController = new AjusteStockController(ajusteStockService);
         LogSistemaController logSistemaController = new LogSistemaController(logSistemaService);
-        EstadoEnvioController estadoEnvioController = new EstadoEnvioController(estadoEnvioService);
-      
+        EnvioSimuladoController envioSimuladoController = new EnvioSimuladoController(envioSimuladoService);
+        
         // Configuración del servidor Javalin
         Javalin app = Javalin.create(config -> {
             // Configuración de rutas
@@ -69,13 +68,13 @@ public class Main {
                 usuarioController.addUsuarioRoutes();
                 clienteController.addClienteRoutes();
                 carritoController.rutasCarrito();
-                ventaController.rutasVentas();
                 cuponDescuentoController.rutasCupones();
-                ajusteStockController.rutasAjustesStock();
                 metodoPagoController.rutasMetodoPago();
+                ventaController.rutasVentas();
+                facturaController.rutasFacturas();
+                ajusteStockController.rutasAjustesStock();
                 logSistemaController.rutasLogSistema();
                 envioSimuladoController.rutasEnvios();
-                estadoEnvioController.rutasEstadoEnvio();
             });
             // Opcional: Deshabilitar el banner de Javalin en la consola
             config.showJavalinBanner = false;

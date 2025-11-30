@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
 public class Factura {
-    private String id;
-    private String idVenta;
+    private int id;
+    private int idVenta;
     private String numeroFactura;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -14,11 +14,9 @@ public class Factura {
     private double totalFacturado;
     private String datosClienteFactura;
 
-    // Constructor vacío
     public Factura() {}
 
-    // Constructor completo
-    public Factura(String id, String idVenta, String numeroFactura,
+    public Factura(int id, int idVenta, String numeroFactura,
                    LocalDateTime fechaFactura, double totalFacturado, String datosClienteFactura) {
         this.id = id;
         this.idVenta = idVenta;
@@ -28,20 +26,19 @@ public class Factura {
         this.datosClienteFactura = datosClienteFactura;
     }
 
-    // Getters y Setters
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getIdVenta() {
+    public int getIdVenta() {
         return idVenta;
     }
 
-    public void setIdVenta(String idVenta) {
+    public void setIdVenta(int idVenta) {
         this.idVenta = idVenta;
     }
 
